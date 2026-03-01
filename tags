@@ -75,16 +75,38 @@
 !_TAG_ROLE_DESCRIPTION!C++!module	imported	/imported with "imported ..."/
 !_TAG_ROLE_DESCRIPTION!C++!module	partOwner	/used for specifying a partition/
 !_TAG_ROLE_DESCRIPTION!C++!partition	imported	/imported with "imported ..."/
+API and naming	.github/copilot-instructions.md	/^## API and naming$/;"	s	chapter:Copilot instructions for `mylib`
+Code style	.github/copilot-instructions.md	/^## Code style$/;"	s	chapter:Copilot instructions for `mylib`
+Compatibility	.github/copilot-instructions.md	/^## Compatibility$/;"	s	chapter:Copilot instructions for `mylib`
+Copilot instructions for `mylib`	.github/copilot-instructions.md	/^# Copilot instructions for `mylib`$/;"	c
 Example	test.c	/^} Example;$/;"	t	typeref:struct:__anon1dda1bf60108	file:
+FLOW_ABS	flow.h	/^#define FLOW_ABS(/;"	d
 FLOW_ALIGN	flow.h	/^#define FLOW_ALIGN(/;"	d
+FLOW_ALIGN_DOWN	flow.h	/^#define FLOW_ALIGN_DOWN(/;"	d
+FLOW_ALIGN_UP	flow.h	/^#define FLOW_ALIGN_UP(/;"	d
+FLOW_API	flow.h	/^#define FLOW_API /;"	d
 FLOW_ARRAY_COUNT	flow.h	/^#define FLOW_ARRAY_COUNT(/;"	d
 FLOW_ASSERT	flow.h	/^#define FLOW_ASSERT(/;"	d
+FLOW_BEGIN_EXTERN_C	flow.h	/^#define FLOW_BEGIN_EXTERN_C /;"	d
+FLOW_BEGIN_EXTERN_C	flow.h	/^#define FLOW_BEGIN_EXTERN_C$/;"	d
+FLOW_BIT	flow.h	/^#define FLOW_BIT(/;"	d
+FLOW_CEIL	flow.h	/^#define FLOW_CEIL(/;"	d
+FLOW_CLAMP	flow.h	/^#define FLOW_CLAMP(/;"	d
+FLOW_CLEAR_FLAG	flow.h	/^#define FLOW_CLEAR_FLAG(/;"	d
 FLOW_CONCAT	flow.h	/^#define FLOW_CONCAT(/;"	d
 FLOW_CONCAT2	flow.h	/^#define FLOW_CONCAT2(/;"	d
 FLOW_CONTAINER_OF	flow.h	/^#define FLOW_CONTAINER_OF(/;"	d
 FLOW_DEBUG_BREAK	flow.h	/^#define FLOW_DEBUG_BREAK(/;"	d
+FLOW_DEPRECATED	flow.h	/^#define FLOW_DEPRECATED(/;"	d
+FLOW_END_EXTERN_C	flow.h	/^#define FLOW_END_EXTERN_C /;"	d
+FLOW_END_EXTERN_C	flow.h	/^#define FLOW_END_EXTERN_C$/;"	d
 FLOW_EXTERN	flow.h	/^#define FLOW_EXTERN /;"	d
+FLOW_EXTERN_C	flow.h	/^#define FLOW_EXTERN_C /;"	d
+FLOW_FLOOR	flow.h	/^#define FLOW_FLOOR(/;"	d
+FLOW_FOR_RANGE	flow.h	/^#define FLOW_FOR_RANGE(/;"	d
 FLOW_GB	flow.h	/^#define FLOW_GB(/;"	d
+FLOW_H	flow.h	/^#define FLOW_H$/;"	d
+FLOW_HAS_FLAG	flow.h	/^#define FLOW_HAS_FLAG(/;"	d
 FLOW_INLINE	flow.h	/^#define FLOW_INLINE /;"	d
 FLOW_IS_POW2	flow.h	/^#define FLOW_IS_POW2(/;"	d
 FLOW_KB	flow.h	/^#define FLOW_KB(/;"	d
@@ -93,17 +115,18 @@ FLOW_MAX	flow.h	/^#define FLOW_MAX(/;"	d
 FLOW_MB	flow.h	/^#define FLOW_MB(/;"	d
 FLOW_MIN	flow.h	/^#define FLOW_MIN(/;"	d
 FLOW_NOINLINE	flow.h	/^#define FLOW_NOINLINE /;"	d
-FLOW_NOINLINE	flow.h	/^#define FLOW_NOINLINE$/;"	d
+FLOW_NOOP	flow.h	/^#define FLOW_NOOP(/;"	d
 FLOW_OFFSET_OF	flow.h	/^#define FLOW_OFFSET_OF(/;"	d
 FLOW_PANIC	flow.h	/^#define FLOW_PANIC(/;"	d
 FLOW_PREFETCH	flow.h	/^#define FLOW_PREFETCH(/;"	d
 FLOW_RESTRICT	flow.h	/^#define FLOW_RESTRICT /;"	d
-FLOW_RESTRICT	flow.h	/^#define FLOW_RESTRICT$/;"	d
+FLOW_SET_FLAG	flow.h	/^#define FLOW_SET_FLAG(/;"	d
 FLOW_STATIC_ASSERT	flow.h	/^#define FLOW_STATIC_ASSERT(/;"	d
 FLOW_STRINGIFY	flow.h	/^#define FLOW_STRINGIFY(/;"	d
 FLOW_SWAP	flow.h	/^#define FLOW_SWAP(/;"	d
 FLOW_TOSTRING	flow.h	/^#define FLOW_TOSTRING(/;"	d
 FLOW_UNLIKELY	flow.h	/^#define FLOW_UNLIKELY(/;"	d
+FLOW_UNUSED	flow.h	/^#define FLOW_UNUSED(/;"	d
 L6	test.s	/^.L6:$/;"	l
 L8	test.s	/^.L8:$/;"	l
 LC0	test.s	/^.LC0:$/;"	l
@@ -137,12 +160,15 @@ LFE7487	test.s	/^.LFE7487:$/;"	l
 LFSB7486	test.s	/^.LFSB7486:$/;"	l
 LHOTB22	test.s	/^.LHOTB22:$/;"	l
 LHOTE22	test.s	/^.LHOTE22:$/;"	l
+Memory and checks	.github/copilot-instructions.md	/^## Memory and checks$/;"	s	chapter:Copilot instructions for `mylib`
+Testing	.github/copilot-instructions.md	/^## Testing$/;"	s	chapter:Copilot instructions for `mylib`
 Wrapper	test.c	/^} Wrapper;$/;"	t	typeref:struct:__anon1dda1bf60208	file:
 __anon1dda1bf60108	test.c	/^{$/;"	s	file:
 __anon1dda1bf60208	test.c	/^{$/;"	s	file:
+__anonfcd100560102	test.cpp	/^    auto check = [&](bool condition, const char* label) {$/;"	f	function:main	file:
 example	test.c	/^    Example example;$/;"	m	struct:__anon1dda1bf60208	typeref:typename:Example	file:
 flow_leading_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_leading_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_INLINE int
-flow_trailing_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_trailing_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_INLINE int
+flow_trailing_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_trailing_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_BEGIN_EXTERN_C FLOW_INLINE int
 for_each	flow.h	/^#define for_each(/;"	d
 header	test.c	/^    int     header;$/;"	m	struct:__anon1dda1bf60208	typeref:typename:int	file:
 id	test.c	/^    int    id;$/;"	m	struct:__anon1dda1bf60108	typeref:typename:int	file:
