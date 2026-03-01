@@ -162,10 +162,12 @@ LHOTB22	test.s	/^.LHOTB22:$/;"	l
 LHOTE22	test.s	/^.LHOTE22:$/;"	l
 Memory and checks	.github/copilot-instructions.md	/^## Memory and checks$/;"	s	chapter:Copilot instructions for `mylib`
 Testing	.github/copilot-instructions.md	/^## Testing$/;"	s	chapter:Copilot instructions for `mylib`
+VisitState	test.cpp	/^struct VisitState$/;"	s	file:
 Wrapper	test.c	/^} Wrapper;$/;"	t	typeref:struct:__anon1dda1bf60208	file:
 __anon1dda1bf60108	test.c	/^{$/;"	s	file:
 __anon1dda1bf60208	test.c	/^{$/;"	s	file:
 __anonfcd100560102	test.cpp	/^    auto check = [&](bool condition, const char* label) {$/;"	f	function:main	file:
+count	test.cpp	/^    size_t count;$/;"	m	struct:VisitState	typeref:typename:size_t	file:
 example	test.c	/^    Example example;$/;"	m	struct:__anon1dda1bf60208	typeref:typename:Example	file:
 flow_leading_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_leading_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_INLINE int
 flow_trailing_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_trailing_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_BEGIN_EXTERN_C FLOW_INLINE int
@@ -178,5 +180,7 @@ main	test.s	/^	.globl	main$/;"	s	inputSection:.text.startup
 main	test.s	/^main:$/;"	l
 mylib	README.md	/^# mylib$/;"	c
 slow_identity	test.c	/^static FLOW_NOINLINE int slow_identity(int x)$/;"	f	typeref:typename:FLOW_NOINLINE int	file:
+sum	test.cpp	/^    size_t sum;$/;"	m	struct:VisitState	typeref:typename:size_t	file:
 sum_array	test.c	/^static FLOW_INLINE int sum_array(int* FLOW_RESTRICT arr, size_t count)$/;"	f	typeref:typename:FLOW_INLINE int	file:
 value	test.c	/^    double value;$/;"	m	struct:__anon1dda1bf60108	typeref:typename:double	file:
+visit_collect	test.cpp	/^static bool visit_collect(size_t value, void* user)$/;"	f	typeref:typename:bool	file:

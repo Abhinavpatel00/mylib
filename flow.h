@@ -119,7 +119,8 @@ FLOW_BEGIN_EXTERN_C
 #else
 #define FLOW_STATIC_ASSERT_GLUE_(a, b) a##b
 #define FLOW_STATIC_ASSERT_GLUE(a, b) FLOW_STATIC_ASSERT_GLUE_(a, b)
-#define FLOW_STATIC_ASSERT(cond, msg) typedef char FLOW_STATIC_ASSERT_GLUE(flow_static_assertion_, __LINE__)[(cond) ? 1 : -1]
+#define FLOW_STATIC_ASSERT(cond, msg)                                                                                  \
+    typedef char FLOW_STATIC_ASSERT_GLUE(flow_static_assertion_, __LINE__)[(cond) ? 1 : -1]
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)
@@ -392,6 +393,10 @@ void flow_bitset_shift_right(flow_bitset* bs, size_t shift);
 void flow_bitset_set(flow_bitset* bs, size_t bit_index);
 void flow_bitset_reset(flow_bitset* bs, size_t bit_index);
 bool flow_bitset_test(const flow_bitset* bs, size_t bit_index);
+void flow_bitset_enable_bit(flow_bitset* bs, size_t bit_index);
+void flow_bitset_disable_bit(flow_bitset* bs, size_t bit_index);
+void flow_bitset_set_bit(flow_bitset* bs, size_t bit_index, bool value);
+bool flow_bitset_get_bit(const flow_bitset* bs, size_t bit_index);
 
 /* Query sizes. */
 static FLOW_INLINE size_t flow_bitset_size_in_bytes(const flow_bitset* bs)
@@ -411,23 +416,35 @@ static FLOW_INLINE size_t flow_bitset_size_in_words(const flow_bitset* bs)
 
 /* Set algebra and counters. */
 size_t flow_bitset_count(const flow_bitset* bs);
-bool flow_bitset_empty(const flow_bitset* bs);
+bool   flow_bitset_empty(const flow_bitset* bs);
 size_t flow_bitset_minimum(const flow_bitset* bs);
 size_t flow_bitset_maximum(const flow_bitset* bs);
-bool flow_bitsets_disjoint(const flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
-bool flow_bitsets_intersect(const flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
-bool flow_bitset_contains_all(const flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
-bool flow_bitset_inplace_union(flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
+bool   flow_bitset_equal(const flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b);
+bool   flow_bitsets_disjoint(const flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
+bool   flow_bitsets_intersect(const flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
+bool   flow_bitset_contains_all(const flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
+bool   flow_bitset_inplace_union(flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
 size_t flow_bitset_union_count(const flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
-void flow_bitset_inplace_intersection(flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
+void   flow_bitset_inplace_intersection(flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
 size_t flow_bitset_intersection_count(const flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
-void flow_bitset_inplace_difference(flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
+void   flow_bitset_inplace_difference(flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
 size_t flow_bitset_difference_count(const flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
-bool flow_bitset_inplace_symmetric_difference(flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
+bool   flow_bitset_inplace_symmetric_difference(flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
 size_t flow_bitset_symmetric_difference_count(const flow_bitset* FLOW_RESTRICT b1, const flow_bitset* FLOW_RESTRICT b2);
+bool flow_bitset_xor(flow_bitset* FLOW_RESTRICT out, const flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b);
+bool flow_bitset_or(flow_bitset* FLOW_RESTRICT out, const flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b);
+bool flow_bitset_and(flow_bitset* FLOW_RESTRICT out, const flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b);
+bool flow_bitset_not(flow_bitset* FLOW_RESTRICT out, const flow_bitset* FLOW_RESTRICT a);
+bool flow_bitset_xor_assign(flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b);
+bool flow_bitset_or_assign(flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b);
+bool flow_bitset_and_assign(flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b);
 
 /* Iteration helpers. */
 typedef bool (*flow_bitset_iterator)(size_t value, void* param);
+typedef flow_bitset_iterator flow_bitset_visit_fn;
+
+void flow_bitset_traverse(const flow_bitset* bs, flow_bitset_visit_fn visitor, void* user);
+void flow_bitset_traverse_range(const flow_bitset* bs, flow_bitset_visit_fn visitor, void* user, size_t begin, size_t count);
 
 static FLOW_INLINE bool flow_bitset_next_set_bit(const flow_bitset* bs, size_t* i)
 {
@@ -477,8 +494,8 @@ static FLOW_INLINE size_t flow_bitset_next_set_bits(const flow_bitset* bs, size_
     {
         while(w != 0)
         {
-            uint64_t t = w & (~w + 1);
-            int      r = flow_trailing_zeroes_u64(w);
+            uint64_t t        = w & (~w + 1);
+            int      r        = flow_trailing_zeroes_u64(w);
             buffer[howmany++] = (size_t)r + base;
             if(howmany == capacity)
                 goto end;
@@ -688,6 +705,33 @@ bool flow_bitset_test(const flow_bitset* bs, size_t bit_index)
 
     return (bs->array[word_index] & (UINT64_C(1) << bit_offset)) != 0;
 }
+
+void flow_bitset_enable_bit(flow_bitset* bs, size_t bit_index)
+{
+    flow_bitset_set(bs, bit_index);
+}
+
+void flow_bitset_disable_bit(flow_bitset* bs, size_t bit_index)
+{
+    flow_bitset_reset(bs, bit_index);
+}
+
+void flow_bitset_set_bit(flow_bitset* bs, size_t bit_index, bool value)
+{
+    if(value)
+    {
+        flow_bitset_set(bs, bit_index);
+    }
+    else
+    {
+        flow_bitset_reset(bs, bit_index);
+    }
+}
+
+bool flow_bitset_get_bit(const flow_bitset* bs, size_t bit_index)
+{
+    return flow_bitset_test(bs, bit_index);
+}
 /*
 Goal:
 Shift the entire bitset left by shift bits.
@@ -823,7 +867,6 @@ void flow_bitset_shift_right(flow_bitset* bs, size_t shift)
     /* Logical shrink */
     flow_bitset_resize_impl(bs, old_count - word_shift, false);
 }
-
 
 
 bool flow_bitset_grow(flow_bitset* bs, size_t new_word_count)
@@ -988,6 +1031,26 @@ static bool flow_bitset_any_bits_set(const flow_bitset* b, size_t starting_loc)
             return true;
     }
     return false;
+}
+
+bool flow_bitset_equal(const flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b)
+{
+    size_t min_size = a->word_count < b->word_count ? a->word_count : b->word_count;
+
+    for(size_t k = 0; k < min_size; ++k)
+    {
+        if(a->array[k] != b->array[k])
+        {
+            return false;
+        }
+    }
+
+    if(a->word_count > b->word_count)
+    {
+        return !flow_bitset_any_bits_set(a, b->word_count);
+    }
+
+    return !flow_bitset_any_bits_set(b, a->word_count);
 }
 
 /* Returns true if b1 has all of b2's bits set.
@@ -1155,6 +1218,162 @@ size_t flow_bitset_symmetric_difference_count(const flow_bitset* FLOW_RESTRICT b
         }
     }
     return answer;
+}
+
+bool flow_bitset_xor(flow_bitset* FLOW_RESTRICT out, const flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b)
+{
+    size_t min_size = a->word_count < b->word_count ? a->word_count : b->word_count;
+    size_t max_size = a->word_count > b->word_count ? a->word_count : b->word_count;
+
+    if(!flow_bitset_resize_words(out, max_size))
+    {
+        return false;
+    }
+
+    size_t k = 0;
+    for(; k < min_size; ++k)
+    {
+        out->array[k] = a->array[k] ^ b->array[k];
+    }
+
+    if(a->word_count > b->word_count)
+    {
+        for(; k < max_size; ++k)
+        {
+            out->array[k] = a->array[k];
+        }
+    }
+    else
+    {
+        for(; k < max_size; ++k)
+        {
+            out->array[k] = b->array[k];
+        }
+    }
+    return true;
+}
+
+bool flow_bitset_or(flow_bitset* FLOW_RESTRICT out, const flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b)
+{
+    size_t min_size = a->word_count < b->word_count ? a->word_count : b->word_count;
+    size_t max_size = a->word_count > b->word_count ? a->word_count : b->word_count;
+
+    if(!flow_bitset_resize_words(out, max_size))
+    {
+        return false;
+    }
+
+    size_t k = 0;
+    for(; k < min_size; ++k)
+    {
+        out->array[k] = a->array[k] | b->array[k];
+    }
+
+    if(a->word_count > b->word_count)
+    {
+        for(; k < max_size; ++k)
+        {
+            out->array[k] = a->array[k];
+        }
+    }
+    else
+    {
+        for(; k < max_size; ++k)
+        {
+            out->array[k] = b->array[k];
+        }
+    }
+    return true;
+}
+
+bool flow_bitset_and(flow_bitset* FLOW_RESTRICT out, const flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b)
+{
+    size_t min_size = a->word_count < b->word_count ? a->word_count : b->word_count;
+    size_t max_size = a->word_count > b->word_count ? a->word_count : b->word_count;
+
+    if(!flow_bitset_resize_words(out, max_size))
+    {
+        return false;
+    }
+
+    size_t k = 0;
+    for(; k < min_size; ++k)
+    {
+        out->array[k] = a->array[k] & b->array[k];
+    }
+
+    for(; k < max_size; ++k)
+    {
+        out->array[k] = 0;
+    }
+    return true;
+}
+
+bool flow_bitset_not(flow_bitset* FLOW_RESTRICT out, const flow_bitset* FLOW_RESTRICT a)
+{
+    if(!flow_bitset_resize_words(out, a->word_count))
+    {
+        return false;
+    }
+
+    for(size_t k = 0; k < a->word_count; ++k)
+    {
+        out->array[k] = ~a->array[k];
+    }
+    return true;
+}
+
+bool flow_bitset_xor_assign(flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b)
+{
+    return flow_bitset_inplace_symmetric_difference(a, b);
+}
+
+bool flow_bitset_or_assign(flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b)
+{
+    return flow_bitset_inplace_union(a, b);
+}
+
+bool flow_bitset_and_assign(flow_bitset* FLOW_RESTRICT a, const flow_bitset* FLOW_RESTRICT b)
+{
+    flow_bitset_inplace_intersection(a, b);
+    return true;
+}
+
+void flow_bitset_traverse(const flow_bitset* bs, flow_bitset_visit_fn visitor, void* user)
+{
+    size_t i = 0;
+    while(flow_bitset_next_set_bit(bs, &i))
+    {
+        if(!visitor(i, user))
+        {
+            return;
+        }
+        ++i;
+    }
+}
+
+void flow_bitset_traverse_range(const flow_bitset* bs, flow_bitset_visit_fn visitor, void* user, size_t begin, size_t count)
+{
+    if(count == 0)
+    {
+        return;
+    }
+
+    size_t end = begin + count;
+    if(end < begin)
+    {
+        end = SIZE_MAX;
+    }
+
+    size_t i = begin;
+    while(flow_bitset_next_set_bit(bs, &i) && i < end)
+    {
+        if(!visitor(i, user))
+        {
+            return;
+        }
+        ++i;
+    }
 }
 
 bool flow_bitset_trim(flow_bitset* bs)
