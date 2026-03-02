@@ -1,3 +1,4 @@
+#define FLOW_IMPLEMENTATION
 #include "flow.h"
 
 #include <cstdio>

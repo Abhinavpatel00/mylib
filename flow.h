@@ -11,6 +11,8 @@
 //   #include "flow.h"
 // -----------------------------------------------------------------------------
 
+#include <cassert>
+#include <cstdint>
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -538,6 +540,145 @@ static FLOW_INLINE bool flow_bitset_for_each(const flow_bitset* bs, flow_bitset_
 
 void flow_bitset_print(const flow_bitset* b);
 
+// What Problem It Solves
+//
+// You have IDs from:
+//
+// 0 ... maxID
+//
+// You want to:
+//
+// • allocate a single ID
+// • allocate a contiguous block of IDs
+// • free an ID or range
+// • do it efficiently
+// i mainly experimented with it for using it for bindless vulkan got it from nvpro and   https://www.humus.name/3D/MakeID.h
+typedef struct
+{
+    uint32_t first;
+    uint32_t last;
+} flow_id_pool_range;
+
+typedef struct
+{
+    flow_id_pool_range* ranges;
+    uint32_t            count;
+    uint32_t            capacity;
+    uint32_t            max_id;
+    uint32_t            used_ids;
+} flow_id_pool;
+void flow_id_pool_init(flow_id_pool* pool, uint32_t pool_size);
+void flow_id_pool_deinit(flow_id_pool* pool);
+void flow_id_pool_destroy_all(flow_id_pool* pool);
+
+/* allocation */
+bool flow_id_pool_create_id(flow_id_pool* pool, uint32_t* out_id);
+bool flow_id_pool_create_range_id(flow_id_pool* pool, uint32_t* out_id, uint32_t count);
+
+/* deallocation */
+bool flow_id_pool_destroy_id(flow_id_pool* pool, uint32_t id);
+bool flow_id_pool_destroy_range_id(flow_id_pool* pool, uint32_t id, uint32_t count);
+
+/* queries */
+bool flow_id_pool_is_range_available(const flow_id_pool* pool, uint32_t search_count);
+void flow_id_pool_print_ranges(const flow_id_pool* pool);
+void flow_id_pool_check_ranges(const flow_id_pool* pool);
+
+uint32_t flow_id_pool_get_available_ids(const flow_id_pool* pool);
+bool     flow_id_pool_is_id(const flow_id_pool* pool, uint32_t id);
+uint32_t flow_id_pool_get_largest_continuous_range(const flow_id_pool* pool);
+
+
+typedef struct
+{
+    uint64_t state;
+    uint64_t inc;
+} flow_pcg32;
+
+/* ------------------ Scalar ------------------ */
+
+FLOW_INLINE void flow_pcg32_init(flow_pcg32* rng, uint64_t seed, uint64_t seq)
+{
+    rng->state = 0u;
+    rng->inc   = (seq << 1u) | 1u;
+    rng->state = rng->state * 6364136223846793005ULL + rng->inc;
+    rng->state += seed;
+    rng->state = rng->state * 6364136223846793005ULL + rng->inc;
+}
+
+FLOW_INLINE uint32_t flow_pcg32_next_u32(flow_pcg32* rng)
+{
+    uint64_t oldstate = rng->state;
+    rng->state        = oldstate * 6364136223846793005ULL + rng->inc;
+
+    uint32_t xorshifted = (uint32_t)(((oldstate >> 18u) ^ oldstate) >> 27u);
+    uint32_t rot        = (uint32_t)(oldstate >> 59u);
+
+    return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
+}
+
+/* ------------------ SIMD Batch (AVX2) ------------------ */
+
+#if defined(__AVX2__)
+#include <immintrin.h>
+
+typedef struct
+{
+    __m256i state;
+    __m256i inc;
+} flow_pcg32x4;
+
+/* initialize 4 parallel streams */
+FLOW_INLINE void flow_pcg32x4_init(flow_pcg32x4* rng,
+                                   uint64_t      seed0,
+                                   uint64_t      seed1,
+                                   uint64_t      seed2,
+                                   uint64_t      seed3,
+                                   uint64_t      seq0,
+                                   uint64_t      seq1,
+                                   uint64_t      seq2,
+                                   uint64_t      seq3)
+{
+    __m256i seeds = _mm256_set_epi64x(seed3, seed2, seed1, seed0);
+    __m256i seqs  = _mm256_set_epi64x(seq3, seq2, seq1, seq0);
+
+    rng->state = _mm256_setzero_si256();
+    rng->inc   = _mm256_or_si256(_mm256_slli_epi64(seqs, 1), _mm256_set1_epi64x(1));
+
+    __m256i mul = _mm256_set1_epi64x(6364136223846793005ULL);
+
+    rng->state = _mm256_add_epi64(_mm256_mullo_epi64(rng->state, mul), rng->inc);
+
+    rng->state = _mm256_add_epi64(rng->state, seeds);
+
+    rng->state = _mm256_add_epi64(_mm256_mullo_epi64(rng->state, mul), rng->inc);
+}
+
+FLOW_INLINE __m256i flow_pcg32x4_next_u32(flow_pcg32x4* rng)
+{
+    __m256i oldstate = rng->state;
+    __m256i mul      = _mm256_set1_epi64x(6364136223846793005ULL);
+
+    rng->state = _mm256_add_epi64(_mm256_mullo_epi64(oldstate, mul), rng->inc);
+
+    __m256i xorshifted = _mm256_srli_epi64(_mm256_xor_si256(_mm256_srli_epi64(oldstate, 18), oldstate), 27);
+
+    __m256i rot = _mm256_srli_epi64(oldstate, 59);
+
+    __m256i xs32  = _mm256_cvtepi64_epi32(xorshifted);
+    __m256i rot32 = _mm256_cvtepi64_epi32(rot);
+
+    __m256i r1 = _mm256_srlv_epi32(xs32, rot32);
+    __m256i r2 =
+        _mm256_sllv_epi32(xs32, _mm256_and_si256(_mm256_sub_epi32(_mm256_set1_epi32(32), rot32), _mm256_set1_epi32(31)));
+
+    return _mm256_or_si256(r1, r2);
+}
+
+#endif
+
+
+FLOW_END_EXTERN_C
 
 /*
 TODO:
@@ -545,11 +686,9 @@ implement stack, queue ,deque
 linked list with pointers and operation on it and static array version and may be mannaged  arena version(saves calling malloc everytime)
 avl tree,binary tree with pointers and operation on it and static array version and may be mannaged  arena version(saves calling malloc everytime
 - stack sort of knuth  
-
-
-
 */
-// • Allocates the struct.
+#define FLOW_IMPLEMENTATION
+#ifdef FLOW_IMPLEMENTATION
 // • Computes required number of 64-bit words to hold size bits.
 flow_bitset* flow_bitset_create()
 {
@@ -587,12 +726,12 @@ void flow_bitset_free(flow_bitset* bitset)
     free(bitset);
 }
 
-static void flow_bitset_clear_impl(flow_bitset* bitset)
+void flow_bitset_clear(flow_bitset* bitset)
 {
     memset(bitset->array, 0, sizeof(uint64_t) * bitset->word_count);
 }
 
-static void flow_bitset_fill_impl(flow_bitset* bitset)
+void flow_bitset_fill(flow_bitset* bitset)
 {
     memset(bitset->array, 0xff, sizeof(uint64_t) * bitset->word_count);
 }
@@ -601,17 +740,8 @@ static void flow_bitset_fill_impl(flow_bitset* bitset)
 Flow-prefixed aliases keep the public API naming consistent.
 These functions intentionally stay minimal and avoid redundant checks.
 */
-void flow_bitset_clear(flow_bitset* bitset)
-{
-    flow_bitset_clear_impl(bitset);
-}
 
-void flow_bitset_fill(flow_bitset* bitset)
-{
-    flow_bitset_fill_impl(bitset);
-}
-
-static flow_bitset* flow_bitset_copy_impl(const flow_bitset* src)
+flow_bitset* flow_bitset_copy(const flow_bitset* src)
 {
     flow_bitset* copy   = (flow_bitset*)malloc(sizeof *copy);
     copy->word_count    = src->word_count;
@@ -628,10 +758,6 @@ static flow_bitset* flow_bitset_copy_impl(const flow_bitset* src)
     return copy;
 }
 
-flow_bitset* flow_bitset_copy(const flow_bitset* src)
-{
-    return flow_bitset_copy_impl(src);
-}
 
 static bool flow_bitset_resize_impl(flow_bitset* bs, size_t new_word_count, bool padwithzeroes)
 {
@@ -1410,11 +1536,317 @@ void flow_bitset_print(const flow_bitset* b)
     printf("}");
 }
 
-FLOW_END_EXTERN_C
 
-#ifdef FLOW_IMPLEMENTATION
+bool flow_id_pool_is_id(const flow_id_pool* pool, uint32_t id)
+{
+    uint32_t i0 = 0;
+    uint32_t i1 = pool->count - 1;
 
-// place non-static function definitions here
+    for(;;)
+    {
+        uint32_t i = (i0 + i1) / 2;
+
+        if(id < pool->ranges[i].first)
+        {
+            if(i == i0)
+                return true;
+
+            i1 = i - 1;
+        }
+        else if(id > pool->ranges[i].last)
+        {
+            if(i == i1)
+                return true;
+
+            i0 = i + 1;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+uint32_t flow_id_pool_get_available_ids(const flow_id_pool* pool)
+{
+    uint32_t count = pool->count;
+
+    for(uint32_t i = 0; i < pool->count; ++i)
+    {
+        count += pool->ranges[i].last - pool->ranges[i].first;
+    }
+
+    return count;
+}
+uint32_t flow_id_pool_get_largest_continuous_range(const flow_id_pool* pool)
+{
+    uint32_t max_count = 0;
+
+    for(uint32_t i = 0; i < pool->count; ++i)
+    {
+        uint32_t count = pool->ranges[i].last - pool->ranges[i].first + 1;
+
+        if(count > max_count)
+            max_count = count;
+    }
+
+    return max_count;
+}
+/* internal helpers */
+
+static void flow_id_pool_insert_range(flow_id_pool* pool, uint32_t index)
+{
+    if(pool->count >= pool->capacity)
+    {
+        pool->capacity = pool->capacity ? pool->capacity * 2 : 1;
+        pool->ranges   = (flow_id_pool_range*)realloc(pool->ranges, pool->capacity * sizeof(flow_id_pool_range));
+        assert(pool->ranges);
+    }
+
+    memmove(pool->ranges + index + 1, pool->ranges + index, (pool->count - index) * sizeof(flow_id_pool_range));
+
+    pool->count++;
+}
+
+static void flow_id_pool_destroy_range(flow_id_pool* pool, uint32_t index)
+{
+    pool->count--;
+
+    memmove(pool->ranges + index, pool->ranges + index + 1, (pool->count - index) * sizeof(flow_id_pool_range));
+}
+
+/* public API */
+
+void flow_id_pool_init(flow_id_pool* pool, uint32_t pool_size)
+{
+    assert(pool);
+    assert(!pool->ranges);
+    assert(pool_size);
+
+    uint32_t max_id = pool_size - 1;
+
+    pool->ranges = (flow_id_pool_range*)malloc(sizeof(flow_id_pool_range));
+    assert(pool->ranges);
+
+    pool->ranges[0].first = 0;
+    pool->ranges[0].last  = max_id;
+
+    pool->count    = 1;
+    pool->capacity = 1;
+    pool->max_id   = max_id;
+    pool->used_ids = 0;
+}
+
+void flow_id_pool_deinit(flow_id_pool* pool)
+{
+    assert(pool);
+    assert(pool->used_ids == 0);
+
+    if(pool->ranges)
+    {
+        free(pool->ranges);
+        pool->ranges   = NULL;
+        pool->count    = 0;
+        pool->capacity = 0;
+        pool->max_id   = 0;
+        pool->used_ids = 0;
+    }
+}
+
+void flow_id_pool_destroy_all(flow_id_pool* pool)
+{
+    uint32_t pool_size = pool->max_id + 1;
+    pool->used_ids     = 0;
+
+    flow_id_pool_deinit(pool);
+    flow_id_pool_init(pool, pool_size);
+}
+
+bool flow_id_pool_create_id(flow_id_pool* pool, uint32_t* out_id)
+{
+    if(pool->ranges[0].first <= pool->ranges[0].last)
+    {
+        *out_id = pool->ranges[0].first;
+
+        if(pool->ranges[0].first == pool->ranges[0].last && pool->count > 1)
+        {
+            flow_id_pool_destroy_range(pool, 0);
+        }
+        else
+        {
+            pool->ranges[0].first++;
+        }
+
+        pool->used_ids++;
+        return true;
+    }
+
+    return false;
+}
+
+bool flow_id_pool_create_range_id(flow_id_pool* pool, uint32_t* out_id, uint32_t count)
+{
+    for(uint32_t i = 0; i < pool->count; ++i)
+    {
+        uint32_t range_count = 1 + pool->ranges[i].last - pool->ranges[i].first;
+
+        if(count <= range_count)
+        {
+            *out_id = pool->ranges[i].first;
+
+            if(count == range_count && i + 1 < pool->count)
+            {
+                flow_id_pool_destroy_range(pool, i);
+            }
+            else
+            {
+                pool->ranges[i].first += count;
+            }
+
+            pool->used_ids += count;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool flow_id_pool_destroy_id(flow_id_pool* pool, uint32_t id)
+{
+    return flow_id_pool_destroy_range_id(pool, id, 1);
+}
+
+bool flow_id_pool_destroy_range_id(flow_id_pool* pool, uint32_t id, uint32_t count)
+{
+    uint32_t end_id = id + count;
+    assert(end_id <= pool->max_id + 1);
+
+    uint32_t i0 = 0;
+    uint32_t i1 = pool->count - 1;
+
+    for(;;)
+    {
+        uint32_t i = (i0 + i1) / 2;
+
+        if(id < pool->ranges[i].first)
+        {
+            if(end_id >= pool->ranges[i].first)
+            {
+                if(end_id != pool->ranges[i].first)
+                    return false;
+
+                if(i > i0 && id - 1 == pool->ranges[i - 1].last)
+                {
+                    pool->ranges[i - 1].last = pool->ranges[i].last;
+                    flow_id_pool_destroy_range(pool, i);
+                }
+                else
+                {
+                    pool->ranges[i].first = id;
+                }
+
+                pool->used_ids -= count;
+                return true;
+            }
+
+            if(i != i0)
+            {
+                i1 = i - 1;
+            }
+            else
+            {
+                flow_id_pool_insert_range(pool, i);
+                pool->ranges[i].first = id;
+                pool->ranges[i].last  = end_id - 1;
+
+                pool->used_ids -= count;
+                return true;
+            }
+        }
+        else if(id > pool->ranges[i].last)
+        {
+            if(id - 1 == pool->ranges[i].last)
+            {
+                if(i < i1 && end_id == pool->ranges[i + 1].first)
+                {
+                    pool->ranges[i].last = pool->ranges[i + 1].last;
+                    flow_id_pool_destroy_range(pool, i + 1);
+                }
+                else
+                {
+                    pool->ranges[i].last += count;
+                }
+
+                pool->used_ids -= count;
+                return true;
+            }
+
+            if(i != i1)
+            {
+                i0 = i + 1;
+            }
+            else
+            {
+                flow_id_pool_insert_range(pool, i + 1);
+                pool->ranges[i + 1].first = id;
+                pool->ranges[i + 1].last  = end_id - 1;
+
+                pool->used_ids -= count;
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+bool flow_id_pool_is_range_available(const flow_id_pool* pool, uint32_t search_count)
+{
+    for(uint32_t i = 0; i < pool->count; ++i)
+    {
+        uint32_t count = pool->ranges[i].last - pool->ranges[i].first + 1;
+
+        if(count >= search_count)
+            return true;
+    }
+
+    return false;
+}
+
+void flow_id_pool_print_ranges(const flow_id_pool* pool)
+{
+    for(uint32_t i = 0; i < pool->count; ++i)
+    {
+        if(pool->ranges[i].first < pool->ranges[i].last)
+            printf("%u-%u", pool->ranges[i].first, pool->ranges[i].last);
+        else if(pool->ranges[i].first == pool->ranges[i].last)
+            printf("%u", pool->ranges[i].first);
+        else
+            printf("-");
+
+        if(i + 1 < pool->count)
+            printf(", ");
+    }
+
+    printf("\n");
+}
+
+void flow_id_pool_check_ranges(const flow_id_pool* pool)
+{
+    for(uint32_t i = 0; i < pool->count; ++i)
+    {
+        assert(pool->ranges[i].last <= pool->max_id);
+
+        if(pool->ranges[i].first == pool->ranges[i].last + 1)
+            continue;
+
+        assert(pool->ranges[i].first <= pool->ranges[i].last);
+        assert(pool->ranges[i].first <= pool->max_id);
+    }
+}
+
 
 #endif /* FLOW_IMPLEMENTATION */
 

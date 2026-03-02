@@ -107,6 +107,7 @@ FLOW_FOR_RANGE	flow.h	/^#define FLOW_FOR_RANGE(/;"	d
 FLOW_GB	flow.h	/^#define FLOW_GB(/;"	d
 FLOW_H	flow.h	/^#define FLOW_H$/;"	d
 FLOW_HAS_FLAG	flow.h	/^#define FLOW_HAS_FLAG(/;"	d
+FLOW_IMPLEMENTATION	test.cpp	/^#define FLOW_IMPLEMENTATION$/;"	d	file:
 FLOW_INLINE	flow.h	/^#define FLOW_INLINE /;"	d
 FLOW_IS_POW2	flow.h	/^#define FLOW_IS_POW2(/;"	d
 FLOW_KB	flow.h	/^#define FLOW_KB(/;"	d
