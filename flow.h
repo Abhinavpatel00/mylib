@@ -2,7 +2,6 @@
 //
 #ifndef FLOW_H
 #define FLOW_H
-
 // -----------------------------------------------------------------------------
 //  single-header configuration
 //
@@ -10,9 +9,8 @@
 //   #define FLOW_IMPLEMENTATION
 //   #include "flow.h"
 // -----------------------------------------------------------------------------
-
-#include <cassert>
-#include <cstdint>
+#include <assert.h>
+#include <cstddef>
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -20,6 +18,18 @@
 #include <string.h>
 #include <stdio.h>
 #ifndef FLOW_API
+
+
+
+
+#define internal      static
+#define global        static
+#define local_persist static
+
+
+
+
+
 #if defined(FLOW_STATIC)
 #define FLOW_API static
 #elif defined(_WIN32) && defined(FLOW_DLL_EXPORT)
@@ -223,6 +233,41 @@ few extra bitwise ops are basically free compared to dragging more memory
 
 */
 
+
+
+
+
+
+
+
+ FLOW_INLINE int flow_quantize_unorm(float v, int N)
+{
+    const float scale = (float)((1 << N) - 1);
+
+    v = (v >= 0.0f) ? v : 0.0f;
+    v = (v <= 1.0f) ? v : 1.0f;
+
+    return (int)(v * scale + 0.5f);
+}
+
+ FLOW_INLINE int flow_quantize_snorm(float v, int N)
+{
+    const float scale = (float)((1 << (N - 1)) - 1);
+
+    float round = (v >= 0.0f) ? 0.5f : -0.5f;
+
+    v = (v >= -1.0f) ? v : -1.0f;
+    v = (v <= 1.0f) ? v : 1.0f;
+
+    return (int)(v * scale + round);
+}
+
+
+
+
+
+
+
 // bitset static without malloc + with malloc
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -346,6 +391,14 @@ static FLOW_INLINE uint32_t flow_popcount_u64(uint64_t x)
 
 
 #endif
+
+
+
+
+
+
+
+
 //  can we  simulate generic from c11
 /*
  * there are tradeoffs here as everywhere in life i actually first thought to have bitset store bit count but that turns out a little cumbersome so we are going with word count 
@@ -589,6 +642,88 @@ bool     flow_id_pool_is_id(const flow_id_pool* pool, uint32_t id);
 uint32_t flow_id_pool_get_largest_continuous_range(const flow_id_pool* pool);
 
 
+//    https://kernelnewbies.org/FAQ/LinkedLists
+typedef struct flow_list_node
+{
+    int                    value;
+    struct flow_list_node* next;
+} flow_list_node;
+
+typedef struct flow_list
+{
+    flow_list_node* head;
+} flow_list;
+
+void flow_list_init(flow_list* list);
+void flow_list_clear(flow_list* list);
+
+void flow_list_push_front(flow_list* list, int value);
+void flow_list_push_back(flow_list* list, int value);
+
+int flow_list_remove_first(flow_list* list, int value);
+int flow_list_remove_all(flow_list* list, int value);
+
+flow_list_node* flow_list_find(flow_list* list, int value);
+
+size_t flow_list_length(const flow_list* list);
+void   flow_list_reverse(flow_list* list);
+
+void flow_list_print(const flow_list* list);
+
+/// i dont think stack and deque provides any value as ds
+///  queue is  interesting we might have many variations
+///  intrusive ?? with array?? linked list may be may be not
+
+// knuth problem 24 pg 329 
+typedef struct
+{
+    uint32_t* dense;   // size = capacity
+    uint32_t* sparse;  // size = capacity
+    uint32_t  size;    // number of active elements
+    uint32_t  capacity;
+} flow_sparse_set;
+
+/* Initialization (caller provides memory) */
+void flow_sparse_set_init(flow_sparse_set* set, uint32_t* dense_buffer, uint32_t* sparse_buffer, uint32_t capacity);
+
+/* Basic operations */
+void flow_sparse_set_clear(flow_sparse_set* set);
+bool flow_sparse_set_contains(const flow_sparse_set* set, uint32_t value);
+bool flow_sparse_set_add(flow_sparse_set* set, uint32_t value);
+bool flow_sparse_set_remove(flow_sparse_set* set, uint32_t value);
+
+/* Iteration */
+static FLOW_INLINE uint32_t flow_sparse_set_at(const flow_sparse_set* set, uint32_t index)
+{
+    return set->dense[index];
+}
+
+typedef struct
+{
+    flow_list_node* last;
+    uint64_t        size;
+} flow_circular_list;
+
+/* lifecycle */
+void flow_circular_list_init(flow_circular_list* list);
+void flow_circular_list_clear(flow_circular_list* list);
+
+/* insertion */
+void flow_circular_list_push_front(flow_circular_list* list, int value);
+void flow_circular_list_push_back(flow_circular_list* list, int value);
+
+/* removal */
+int flow_circular_list_pop_front(flow_circular_list* list, int* out_value);
+int flow_circular_list_remove_first(flow_circular_list* list, int value);
+
+/* lookup */
+flow_list_node* flow_circular_list_find(flow_circular_list* list, int value);
+
+/* utility */
+uint64_t flow_circular_list_length(const flow_circular_list* list);
+void     flow_circular_list_print(const flow_circular_list* list);
+
+
 typedef struct
 {
     uint64_t state;
@@ -682,7 +817,7 @@ FLOW_END_EXTERN_C
 
 /*
 TODO:
-implement stack, queue ,deque 
+implement stack, queue ,deque,fast or sparse sets         https://github.com/ericherman/libfastset and topo sort 
 linked list with pointers and operation on it and static array version and may be mannaged  arena version(saves calling malloc everytime)
 avl tree,binary tree with pointers and operation on it and static array version and may be mannaged  arena version(saves calling malloc everytime
 - stack sort of knuth  
@@ -1847,6 +1982,372 @@ void flow_id_pool_check_ranges(const flow_id_pool* pool)
     }
 }
 
+
+/// --------------------------------------------------------------------
+
+void flow_list_init(flow_list* list)
+{
+    list->head = NULL;
+}
+
+void flow_list_clear(flow_list* list)
+{
+    flow_list_node* curr = list->head;
+
+    while(curr)
+    {
+        flow_list_node* next = curr->next;
+        free(curr);
+        curr = next;
+    }
+
+    list->head = NULL;
+}
+
+void flow_list_push_front(flow_list* list, int value)
+{
+    flow_list_node* n = (flow_list_node*)malloc(sizeof(flow_list_node));
+    n->value          = value;
+    n->next           = list->head;
+    list->head        = n;
+}
+
+void flow_list_push_back(flow_list* list, int value)
+{
+    flow_list_node** pp = &list->head;
+
+    while(*pp)
+        pp = &(*pp)->next;
+
+    flow_list_node* n = (flow_list_node*)malloc(sizeof(flow_list_node));
+    n->value          = value;
+    n->next           = NULL;
+
+    *pp = n;
+}
+
+
+int flow_list_remove_first(flow_list* list, int value)
+{
+    flow_list_node** pp = &list->head;
+
+    while(*pp && (*pp)->value != value)
+        pp = &(*pp)->next;
+
+    if(*pp)
+    {
+        flow_list_node* victim = *pp;
+        *pp                    = victim->next;
+        free(victim);
+        return 1;
+    }
+
+    return 0;
+}
+
+
+int flow_list_remove_all(flow_list* list, int value)
+{
+    flow_list_node** pp      = &list->head;
+    int              removed = 0;
+
+    while(*pp)
+    {
+        if((*pp)->value == value)
+        {
+            flow_list_node* victim = *pp;
+            *pp                    = victim->next;
+            free(victim);
+            removed++;
+        }
+        else
+        {
+            pp = &(*pp)->next;
+        }
+    }
+
+    return removed;
+}
+
+
+flow_list_node* flow_list_find(flow_list* list, int value)
+{
+    flow_list_node* curr = list->head;
+
+    while(curr)
+    {
+        if(curr->value == value)
+            return curr;
+
+        curr = curr->next;
+    }
+
+    return NULL;
+}
+
+size_t flow_list_length(const flow_list* list)
+{
+    size_t          count = 0;
+    flow_list_node* curr  = list->head;
+
+    while(curr)
+    {
+        count++;
+        curr = curr->next;
+    }
+
+    return count;
+}
+
+void flow_list_reverse(flow_list* list)
+{
+    flow_list_node* prev = NULL;
+    flow_list_node* curr = list->head;
+
+    while(curr)
+    {
+        flow_list_node* next = curr->next;
+        curr->next           = prev;
+        prev                 = curr;
+        curr                 = next;
+    }
+
+    list->head = prev;
+}
+
+void flow_list_print(const flow_list* list)
+{
+    flow_list_node* curr = list->head;
+
+    while(curr)
+    {
+        printf("%d ", curr->value);
+        curr = curr->next;
+    }
+
+    printf("\n");
+}
+
+
+void flow_sparse_set_init(flow_sparse_set* set, uint32_t* dense_buffer, uint32_t* sparse_buffer, uint32_t capacity)
+{
+    set->dense    = dense_buffer;
+    set->sparse   = sparse_buffer;
+    set->size     = 0;
+    set->capacity = capacity;
+}
+
+/* O(1) */
+void flow_sparse_set_clear(flow_sparse_set* set)
+{
+    set->size = 0;
+}
+
+/* O(1) */
+bool flow_sparse_set_contains(const flow_sparse_set* set, uint32_t value)
+{
+    if(value >= set->capacity)
+        return 0;
+
+    uint32_t idx = set->sparse[value];
+
+    return (idx < set->size) && (set->dense[idx] == value);
+}
+
+/* O(1) */
+bool flow_sparse_set_add(flow_sparse_set* set, uint32_t value)
+{
+    assert(value < set->capacity);
+
+    if(flow_sparse_set_contains(set, value))
+        return 0;  // already present
+
+    assert(set->size < set->capacity);
+
+    uint32_t idx = set->size;
+
+    set->dense[idx]    = value;
+    set->sparse[value] = idx;
+    set->size++;
+
+    return 1;
+}
+
+/* O(1) swap-remove */
+bool flow_sparse_set_remove(flow_sparse_set* set, uint32_t value)
+{
+    if(!flow_sparse_set_contains(set, value))
+        return 0;
+
+    uint32_t idx      = set->sparse[value];
+    uint32_t last_idx = set->size - 1;
+    uint32_t last_val = set->dense[last_idx];
+
+    /* Move last element into removed slot */
+    set->dense[idx]       = last_val;
+    set->sparse[last_val] = idx;
+
+    set->size--;
+
+    return 1;
+}
+
+
+void flow_circular_list_init(flow_circular_list* list)
+{
+    list->last = NULL;
+    list->size = 0;
+}
+
+void flow_circular_list_clear(flow_circular_list* list)
+{
+    if(!list->last)
+        return;
+
+    flow_list_node* first = list->last->next;
+    flow_list_node* curr  = first;
+
+    do
+    {
+        flow_list_node* next = curr->next;
+        free(curr);
+        curr = next;
+    } while(curr != first);
+
+    list->last = NULL;
+    list->size = 0;
+}
+
+void flow_circular_list_push_front(flow_circular_list* list, int value)
+{
+    flow_list_node* n = (flow_list_node*)malloc(sizeof(flow_list_node));
+    n->value          = value;
+    if(!list->last)
+    {
+
+        /*
+ 
+We’re inserting the first node ever.
+In a circular list with one node:
+That node must point to itself.
+   */
+
+
+        n->next    = n;
+        list->last = n;
+    }
+    else
+    {
+        n->next          = list->last->next;
+        list->last->next = n;
+    }
+
+    list->size++;
+}
+void flow_circular_list_push_back(flow_circular_list* list, int value)
+{
+    flow_circular_list_push_front(list, value);
+    list->last = list->last->next;
+}
+int flow_circular_list_pop_front(flow_circular_list* list, int* out_value)
+{
+    if(!list->last)
+        return 0;
+
+    flow_list_node* first = list->last->next;
+    *out_value            = first->value;
+
+    if(first == list->last)
+    {
+        free(first);
+        list->last = NULL;
+    }
+    else
+    {
+        list->last->next = first->next;
+        free(first);
+    }
+
+    list->size--;
+    return 1;
+}
+
+int flow_circular_list_remove_first(flow_circular_list* list, int value)
+{
+    if(!list->last)
+        return 0;
+
+    flow_list_node* prev  = list->last;
+    flow_list_node* curr  = list->last->next;
+    flow_list_node* first = curr;
+
+    do
+    {
+        if(curr->value == value)
+        {
+            if(curr == prev)  // single node
+            {
+                free(curr);
+                list->last = NULL;
+            }
+            else
+            {
+                prev->next = curr->next;
+                if(curr == list->last)
+                    list->last = prev;
+
+                free(curr);
+            }
+
+            list->size--;
+            return 1;
+        }
+
+        prev = curr;
+        curr = curr->next;
+
+    } while(curr != first);
+
+    return 0;
+}
+flow_list_node* flow_circular_list_find(flow_circular_list* list, int value)
+{
+    if(!list->last)
+        return NULL;
+
+    flow_list_node* curr  = list->last->next;
+    flow_list_node* first = curr;
+
+    do
+    {
+        if(curr->value == value)
+            return curr;
+
+        curr = curr->next;
+
+    } while(curr != first);
+
+    return NULL;
+}
+void flow_circular_list_print(const flow_circular_list* list)
+{
+    if(!list->last)
+    {
+        printf("(empty)\n");
+        return;
+    }
+
+    flow_list_node* curr  = list->last->next;
+    flow_list_node* first = curr;
+
+    do
+    {
+        printf("%d ", curr->value);
+        curr = curr->next;
+    } while(curr != first);
+
+    printf("\n");
+}
 
 #endif /* FLOW_IMPLEMENTATION */
 

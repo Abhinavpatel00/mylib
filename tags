@@ -173,8 +173,11 @@ example	test.c	/^    Example example;$/;"	m	struct:__anon1dda1bf60208	typeref:ty
 flow_leading_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_leading_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_INLINE int
 flow_trailing_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_trailing_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_BEGIN_EXTERN_C FLOW_INLINE int
 for_each	flow.h	/^#define for_each(/;"	d
+global	flow.h	/^#define global /;"	d
 header	test.c	/^    int     header;$/;"	m	struct:__anon1dda1bf60208	typeref:typename:int	file:
 id	test.c	/^    int    id;$/;"	m	struct:__anon1dda1bf60108	typeref:typename:int	file:
+internal	flow.h	/^#define internal /;"	d
+local_persist	flow.h	/^#define local_persist /;"	d
 main	test.c	/^int main(void)$/;"	f	typeref:typename:int
 main	test.cpp	/^int main()$/;"	f	typeref:typename:int
 main	test.s	/^	.globl	main$/;"	s	inputSection:.text.startup
