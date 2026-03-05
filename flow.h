@@ -821,7 +821,6 @@ linked list with pointers and operation on it and static array version and may b
 avl tree,binary tree with pointers and operation on it and static array version and may be mannaged  arena version(saves calling malloc everytime
 - stack sort of knuth  
 */
-#define FLOW_IMPLEMENTATION
 #ifdef FLOW_IMPLEMENTATION
 // • Computes required number of 64-bit words to hold size bits.
 flow_bitset* flow_bitset_create()
