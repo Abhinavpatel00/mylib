@@ -171,7 +171,9 @@ __anonfcd100560102	test.cpp	/^    auto check = [&](bool condition, const char* l
 count	test.cpp	/^    size_t count;$/;"	m	struct:VisitState	typeref:typename:size_t	file:
 example	test.c	/^    Example example;$/;"	m	struct:__anon1dda1bf60208	typeref:typename:Example	file:
 flow_leading_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_leading_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_INLINE int
-flow_trailing_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_trailing_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_BEGIN_EXTERN_C FLOW_INLINE int
+flow_quantize_snorm	flow.h	/^ FLOW_INLINE int flow_quantize_snorm(float v, int N)$/;"	f	typeref:typename:FLOW_INLINE int
+flow_quantize_unorm	flow.h	/^ FLOW_INLINE int flow_quantize_unorm(float v, int N)$/;"	f	typeref:typename:FLOW_BEGIN_EXTERN_C FLOW_INLINE int
+flow_trailing_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_trailing_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_INLINE int
 for_each	flow.h	/^#define for_each(/;"	d
 global	flow.h	/^#define global /;"	d
 header	test.c	/^    int     header;$/;"	m	struct:__anon1dda1bf60208	typeref:typename:int	file:
