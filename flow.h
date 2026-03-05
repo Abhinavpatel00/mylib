@@ -809,7 +809,7 @@ FLOW_INLINE uint32_t flow_pcg32_next_u32(flow_pcg32* rng)
 //     return _mm256_or_si256(r1, r2);
 // }
 //
-#endif
+//#endif
 
 
 FLOW_END_EXTERN_C
