@@ -57,7 +57,7 @@
 !_TAG_PARSER_VERSION!C++	2.2	/current.age/
 !_TAG_PARSER_VERSION!Markdown	1.1	/current.age/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/home/lk/myprojects/mylib/	//
+!_TAG_PROC_CWD	/home/lk/myprojects/voxelfun/clusteredshading/flow/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
@@ -128,6 +128,8 @@ FLOW_SWAP	flow.h	/^#define FLOW_SWAP(/;"	d
 FLOW_TOSTRING	flow.h	/^#define FLOW_TOSTRING(/;"	d
 FLOW_UNLIKELY	flow.h	/^#define FLOW_UNLIKELY(/;"	d
 FLOW_UNUSED	flow.h	/^#define FLOW_UNUSED(/;"	d
+GB	flow.h	/^#define GB(/;"	d
+KB	flow.h	/^#define KB(/;"	d
 L6	test.s	/^.L6:$/;"	l
 L8	test.s	/^.L8:$/;"	l
 LC0	test.s	/^.LC0:$/;"	l
@@ -161,18 +163,28 @@ LFE7487	test.s	/^.LFE7487:$/;"	l
 LFSB7486	test.s	/^.LFSB7486:$/;"	l
 LHOTB22	test.s	/^.LHOTB22:$/;"	l
 LHOTE22	test.s	/^.LHOTE22:$/;"	l
+MB	flow.h	/^#define MB(/;"	d
 Memory and checks	.github/copilot-instructions.md	/^## Memory and checks$/;"	s	chapter:Copilot instructions for `mylib`
+PAD	flow.h	/^#define PAD(/;"	d
 Testing	.github/copilot-instructions.md	/^## Testing$/;"	s	chapter:Copilot instructions for `mylib`
 VisitState	test.cpp	/^struct VisitState$/;"	s	file:
 Wrapper	test.c	/^} Wrapper;$/;"	t	typeref:struct:__anon1dda1bf60208	file:
 __anon1dda1bf60108	test.c	/^{$/;"	s	file:
 __anon1dda1bf60208	test.c	/^{$/;"	s	file:
 __anonfcd100560102	test.cpp	/^    auto check = [&](bool condition, const char* label) {$/;"	f	function:main	file:
+__anonfdae69f3020a	flow.h	/^{$/;"	u
 count	test.cpp	/^    size_t count;$/;"	m	struct:VisitState	typeref:typename:size_t	file:
 example	test.c	/^    Example example;$/;"	m	struct:__anon1dda1bf60208	typeref:typename:Example	file:
+f	flow.h	/^    float    f;$/;"	m	union:__anonfdae69f3020a	typeref:typename:float
+flow_dequantize_half	flow.h	/^FLOW_INLINE float flow_dequantize_half(uint16_t h)$/;"	f	typeref:typename:FLOW_INLINE float
+flow_dequantize_snorm	flow.h	/^FLOW_INLINE float flow_dequantize_snorm(int v, int n)$/;"	f	typeref:typename:FLOW_INLINE float
+flow_dequantize_unorm	flow.h	/^FLOW_INLINE float flow_dequantize_unorm(int v, int n)$/;"	f	typeref:typename:FLOW_INLINE float
+flow_float_bits	flow.h	/^} flow_float_bits;$/;"	t	typeref:union:__anonfdae69f3020a
 flow_leading_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_leading_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_INLINE int
-flow_quantize_snorm	flow.h	/^ FLOW_INLINE int flow_quantize_snorm(float v, int N)$/;"	f	typeref:typename:FLOW_INLINE int
-flow_quantize_unorm	flow.h	/^ FLOW_INLINE int flow_quantize_unorm(float v, int N)$/;"	f	typeref:typename:FLOW_BEGIN_EXTERN_C FLOW_INLINE int
+flow_quantize_float	flow.h	/^FLOW_INLINE float flow_quantize_float(float v, int n)$/;"	f	typeref:typename:FLOW_INLINE float
+flow_quantize_half	flow.h	/^FLOW_INLINE uint16_t flow_quantize_half(float v)$/;"	f	typeref:typename:FLOW_INLINE uint16_t
+flow_quantize_snorm	flow.h	/^FLOW_INLINE int flow_quantize_snorm(float v, int n)$/;"	f	typeref:typename:FLOW_INLINE int
+flow_quantize_unorm	flow.h	/^FLOW_INLINE int flow_quantize_unorm(float v, int n)$/;"	f	typeref:typename:FLOW_INLINE int
 flow_trailing_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_trailing_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_INLINE int
 for_each	flow.h	/^#define for_each(/;"	d
 global	flow.h	/^#define global /;"	d
@@ -188,5 +200,6 @@ mylib	README.md	/^# mylib$/;"	c
 slow_identity	test.c	/^static FLOW_NOINLINE int slow_identity(int x)$/;"	f	typeref:typename:FLOW_NOINLINE int	file:
 sum	test.cpp	/^    size_t sum;$/;"	m	struct:VisitState	typeref:typename:size_t	file:
 sum_array	test.c	/^static FLOW_INLINE int sum_array(int* FLOW_RESTRICT arr, size_t count)$/;"	f	typeref:typename:FLOW_INLINE int	file:
+u	flow.h	/^    uint32_t u;$/;"	m	union:__anonfdae69f3020a	typeref:typename:uint32_t
 value	test.c	/^    double value;$/;"	m	struct:__anon1dda1bf60108	typeref:typename:double	file:
 visit_collect	test.cpp	/^static bool visit_collect(size_t value, void* user)$/;"	f	typeref:typename:bool	file:

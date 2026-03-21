@@ -18,7 +18,6 @@
 #include <stdio.h>
 #ifndef FLOW_API
 
-
 #define internal static
 #define global static
 #define local_persist static
@@ -187,6 +186,14 @@ FLOW_BEGIN_EXTERN_C
 #define FLOW_KB(x) ((x) * 1024ull)
 #define FLOW_MB(x) (FLOW_KB(x) * 1024ull)
 #define FLOW_GB(x) (FLOW_MB(x) * 1024ull)
+
+#define KB(x) ((x) * 1024ULL)
+#define MB(x) ((x) * 1024ULL * 1024ULL)
+#define GB(x) ((x) * 1024ULL * 1024ULL * 1024ULL)
+#define PAD(name, size) uint8_t name[(size)]
+
+
+
 #define FLOW_STRINGIFY(x) #x
 #define FLOW_TOSTRING(x) FLOW_STRINGIFY(x)
 
@@ -990,6 +997,7 @@ FLOW_INLINE uint32_t flow_pcg32_next_u32(flow_pcg32* rng)
     return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
 }
 
+
 /* ------------------ SIMD Batch (AVX2) ------------------ */
 //
 // #if defined(__AVX2__)
@@ -1049,6 +1057,99 @@ FLOW_INLINE uint32_t flow_pcg32_next_u32(flow_pcg32* rng)
 // }
 //
 //#endif
+
+typedef struct
+{
+    uint8_t* memory;
+    uint32_t size;
+} flow_buffer;
+
+typedef struct
+{
+    flow_buffer buffer;
+    uint32_t    head;
+} flow_linear_allocator;
+
+
+FLOW_INLINE void flow_linear_init(flow_linear_allocator* a, void* memory, uint32_t size)
+{
+    a->buffer.memory = (uint8_t*)memory;
+    a->buffer.size   = size;
+    a->head          = 0;
+}
+
+
+FLOW_INLINE void* flow_linear_alloc(flow_linear_allocator* a, uint32_t size, uint32_t align)
+{
+    uint32_t head = FLOW_ALIGN_UP(a->head, align);
+
+    if(head + size > a->buffer.size)
+        return NULL;
+
+    void* ptr = a->buffer.memory + head;
+    a->head   = head + size;
+
+    return ptr;
+}
+FLOW_INLINE void flow_linear_reset(flow_linear_allocator* a)
+{
+    a->head = 0;
+}
+typedef struct
+{
+    flow_buffer buffer;
+
+    uint32_t head;
+    uint32_t tail;
+
+} flow_ring_allocator;
+FLOW_INLINE void flow_ring_init(flow_ring_allocator* r, void* memory, uint32_t size)
+{
+    r->buffer.memory = (uint8_t*)memory;
+    r->buffer.size   = size;
+    r->head          = 0;
+    r->tail          = 0;
+}
+FLOW_INLINE void* flow_ring_alloc(flow_ring_allocator* r, uint32_t size, uint32_t align, uint32_t* out_offset)
+{
+    uint32_t head = FLOW_ALIGN_UP(r->head, align);
+
+    // Case 1: normal region
+    if(head >= r->tail)
+    {
+        if(head + size <= r->buffer.size)
+        {
+            *out_offset = head;
+            r->head     = head + size;
+            return r->buffer.memory + head;
+        }
+
+        // wrap
+        head = 0;
+    }
+
+    // Case 2: after wrap
+    if(head + size <= r->tail)
+    {
+        *out_offset = head;
+        r->head     = head + size;
+        return r->buffer.memory + head;
+    }
+
+    return NULL;
+}
+FLOW_INLINE void flow_ring_free_to(flow_ring_allocator* r, uint32_t offset)
+{
+    r->tail = offset;
+}
+
+FLOW_INLINE uint32_t flow_ring_used(const flow_ring_allocator* r)
+{
+    if (r->head >= r->tail)
+        return r->head - r->tail;
+
+    return (r->buffer.size - r->tail) + r->head;
+}
 
 
 FLOW_END_EXTERN_C
