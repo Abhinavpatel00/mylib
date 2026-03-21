@@ -18,7 +18,7 @@ slow_identity.constprop.0:
 	.size	slow_identity.constprop.0, .-slow_identity.constprop.0
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .LC0:
-	.string	"=== FLOW macro demo ===\n"
+	.string	"=== MU macro demo ===\n"
 .LC1:
 	.string	"Array count: %zu\n"
 .LC2:
@@ -42,7 +42,7 @@ slow_identity.constprop.0:
 .LC11:
 	.string	"1 GB = %llu\n"
 .LC12:
-	.string	"Hello Flow"
+	.string	"Hello Mu"
 .LC13:
 	.string	"Stringify test: %s\n"
 .LC14:
@@ -86,15 +86,15 @@ main:
 	.cfi_offset 3, -32
 	subq	$32, %rsp	#,
 	.cfi_def_cfa_offset 64
-# test.c:63:     printf("=== FLOW macro demo ===\n\n");
+# test.c:63:     printf("=== MU macro demo ===\n\n");
 	movq	%fs:40, %rdi	# MEM[(<address-space-1> long unsigned int *)40B],
 	movq	%rdi, 24(%rsp)	#, D.44760
 	leaq	.LC0(%rip), %rdi	#,
-# test.c:80:     FLOW_PREFETCH(&arr[0]);
+# test.c:80:     MU_PREFETCH(&arr[0]);
 	prefetcht0	(%rsp)	#
-# test.c:63:     printf("=== FLOW macro demo ===\n\n");
+# test.c:63:     printf("=== MU macro demo ===\n\n");
 	call	puts@PLT	#
-# test.c:70:     printf("Array count: %zu\n", FLOW_ARRAY_COUNT(arr));
+# test.c:70:     printf("Array count: %zu\n", MU_ARRAY_COUNT(arr));
 	movl	$5, %esi	#,
 	leaq	.LC1(%rip), %rdi	#,
 	xorl	%eax, %eax	#
@@ -109,12 +109,12 @@ main:
 	leaq	.LC3(%rip), %rdi	#,
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# test.c:83:     printf("Min(10,20): %d\n", FLOW_MIN(10, 20));
+# test.c:83:     printf("Min(10,20): %d\n", MU_MIN(10, 20));
 	movl	$10, %esi	#,
 	leaq	.LC4(%rip), %rdi	#,
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# test.c:84:     printf("Max(10,20): %d\n", FLOW_MAX(10, 20));
+# test.c:84:     printf("Max(10,20): %d\n", MU_MAX(10, 20));
 	movl	$20, %esi	#,
 	leaq	.LC5(%rip), %rdi	#,
 	xorl	%eax, %eax	#
@@ -125,32 +125,32 @@ main:
 	leaq	.LC6(%rip), %rdi	#,
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# test.c:92:     printf("Is 64 pow2? %d\n", FLOW_IS_POW2(64));
+# test.c:92:     printf("Is 64 pow2? %d\n", MU_IS_POW2(64));
 	movl	$1, %esi	#,
 	leaq	.LC7(%rip), %rdi	#,
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# test.c:93:     printf("Is 70 pow2? %d\n", FLOW_IS_POW2(70));
+# test.c:93:     printf("Is 70 pow2? %d\n", MU_IS_POW2(70));
 	xorl	%esi, %esi	#
 	leaq	.LC8(%rip), %rdi	#,
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# test.c:96:     printf("1 KB = %llu\n", FLOW_KB(1));
+# test.c:96:     printf("1 KB = %llu\n", MU_KB(1));
 	movl	$1024, %esi	#,
 	leaq	.LC9(%rip), %rdi	#,
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# test.c:97:     printf("1 MB = %llu\n", FLOW_MB(1));
+# test.c:97:     printf("1 MB = %llu\n", MU_MB(1));
 	movl	$1048576, %esi	#,
 	leaq	.LC10(%rip), %rdi	#,
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# test.c:98:     printf("1 GB = %llu\n", FLOW_GB(1));
+# test.c:98:     printf("1 GB = %llu\n", MU_GB(1));
 	movl	$1073741824, %esi	#,
 	leaq	.LC11(%rip), %rdi	#,
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# test.c:101:     printf("Stringify test: %s\n", FLOW_TOSTRING(Hello Flow));
+# test.c:101:     printf("Stringify test: %s\n", MU_TOSTRING(Hello Mu));
 	leaq	.LC12(%rip), %rsi	#,
 	leaq	.LC13(%rip), %rdi	#,
 	xorl	%eax, %eax	#
@@ -160,7 +160,7 @@ main:
 	leaq	.LC14(%rip), %rdi	#,
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# test.c:113:     printf("Offset of example: %zu\n", FLOW_OFFSET_OF(Wrapper, example));
+# test.c:113:     printf("Offset of example: %zu\n", MU_OFFSET_OF(Wrapper, example));
 	movl	$8, %esi	#,
 	leaq	.LC15(%rip), %rdi	#,
 	xorl	%eax, %eax	#
@@ -177,50 +177,50 @@ main:
 	call	printf@PLT	#
 # /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/ia32intrin.h:114:   return __builtin_ia32_rdtsc ();
 	rdtsc	
-# test.c:125:     printf("Trailing zeroes: %d\n", flow_trailing_zeroes_u64(mask));
+# test.c:125:     printf("Trailing zeroes: %d\n", mu_trailing_zeroes_u64(mask));
 	leaq	.LC18(%rip), %rdi	#,
 # /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/ia32intrin.h:114:   return __builtin_ia32_rdtsc ();
 	salq	$32, %rdx	#, tmp135
 	movq	%rax, %rbx	# tmp134, tmp134
-# flow.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
+# mu.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
 	orq	%rdx, %rbx	# tmp135, tmp134
 	sete	%bpl	#, _37
 	sete	%r12b	#, _38
-# flow.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
+# mu.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
 	movzbl	%bpl, %ebp	# _37, _1
-# flow.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
+# mu.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
 	movzbl	%r12b, %r12d	# _38, _38
-# flow.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
+# mu.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
 	orq	%rbx, %r12	# tmp134, _39
-# flow.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
+# mu.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
 	movl	%ebp, %esi	# _1, _50
-# flow.h:264:     return (uint32_t)__builtin_popcountll(x);
+# mu.h:264:     return (uint32_t)__builtin_popcountll(x);
 	popcntq	%rbx, %rbx	# tmp134, tmp145
-# flow.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
+# mu.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
 	tzcntq	%r12, %rax	# _39, tmp138
-# flow.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
+# mu.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
 	sall	$6, %esi	#, _50
-# flow.h:245:     return __builtin_clzll(x | (x == 0)) + (uint32_t)(x == 0);
+# mu.h:245:     return __builtin_clzll(x | (x == 0)) + (uint32_t)(x == 0);
 	lzcntq	%r12, %r12	# _39, tmp142
-# flow.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
+# mu.h:224:     return __builtin_ctzll(x | (x == 0)) + ((uint32_t)(x == 0) * 64u);
 	addl	%eax, %esi	# tmp138, _43
-# test.c:125:     printf("Trailing zeroes: %d\n", flow_trailing_zeroes_u64(mask));
+# test.c:125:     printf("Trailing zeroes: %d\n", mu_trailing_zeroes_u64(mask));
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# flow.h:245:     return __builtin_clzll(x | (x == 0)) + (uint32_t)(x == 0);
+# mu.h:245:     return __builtin_clzll(x | (x == 0)) + (uint32_t)(x == 0);
 	leal	0(%rbp,%r12), %esi	#, _36
-# test.c:127:     printf("Leading zeroes: %d\n", flow_leading_zeroes_u64(mask));
+# test.c:127:     printf("Leading zeroes: %d\n", mu_leading_zeroes_u64(mask));
 	leaq	.LC19(%rip), %rdi	#,
 	xorl	%eax, %eax	#
 	call	printf@PLT	#
-# test.c:129:     printf("Popcount: %d\n", flow_popcount_u64(mask));
+# test.c:129:     printf("Popcount: %d\n", mu_popcount_u64(mask));
 	xorl	%eax, %eax	#
-# flow.h:264:     return (uint32_t)__builtin_popcountll(x);
+# mu.h:264:     return (uint32_t)__builtin_popcountll(x);
 	movl	%ebx, %esi	# tmp145, _27
-# test.c:129:     printf("Popcount: %d\n", flow_popcount_u64(mask));
+# test.c:129:     printf("Popcount: %d\n", mu_popcount_u64(mask));
 	leaq	.LC20(%rip), %rdi	#,
 	call	printf@PLT	#
-# test.c:132:     FLOW_ASSERT(flow_popcount_u64(mask) == 3);
+# test.c:132:     MU_ASSERT(mu_popcount_u64(mask) == 3);
 	cmpl	$3, %ebx	#, tmp145
 	jne	.L6	#,
 # test.c:134:     printf("\nAll tests completed.\n");
@@ -255,7 +255,7 @@ main.cold:
 	.cfi_offset 3, -32
 	.cfi_offset 6, -24
 	.cfi_offset 12, -16
-# test.c:132:     FLOW_ASSERT(flow_popcount_u64(mask) == 3);
+# test.c:132:     MU_ASSERT(mu_popcount_u64(mask) == 3);
 	ud2	
 	.cfi_endproc
 .LFE7486:
