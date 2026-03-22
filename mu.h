@@ -10,6 +10,7 @@
 //   #include "mu.h"
 // -----------------------------------------------------------------------------
 #include <assert.h>
+#include <cstdint>
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -49,7 +50,7 @@
 #endif
 
 #ifndef MU_NOOP
-#define MU_NOOP()                                                                                                    \
+#define MU_NOOP()                                                                                                      \
     do                                                                                                                 \
     {                                                                                                                  \
     } while(0)
@@ -124,8 +125,7 @@ MU_BEGIN_EXTERN_C
 #else
 #define MU_STATIC_ASSERT_GLUE_(a, b) a##b
 #define MU_STATIC_ASSERT_GLUE(a, b) MU_STATIC_ASSERT_GLUE_(a, b)
-#define MU_STATIC_ASSERT(cond, msg)                                                                                  \
-    typedef char MU_STATIC_ASSERT_GLUE(mu_static_assertion_, __LINE__)[(cond) ? 1 : -1]
+#define MU_STATIC_ASSERT(cond, msg) typedef char MU_STATIC_ASSERT_GLUE(mu_static_assertion_, __LINE__)[(cond) ? 1 : -1]
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)
@@ -146,13 +146,13 @@ MU_BEGIN_EXTERN_C
 // If I have a pointer to a struct member, how do I get a pointer to the struct that contains it?
 #define MU_CONTAINER_OF(ptr, type, member) ((type*)((char*)(ptr) - MU_OFFSET_OF(type, member)))
 #if defined(__GNUC__) || defined(__clang__)
-#define MU_MIN(a, b)                                                                                                 \
+#define MU_MIN(a, b)                                                                                                   \
     ({                                                                                                                 \
         __typeof__(a) _a = (a);                                                                                        \
         __typeof__(b) _b = (b);                                                                                        \
         _a < _b ? _a : _b;                                                                                             \
     })
-#define MU_MAX(a, b)                                                                                                 \
+#define MU_MAX(a, b)                                                                                                   \
     ({                                                                                                                 \
         __typeof__(a) _a = (a);                                                                                        \
         __typeof__(b) _b = (b);                                                                                        \
@@ -164,17 +164,17 @@ MU_BEGIN_EXTERN_C
 #endif
 
 
-#define MU_ASSERT(x)                                                                                                 \
+#define MU_ASSERT(x)                                                                                                   \
     do                                                                                                                 \
     {                                                                                                                  \
         if(!(x))                                                                                                       \
-            MU_DEBUG_BREAK();                                                                                        \
+            MU_DEBUG_BREAK();                                                                                          \
     } while(0)
 
-#define MU_PANIC()                                                                                                   \
+#define MU_PANIC()                                                                                                     \
     do                                                                                                                 \
     {                                                                                                                  \
-        MU_DEBUG_BREAK();                                                                                            \
+        MU_DEBUG_BREAK();                                                                                              \
         *(volatile int*)0 = 0;                                                                                         \
     } while(0)
 
@@ -191,7 +191,6 @@ MU_BEGIN_EXTERN_C
 #define MB(x) ((x) * 1024ULL * 1024ULL)
 #define GB(x) ((x) * 1024ULL * 1024ULL * 1024ULL)
 #define PAD(name, size) uint8_t name[(size)]
-
 
 
 #define MU_STRINGIFY(x) #x
@@ -216,12 +215,12 @@ MU_BEGIN_EXTERN_C
 #define MU_EXTERN extern
 #endif
 
-#define MU_SWAP(TYPE, a, b)                                                                                          \
+#define MU_SWAP(TYPE, a, b)                                                                                            \
     do                                                                                                                 \
     {                                                                                                                  \
-        TYPE mu_t = (a);                                                                                             \
-        (a)         = (b);                                                                                             \
-        (b)         = mu_t;                                                                                          \
+        TYPE mu_t = (a);                                                                                               \
+        (a)       = (b);                                                                                               \
+        (b)       = mu_t;                                                                                              \
     } while(0)
 // conventions
 //
@@ -347,7 +346,7 @@ float -> half float
 MU_INLINE uint16_t mu_quantize_half(float v)
 {
     mu_float_bits fb = {.f = v};
-    uint32_t        ui = fb.u;
+    uint32_t      ui = fb.u;
     /* extract sign and move to half-float position */
     uint32_t sign = (ui >> 16) & 0x8000;
     /* remove sign so we can work on exponent/mantissa */
@@ -444,7 +443,7 @@ MU_INLINE float mu_quantize_float(float v, int n)
     assert(n >= 0 && n <= 23);
 
     mu_float_bits fb = {.f = v};
-    uint32_t        ui = fb.u;
+    uint32_t      ui = fb.u;
     /* mask of bits to remove */
     uint32_t mask = (1u << (23 - n)) - 1;
 
@@ -652,8 +651,8 @@ static MU_INLINE uint32_t mu_popcount_u64(uint64_t x)
 typedef struct mu_bitset
 {
     uint64_t* MU_RESTRICT array;         /* pointer to 64-bit word storage */
-    size_t                  word_count;    /* number words stored */
-    size_t                  word_capacity; /* allocated capacity in 64-bit words */
+    size_t                word_count;    /* number words stored */
+    size_t                word_capacity; /* allocated capacity in 64-bit words */
 } mu_bitset;
 
 /* Create a new bitset. Return NULL in case of failure. */
@@ -731,13 +730,13 @@ void   mu_bitset_inplace_difference(mu_bitset* MU_RESTRICT b1, const mu_bitset* 
 size_t mu_bitset_difference_count(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2);
 bool   mu_bitset_inplace_symmetric_difference(mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2);
 size_t mu_bitset_symmetric_difference_count(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2);
-bool mu_bitset_xor(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
-bool mu_bitset_or(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
-bool mu_bitset_and(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
-bool mu_bitset_not(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a);
-bool mu_bitset_xor_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
-bool mu_bitset_or_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
-bool mu_bitset_and_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
+bool   mu_bitset_xor(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
+bool   mu_bitset_or(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
+bool   mu_bitset_and(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
+bool   mu_bitset_not(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a);
+bool   mu_bitset_xor_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
+bool   mu_bitset_or_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
+bool   mu_bitset_and_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b);
 
 /* Iteration helpers. */
 typedef bool (*mu_bitset_iterator)(size_t value, void* param);
@@ -860,10 +859,10 @@ typedef struct
 typedef struct
 {
     mu_id_pool_range* ranges;
-    uint32_t            count;
-    uint32_t            capacity;
-    uint32_t            max_id;
-    uint32_t            used_ids;
+    uint32_t          count;
+    uint32_t          capacity;
+    uint32_t          max_id;
+    uint32_t          used_ids;
 } mu_id_pool;
 void mu_id_pool_init(mu_id_pool* pool, uint32_t pool_size);
 void mu_id_pool_deinit(mu_id_pool* pool);
@@ -890,7 +889,7 @@ uint32_t mu_id_pool_get_largest_continuous_range(const mu_id_pool* pool);
 //    https://kernelnewbies.org/FAQ/LinkedLists
 typedef struct mu_list_node
 {
-    int                    value;
+    int                  value;
     struct mu_list_node* next;
 } mu_list_node;
 
@@ -946,7 +945,7 @@ static MU_INLINE uint32_t mu_sparse_set_at(const mu_sparse_set* set, uint32_t in
 typedef struct
 {
     mu_list_node* last;
-    uint64_t        size;
+    uint64_t      size;
 } mu_circular_list;
 
 /* lifecycle */
@@ -1067,7 +1066,7 @@ typedef struct
 typedef struct
 {
     mu_buffer buffer;
-    uint32_t    head;
+    uint32_t  head;
 } mu_linear_allocator;
 
 
@@ -1145,11 +1144,383 @@ MU_INLINE void mu_ring_free_to(mu_ring_allocator* r, uint32_t offset)
 
 MU_INLINE uint32_t mu_ring_used(const mu_ring_allocator* r)
 {
-    if (r->head >= r->tail)
+    if(r->head >= r->tail)
         return r->head - r->tail;
 
     return (r->buffer.size - r->tail) + r->head;
 }
+
+
+#if defined(_WIN32)
+#include <windows.h>
+
+static uint64_t mu_time_now()
+{
+    LARGE_INTEGER t;
+    QueryPerformanceCounter(&t);
+    return (uint64_t)t.QuadPart;
+}
+
+static double mu_time_freq()
+{
+    static double freq = 0;
+    if(!freq)
+    {
+        LARGE_INTEGER f;
+        QueryPerformanceFrequency(&f);
+        freq = (double)f.QuadPart;
+    }
+    return freq;
+}
+
+#else
+#include <time.h>
+
+static uint64_t mu_time_now()
+{
+    struct timespec t;
+    clock_gettime(CLOCK_MONOTONIC, &t);
+    return (uint64_t)t.tv_sec * 1000000000ull + t.tv_nsec;
+}
+
+static double mu_time_freq()
+{
+    return 1e9;  // nanoseconds
+}
+#endif
+
+
+#define MU_SCOPE_TIMER(name)                                                                                           \
+    for(uint64_t __start = mu_time_now(), __once                                                   = 1; __once;        \
+        printf("%s: %.3f ms\n", name, (mu_time_now() - __start) * 1000.0 / mu_time_freq()), __once = 0)
+
+
+/*
+USER POINTER (a)
+        |
+        v
++---------------------+-----------------------+
+| header              | actual data           |
+| size | capacity     | a[0] a[1] a[2] ...    |
++---------------------+-----------------------+
+        ^
+        |
+   (a - header_size)
+
+*/
+
+typedef struct
+{
+    uint32_t size;
+    uint32_t capacity;
+} array_header_t;
+
+#define array_header(a) ((array_header_t*)((char*)(a) - sizeof(array_header_t)))
+
+#define array_size(a) ((a) ? array_header(a)->size : 0)
+#define array_capacity(a) ((a) ? array_header(a)->capacity : 0)
+
+#define array_free(a) ((a) ? free(array_header(a)), (a) = NULL : 0)
+
+#define array_full(a) ((a) && array_size(a) >= array_capacity(a))
+
+static void* array_grow(void* arr, size_t elem_size, uint32_t min_capacity)
+{
+    uint32_t new_capacity = 16;
+
+    if(arr)
+    {
+        new_capacity = array_capacity(arr) * 2;
+    }
+
+    if(new_capacity < min_capacity)
+        new_capacity = min_capacity;
+
+    size_t new_size = sizeof(array_header_t) + new_capacity * elem_size;
+
+    array_header_t* new_header;
+
+    if(arr)
+    {
+        new_header = (array_header_t*)realloc(array_header(arr), new_size);
+    }
+    else
+    {
+        new_header       = (array_header_t*)malloc(new_size);
+        new_header->size = 0;
+    }
+
+    new_header->capacity = new_capacity;
+
+    return (char*)new_header + sizeof(array_header_t);
+}
+#define array_push(a, val)                                                                                             \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if(!(a) || array_full(a))                                                                                      \
+        {                                                                                                              \
+            (a) = array_grow((a), sizeof(*(a)), array_size(a) + 1);                                                    \
+        }                                                                                                              \
+        (a)[array_header(a)->size++] = (val);                                                                          \
+    } while(0)
+
+#define array_reserve(a, n) ((!(a) || array_capacity(a) < (n)) ? (a = array_grow((a), sizeof(*(a)), (n))) : 0)
+
+#define array_pop(a) ((a) ? --array_header(a)->size : 0)
+
+#define array_back(a) ((a)[array_header(a)->size - 1])
+// ============================================================
+// HASH TABLE (uint64 -> uint64)
+// ============================================================
+
+
+typedef struct
+{
+    uint32_t  capacity;
+    uint32_t  count;
+    uint64_t* keys;
+    uint64_t* values;
+} hash_t;
+
+#define HASH_EMPTY 0
+
+// ------------------------------------------------------------
+// Simple mix (not crypto, just decent)
+// ------------------------------------------------------------
+static uint64_t hash_u64(uint64_t x)
+{
+    x ^= x >> 33;
+    x *= 0xff51afd7ed558ccdULL;
+    x ^= x >> 33;
+    x *= 0xc4ceb9fe1a85ec53ULL;
+    x ^= x >> 33;
+    return x;
+}
+
+// ------------------------------------------------------------
+static void hash_init(hash_t* h, uint32_t cap)
+{
+    h->capacity = cap;
+    h->count    = 0;
+    h->keys     = (uint64_t*)calloc(cap, sizeof(uint64_t));
+    h->values   = (uint64_t*)calloc(cap, sizeof(uint64_t));
+}
+
+// ------------------------------------------------------------
+static void hash_free(hash_t* h)
+{
+    free(h->keys);
+    free(h->values);
+}
+
+// ------------------------------------------------------------
+// Linear probing
+//
+// index = hash % capacity
+// if collision → move forward
+//
+// Worst case: O(n)
+// Average: O(1)
+// ------------------------------------------------------------
+static uint32_t hash_find_slot(hash_t* h, uint64_t key)
+{
+    uint32_t i = hash_u64(key) % h->capacity;
+
+    while(h->keys[i] != HASH_EMPTY && h->keys[i] != key)
+    {
+        i = (i + 1) % h->capacity;
+    }
+
+    return i;
+}
+
+// ------------------------------------------------------------
+static void hash_put(hash_t* h, uint64_t key, uint64_t value)
+{
+    uint32_t i = hash_find_slot(h, key);
+
+    if(h->keys[i] == HASH_EMPTY)
+    {
+        h->count++;
+    }
+
+    h->keys[i]   = key;
+    h->values[i] = value;
+}
+
+// ------------------------------------------------------------
+static uint64_t hash_get(hash_t* h, uint64_t key, uint64_t def)
+{
+    uint32_t i = hash_find_slot(h, key);
+
+    if(h->keys[i] == HASH_EMPTY)
+        return def;
+
+    return h->values[i];
+}
+
+
+
+/*
+    ┌──────────────────────────────────────────────┐
+    │              mu_hash32_static                │
+    └──────────────────────────────────────────────┘
+// taken  from our  machinery blog
+    A fixed-size hash table with:
+    - open addressing (linear probing)
+    - no allocations (you provide memory)
+    - no resizing (your problem, not mine)
+    - O(1) average lookup (until you mess up load factor)
+
+    Ideal for:
+    - resource lookup (texture_id, mesh_id)
+    - entity → component index mapping
+    - hot-path systems where malloc = sin
+
+    Not ideal for:
+    - dynamic growth
+    - deletion-heavy workloads
+    - people who don't understand capacity planning
+*/
+
+
+/*
+    Sentinel value representing EMPTY slot
+
+    ASCII:
+        keys: [FFFF][FFFF][FFFF] → all unused
+
+    Why 0xFF?
+    Because memset can blast it fast.
+*/
+#define MU_HASH_UNUSED 0xffffffffffffffffULL
+
+
+typedef struct mu_hash32_static_t
+{
+    uint64_t* keys;    // hashed keys
+    uint32_t* values;  // associated values
+    uint32_t  n;       // capacity (fixed)
+
+    /*
+        MEMORY MODEL:
+
+        keys:   [k0][k1][k2][k3]...[kn]
+        values: [v0][v1][v2][v3]...[vn]
+
+    */
+
+} mu_hash32_static_t;
+
+
+/*
+    Initialize with user-provided memory
+
+    You allocate memory → we just hook into it
+*/
+static inline void mu_hash32_static_init(mu_hash32_static_t* h, uint64_t* keys, uint32_t* values, uint32_t n)
+{
+    h->keys   = keys;
+    h->values = values;
+    h->n      = n;
+
+    /*
+        Immediately clear → mark all as unused
+    */
+    memset(h->keys, 0xFF, sizeof(uint64_t) * n);
+}
+
+
+/*
+    Clear table (reset all keys)
+
+    ASCII before:
+        [K1][K2][K3]
+
+    after:
+        [--][--][--]
+*/
+static inline void mu_hash32_static_clear(mu_hash32_static_t* h)
+{
+    memset(h->keys, 0xFF, sizeof(uint64_t) * h->n);
+}
+
+
+/*
+    Insert or overwrite key → value
+
+    Core idea:
+        i = hash % n
+
+        if occupied → probe forward
+
+    ASCII collision chain:
+
+        index:  0   1   2   3
+                K1  K2  --  --
+
+        insert K3:
+            → 0 busy
+            → 1 busy
+            → 2 empty → place
+*/
+static inline void mu_hash32_static_set(mu_hash32_static_t* h, uint64_t key, uint32_t value)
+{
+    uint32_t i = key % h->n;
+
+    /*
+        Linear probing loop
+
+        keep walking until:
+        - same key (overwrite)
+        - empty slot (insert)
+    */
+    while(h->keys[i] != key && h->keys[i] != MU_HASH_UNUSED)
+    {
+        i = (i + 1) % h->n;
+    }
+
+    h->keys[i]   = key;
+    h->values[i] = value;
+}
+
+
+/*
+    Lookup key → value
+
+    Returns:
+        0 if not found
+        (so don't store 0 as a meaningful value unless you're into pain)
+*/
+static inline uint32_t mu_hash32_static_get(const mu_hash32_static_t* h, uint64_t key)
+{
+    uint32_t i = key % h->n;
+
+    /*
+        Probe until:
+        - key found → return
+        - empty slot → not found
+    */
+    while(h->keys[i] != key && h->keys[i] != MU_HASH_UNUSED)
+    {
+        i = (i + 1) % h->n;
+    }
+
+    return (h->keys[i] == MU_HASH_UNUSED) ? 0 : h->values[i];
+}
+
+/*
+
+
+
+
+
+
+
+
+
+*/
+
 
 
 MU_END_EXTERN_C
@@ -1216,7 +1587,7 @@ These functions intentionally stay minimal and avoid redundant checks.
 
 mu_bitset* mu_bitset_copy(const mu_bitset* src)
 {
-    mu_bitset* copy   = (mu_bitset*)malloc(sizeof *copy);
+    mu_bitset* copy     = (mu_bitset*)malloc(sizeof *copy);
     copy->word_count    = src->word_count;
     copy->word_capacity = src->word_count;
 
@@ -2345,9 +2716,9 @@ void mu_list_clear(mu_list* list)
 void mu_list_push_front(mu_list* list, int value)
 {
     mu_list_node* n = (mu_list_node*)malloc(sizeof(mu_list_node));
-    n->value          = value;
-    n->next           = list->head;
-    list->head        = n;
+    n->value        = value;
+    n->next         = list->head;
+    list->head      = n;
 }
 
 void mu_list_push_back(mu_list* list, int value)
@@ -2358,8 +2729,8 @@ void mu_list_push_back(mu_list* list, int value)
         pp = &(*pp)->next;
 
     mu_list_node* n = (mu_list_node*)malloc(sizeof(mu_list_node));
-    n->value          = value;
-    n->next           = NULL;
+    n->value        = value;
+    n->next         = NULL;
 
     *pp = n;
 }
@@ -2375,7 +2746,7 @@ int mu_list_remove_first(mu_list* list, int value)
     if(*pp)
     {
         mu_list_node* victim = *pp;
-        *pp                    = victim->next;
+        *pp                  = victim->next;
         free(victim);
         return 1;
     }
@@ -2387,14 +2758,14 @@ int mu_list_remove_first(mu_list* list, int value)
 int mu_list_remove_all(mu_list* list, int value)
 {
     mu_list_node** pp      = &list->head;
-    int              removed = 0;
+    int            removed = 0;
 
     while(*pp)
     {
         if((*pp)->value == value)
         {
             mu_list_node* victim = *pp;
-            *pp                    = victim->next;
+            *pp                  = victim->next;
             free(victim);
             removed++;
         }
@@ -2425,7 +2796,7 @@ mu_list_node* mu_list_find(mu_list* list, int value)
 
 size_t mu_list_length(const mu_list* list)
 {
-    size_t          count = 0;
+    size_t        count = 0;
     mu_list_node* curr  = list->head;
 
     while(curr)
@@ -2445,9 +2816,9 @@ void mu_list_reverse(mu_list* list)
     while(curr)
     {
         mu_list_node* next = curr->next;
-        curr->next           = prev;
-        prev                 = curr;
-        curr                 = next;
+        curr->next         = prev;
+        prev               = curr;
+        curr               = next;
     }
 
     list->head = prev;
@@ -2559,7 +2930,7 @@ void mu_circular_list_clear(mu_circular_list* list)
 void mu_circular_list_push_front(mu_circular_list* list, int value)
 {
     mu_list_node* n = (mu_list_node*)malloc(sizeof(mu_list_node));
-    n->value          = value;
+    n->value        = value;
     if(!list->last)
     {
 
@@ -2593,7 +2964,7 @@ int mu_circular_list_pop_front(mu_circular_list* list, int* out_value)
         return 0;
 
     mu_list_node* first = list->last->next;
-    *out_value            = first->value;
+    *out_value          = first->value;
 
     if(first == list->last)
     {

@@ -57,7 +57,7 @@
 !_TAG_PARSER_VERSION!C++	2.2	/current.age/
 !_TAG_PARSER_VERSION!Markdown	1.1	/current.age/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/home/lk/myprojects/voxelfun/clusteredshading/flow/	//
+!_TAG_PROC_CWD	/home/lk/myprojects/voxelfun/clusteredshading/mu/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
@@ -80,56 +80,8 @@ Code style	.github/copilot-instructions.md	/^## Code style$/;"	s	chapter:Copilot
 Compatibility	.github/copilot-instructions.md	/^## Compatibility$/;"	s	chapter:Copilot instructions for `mylib`
 Copilot instructions for `mylib`	.github/copilot-instructions.md	/^# Copilot instructions for `mylib`$/;"	c
 Example	test.c	/^} Example;$/;"	t	typeref:struct:__anon1dda1bf60108	file:
-FLOW_ABS	flow.h	/^#define FLOW_ABS(/;"	d
-FLOW_ALIGN	flow.h	/^#define FLOW_ALIGN(/;"	d
-FLOW_ALIGN_DOWN	flow.h	/^#define FLOW_ALIGN_DOWN(/;"	d
-FLOW_ALIGN_UP	flow.h	/^#define FLOW_ALIGN_UP(/;"	d
-FLOW_API	flow.h	/^#define FLOW_API /;"	d
-FLOW_ARRAY_COUNT	flow.h	/^#define FLOW_ARRAY_COUNT(/;"	d
-FLOW_ASSERT	flow.h	/^#define FLOW_ASSERT(/;"	d
-FLOW_BEGIN_EXTERN_C	flow.h	/^#define FLOW_BEGIN_EXTERN_C /;"	d
-FLOW_BEGIN_EXTERN_C	flow.h	/^#define FLOW_BEGIN_EXTERN_C$/;"	d
-FLOW_BIT	flow.h	/^#define FLOW_BIT(/;"	d
-FLOW_CEIL	flow.h	/^#define FLOW_CEIL(/;"	d
-FLOW_CLAMP	flow.h	/^#define FLOW_CLAMP(/;"	d
-FLOW_CLEAR_FLAG	flow.h	/^#define FLOW_CLEAR_FLAG(/;"	d
-FLOW_CONCAT	flow.h	/^#define FLOW_CONCAT(/;"	d
-FLOW_CONCAT2	flow.h	/^#define FLOW_CONCAT2(/;"	d
-FLOW_CONTAINER_OF	flow.h	/^#define FLOW_CONTAINER_OF(/;"	d
-FLOW_DEBUG_BREAK	flow.h	/^#define FLOW_DEBUG_BREAK(/;"	d
-FLOW_DEPRECATED	flow.h	/^#define FLOW_DEPRECATED(/;"	d
-FLOW_END_EXTERN_C	flow.h	/^#define FLOW_END_EXTERN_C /;"	d
-FLOW_END_EXTERN_C	flow.h	/^#define FLOW_END_EXTERN_C$/;"	d
-FLOW_EXTERN	flow.h	/^#define FLOW_EXTERN /;"	d
-FLOW_EXTERN_C	flow.h	/^#define FLOW_EXTERN_C /;"	d
-FLOW_FLOOR	flow.h	/^#define FLOW_FLOOR(/;"	d
-FLOW_FOR_RANGE	flow.h	/^#define FLOW_FOR_RANGE(/;"	d
-FLOW_GB	flow.h	/^#define FLOW_GB(/;"	d
-FLOW_H	flow.h	/^#define FLOW_H$/;"	d
-FLOW_HAS_FLAG	flow.h	/^#define FLOW_HAS_FLAG(/;"	d
-FLOW_IMPLEMENTATION	test.cpp	/^#define FLOW_IMPLEMENTATION$/;"	d	file:
-FLOW_INLINE	flow.h	/^#define FLOW_INLINE /;"	d
-FLOW_IS_POW2	flow.h	/^#define FLOW_IS_POW2(/;"	d
-FLOW_KB	flow.h	/^#define FLOW_KB(/;"	d
-FLOW_LIKELY	flow.h	/^#define FLOW_LIKELY(/;"	d
-FLOW_MAX	flow.h	/^#define FLOW_MAX(/;"	d
-FLOW_MB	flow.h	/^#define FLOW_MB(/;"	d
-FLOW_MIN	flow.h	/^#define FLOW_MIN(/;"	d
-FLOW_NOINLINE	flow.h	/^#define FLOW_NOINLINE /;"	d
-FLOW_NOOP	flow.h	/^#define FLOW_NOOP(/;"	d
-FLOW_OFFSET_OF	flow.h	/^#define FLOW_OFFSET_OF(/;"	d
-FLOW_PANIC	flow.h	/^#define FLOW_PANIC(/;"	d
-FLOW_PREFETCH	flow.h	/^#define FLOW_PREFETCH(/;"	d
-FLOW_RESTRICT	flow.h	/^#define FLOW_RESTRICT /;"	d
-FLOW_SET_FLAG	flow.h	/^#define FLOW_SET_FLAG(/;"	d
-FLOW_STATIC_ASSERT	flow.h	/^#define FLOW_STATIC_ASSERT(/;"	d
-FLOW_STRINGIFY	flow.h	/^#define FLOW_STRINGIFY(/;"	d
-FLOW_SWAP	flow.h	/^#define FLOW_SWAP(/;"	d
-FLOW_TOSTRING	flow.h	/^#define FLOW_TOSTRING(/;"	d
-FLOW_UNLIKELY	flow.h	/^#define FLOW_UNLIKELY(/;"	d
-FLOW_UNUSED	flow.h	/^#define FLOW_UNUSED(/;"	d
-GB	flow.h	/^#define GB(/;"	d
-KB	flow.h	/^#define KB(/;"	d
+GB	mu.h	/^#define GB(/;"	d
+KB	mu.h	/^#define KB(/;"	d
 L6	test.s	/^.L6:$/;"	l
 L8	test.s	/^.L8:$/;"	l
 LC0	test.s	/^.LC0:$/;"	l
@@ -163,43 +115,91 @@ LFE7487	test.s	/^.LFE7487:$/;"	l
 LFSB7486	test.s	/^.LFSB7486:$/;"	l
 LHOTB22	test.s	/^.LHOTB22:$/;"	l
 LHOTE22	test.s	/^.LHOTE22:$/;"	l
-MB	flow.h	/^#define MB(/;"	d
+MB	mu.h	/^#define MB(/;"	d
+MU_ABS	mu.h	/^#define MU_ABS(/;"	d
+MU_ALIGN	mu.h	/^#define MU_ALIGN(/;"	d
+MU_ALIGN_DOWN	mu.h	/^#define MU_ALIGN_DOWN(/;"	d
+MU_ALIGN_UP	mu.h	/^#define MU_ALIGN_UP(/;"	d
+MU_API	mu.h	/^#define MU_API /;"	d
+MU_ARRAY_COUNT	mu.h	/^#define MU_ARRAY_COUNT(/;"	d
+MU_ASSERT	mu.h	/^#define MU_ASSERT(/;"	d
+MU_BEGIN_EXTERN_C	mu.h	/^#define MU_BEGIN_EXTERN_C /;"	d
+MU_BEGIN_EXTERN_C	mu.h	/^#define MU_BEGIN_EXTERN_C$/;"	d
+MU_BIT	mu.h	/^#define MU_BIT(/;"	d
+MU_CEIL	mu.h	/^#define MU_CEIL(/;"	d
+MU_CLAMP	mu.h	/^#define MU_CLAMP(/;"	d
+MU_CLEAR_FLAG	mu.h	/^#define MU_CLEAR_FLAG(/;"	d
+MU_CONCAT	mu.h	/^#define MU_CONCAT(/;"	d
+MU_CONCAT2	mu.h	/^#define MU_CONCAT2(/;"	d
+MU_CONTAINER_OF	mu.h	/^#define MU_CONTAINER_OF(/;"	d
+MU_DEBUG_BREAK	mu.h	/^#define MU_DEBUG_BREAK(/;"	d
+MU_DEPRECATED	mu.h	/^#define MU_DEPRECATED(/;"	d
+MU_END_EXTERN_C	mu.h	/^#define MU_END_EXTERN_C /;"	d
+MU_END_EXTERN_C	mu.h	/^#define MU_END_EXTERN_C$/;"	d
+MU_EXTERN	mu.h	/^#define MU_EXTERN /;"	d
+MU_EXTERN_C	mu.h	/^#define MU_EXTERN_C /;"	d
+MU_FLOOR	mu.h	/^#define MU_FLOOR(/;"	d
+MU_FOR_RANGE	mu.h	/^#define MU_FOR_RANGE(/;"	d
+MU_GB	mu.h	/^#define MU_GB(/;"	d
+MU_H	mu.h	/^#define MU_H$/;"	d
+MU_HAS_FLAG	mu.h	/^#define MU_HAS_FLAG(/;"	d
+MU_IMPLEMENTATION	test.cpp	/^#define MU_IMPLEMENTATION$/;"	d	file:
+MU_INLINE	mu.h	/^#define MU_INLINE /;"	d
+MU_IS_POW2	mu.h	/^#define MU_IS_POW2(/;"	d
+MU_KB	mu.h	/^#define MU_KB(/;"	d
+MU_LIKELY	mu.h	/^#define MU_LIKELY(/;"	d
+MU_MAX	mu.h	/^#define MU_MAX(/;"	d
+MU_MB	mu.h	/^#define MU_MB(/;"	d
+MU_MIN	mu.h	/^#define MU_MIN(/;"	d
+MU_NOINLINE	mu.h	/^#define MU_NOINLINE /;"	d
+MU_NOOP	mu.h	/^#define MU_NOOP(/;"	d
+MU_OFFSET_OF	mu.h	/^#define MU_OFFSET_OF(/;"	d
+MU_PANIC	mu.h	/^#define MU_PANIC(/;"	d
+MU_PREFETCH	mu.h	/^#define MU_PREFETCH(/;"	d
+MU_RESTRICT	mu.h	/^#define MU_RESTRICT /;"	d
+MU_SET_FLAG	mu.h	/^#define MU_SET_FLAG(/;"	d
+MU_STATIC_ASSERT	mu.h	/^#define MU_STATIC_ASSERT(/;"	d
+MU_STRINGIFY	mu.h	/^#define MU_STRINGIFY(/;"	d
+MU_SWAP	mu.h	/^#define MU_SWAP(/;"	d
+MU_TOSTRING	mu.h	/^#define MU_TOSTRING(/;"	d
+MU_UNLIKELY	mu.h	/^#define MU_UNLIKELY(/;"	d
+MU_UNUSED	mu.h	/^#define MU_UNUSED(/;"	d
 Memory and checks	.github/copilot-instructions.md	/^## Memory and checks$/;"	s	chapter:Copilot instructions for `mylib`
-PAD	flow.h	/^#define PAD(/;"	d
+PAD	mu.h	/^#define PAD(/;"	d
 Testing	.github/copilot-instructions.md	/^## Testing$/;"	s	chapter:Copilot instructions for `mylib`
 VisitState	test.cpp	/^struct VisitState$/;"	s	file:
 Wrapper	test.c	/^} Wrapper;$/;"	t	typeref:struct:__anon1dda1bf60208	file:
 __anon1dda1bf60108	test.c	/^{$/;"	s	file:
 __anon1dda1bf60208	test.c	/^{$/;"	s	file:
+__anon7c9accdd020a	mu.h	/^{$/;"	u
 __anonfcd100560102	test.cpp	/^    auto check = [&](bool condition, const char* label) {$/;"	f	function:main	file:
-__anonfdae69f3020a	flow.h	/^{$/;"	u
 count	test.cpp	/^    size_t count;$/;"	m	struct:VisitState	typeref:typename:size_t	file:
 example	test.c	/^    Example example;$/;"	m	struct:__anon1dda1bf60208	typeref:typename:Example	file:
-f	flow.h	/^    float    f;$/;"	m	union:__anonfdae69f3020a	typeref:typename:float
-flow_dequantize_half	flow.h	/^FLOW_INLINE float flow_dequantize_half(uint16_t h)$/;"	f	typeref:typename:FLOW_INLINE float
-flow_dequantize_snorm	flow.h	/^FLOW_INLINE float flow_dequantize_snorm(int v, int n)$/;"	f	typeref:typename:FLOW_INLINE float
-flow_dequantize_unorm	flow.h	/^FLOW_INLINE float flow_dequantize_unorm(int v, int n)$/;"	f	typeref:typename:FLOW_INLINE float
-flow_float_bits	flow.h	/^} flow_float_bits;$/;"	t	typeref:union:__anonfdae69f3020a
-flow_leading_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_leading_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_INLINE int
-flow_quantize_float	flow.h	/^FLOW_INLINE float flow_quantize_float(float v, int n)$/;"	f	typeref:typename:FLOW_INLINE float
-flow_quantize_half	flow.h	/^FLOW_INLINE uint16_t flow_quantize_half(float v)$/;"	f	typeref:typename:FLOW_INLINE uint16_t
-flow_quantize_snorm	flow.h	/^FLOW_INLINE int flow_quantize_snorm(float v, int n)$/;"	f	typeref:typename:FLOW_INLINE int
-flow_quantize_unorm	flow.h	/^FLOW_INLINE int flow_quantize_unorm(float v, int n)$/;"	f	typeref:typename:FLOW_INLINE int
-flow_trailing_zeroes_u64	flow.h	/^static FLOW_INLINE int flow_trailing_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:FLOW_INLINE int
-for_each	flow.h	/^#define for_each(/;"	d
-global	flow.h	/^#define global /;"	d
+f	mu.h	/^    float    f;$/;"	m	union:__anon7c9accdd020a	typeref:typename:float
+for_each	mu.h	/^#define for_each(/;"	d
+global	mu.h	/^#define global /;"	d
 header	test.c	/^    int     header;$/;"	m	struct:__anon1dda1bf60208	typeref:typename:int	file:
 id	test.c	/^    int    id;$/;"	m	struct:__anon1dda1bf60108	typeref:typename:int	file:
-internal	flow.h	/^#define internal /;"	d
-local_persist	flow.h	/^#define local_persist /;"	d
+internal	mu.h	/^#define internal /;"	d
+local_persist	mu.h	/^#define local_persist /;"	d
 main	test.c	/^int main(void)$/;"	f	typeref:typename:int
 main	test.cpp	/^int main()$/;"	f	typeref:typename:int
 main	test.s	/^	.globl	main$/;"	s	inputSection:.text.startup
 main	test.s	/^main:$/;"	l
+mu_dequantize_half	mu.h	/^MU_INLINE float mu_dequantize_half(uint16_t h)$/;"	f	typeref:typename:MU_INLINE float
+mu_dequantize_snorm	mu.h	/^MU_INLINE float mu_dequantize_snorm(int v, int n)$/;"	f	typeref:typename:MU_INLINE float
+mu_dequantize_unorm	mu.h	/^MU_INLINE float mu_dequantize_unorm(int v, int n)$/;"	f	typeref:typename:MU_INLINE float
+mu_float_bits	mu.h	/^} mu_float_bits;$/;"	t	typeref:union:__anon7c9accdd020a
+mu_leading_zeroes_u64	mu.h	/^static MU_INLINE int mu_leading_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:MU_INLINE int
+mu_quantize_float	mu.h	/^MU_INLINE float mu_quantize_float(float v, int n)$/;"	f	typeref:typename:MU_INLINE float
+mu_quantize_half	mu.h	/^MU_INLINE uint16_t mu_quantize_half(float v)$/;"	f	typeref:typename:MU_INLINE uint16_t
+mu_quantize_snorm	mu.h	/^MU_INLINE int mu_quantize_snorm(float v, int n)$/;"	f	typeref:typename:MU_INLINE int
+mu_quantize_unorm	mu.h	/^MU_INLINE int mu_quantize_unorm(float v, int n)$/;"	f	typeref:typename:MU_INLINE int
+mu_trailing_zeroes_u64	mu.h	/^static MU_INLINE int mu_trailing_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:MU_INLINE int
 mylib	README.md	/^# mylib$/;"	c
-slow_identity	test.c	/^static FLOW_NOINLINE int slow_identity(int x)$/;"	f	typeref:typename:FLOW_NOINLINE int	file:
+slow_identity	test.c	/^static MU_NOINLINE int slow_identity(int x)$/;"	f	typeref:typename:MU_NOINLINE int	file:
 sum	test.cpp	/^    size_t sum;$/;"	m	struct:VisitState	typeref:typename:size_t	file:
-sum_array	test.c	/^static FLOW_INLINE int sum_array(int* FLOW_RESTRICT arr, size_t count)$/;"	f	typeref:typename:FLOW_INLINE int	file:
-u	flow.h	/^    uint32_t u;$/;"	m	union:__anonfdae69f3020a	typeref:typename:uint32_t
+sum_array	test.c	/^static MU_INLINE int sum_array(int* MU_RESTRICT arr, size_t count)$/;"	f	typeref:typename:MU_INLINE int	file:
+u	mu.h	/^    uint32_t u;$/;"	m	union:__anon7c9accdd020a	typeref:typename:uint32_t
 value	test.c	/^    double value;$/;"	m	struct:__anon1dda1bf60108	typeref:typename:double	file:
 visit_collect	test.cpp	/^static bool visit_collect(size_t value, void* user)$/;"	f	typeref:typename:bool	file:
