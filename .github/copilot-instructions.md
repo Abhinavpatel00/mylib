@@ -1,8 +1,8 @@
 # Copilot instructions for `mylib`
 
 ## API and naming
-- Keep public API names `flow_*` prefixed.
-- Keep declarations and call sites flow-prefixed (`flow_*`), including bitset APIs.
+- Keep public API names `mu_*` prefixed.
+- Keep declarations and call sites mu-prefixed (`mu_*`), including bitset APIs.
 - Prefer explicit, small functions over macro-heavy public APIs.
 - Preserve existing naming and style unless a change is required.
 

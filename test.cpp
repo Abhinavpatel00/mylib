@@ -9,11 +9,62 @@ struct VisitState
     size_t sum;
 };
 
+struct MultiIndexVisitState
+{
+    size_t count;
+    size_t sum;
+};
+
+struct ChunkedVisitState
+{
+    size_t count;
+    size_t sum;
+};
+
+struct BulkItem
+{
+    uint32_t value;
+    uint32_t pad;
+};
+
+struct BulkVisitState
+{
+    size_t count;
+    size_t sum;
+};
+
 static bool visit_collect(size_t value, void* user)
 {
     VisitState* state = (VisitState*)user;
     state->count += 1;
     state->sum += value;
+    return true;
+}
+
+static bool visit_multi_index_collect(uint32_t value, uint32_t node_index, void* user)
+{
+    MU_UNUSED(node_index);
+    MultiIndexVisitState* state = (MultiIndexVisitState*)user;
+    state->count += 1;
+    state->sum += value;
+    return true;
+}
+
+static bool visit_chunked_collect(uint32_t value, void* user)
+{
+    ChunkedVisitState* state = (ChunkedVisitState*)user;
+    state->count += 1;
+    state->sum += value;
+    return true;
+}
+
+static bool visit_bulk_collect(uint32_t id, void* slot, void* user)
+{
+    MU_UNUSED(id);
+    BulkItem* item = (BulkItem*)slot;
+    BulkVisitState* state = (BulkVisitState*)user;
+    state->count += 1;
+    state->sum += item->value;
     return true;
 }
 
@@ -214,6 +265,141 @@ int main()
     mu_bitset_traverse_range(a, visit_collect, &range, 2, 64);
     check(range.count == 2, "traverse_range count in [2,66)");
     check(range.sum == (3 + 64), "traverse_range sum in [2,66)");
+
+    // Part 2: multi-index (key -> circular list of values)
+    mu_multi_index index;
+    mu_multi_index_init(&index, 0, 0);
+
+    uint32_t n0 = mu_multi_index_add(&index, 42, 10);
+    uint32_t n1 = mu_multi_index_add(&index, 42, 20);
+    uint32_t n2 = mu_multi_index_add(&index, 7, 99);
+    check(n0 != MU_MULTI_INDEX_NONE, "multi-index add n0");
+    check(n1 != MU_MULTI_INDEX_NONE, "multi-index add n1");
+    check(n2 != MU_MULTI_INDEX_NONE, "multi-index add n2");
+
+    check(mu_multi_index_count_key(&index, 42) == 2, "multi-index count key 42 == 2");
+    check(mu_multi_index_count_key(&index, 7) == 1, "multi-index count key 7 == 1");
+    check(mu_multi_index_count_key(&index, 1234) == 0, "multi-index count missing key == 0");
+
+    MultiIndexVisitState mi = {0, 0};
+    mu_multi_index_visit_key(&index, 42, visit_multi_index_collect, &mi);
+    check(mi.count == 2, "multi-index visit count key 42");
+    check(mi.sum == 30, "multi-index visit sum key 42");
+
+    uint32_t first42 = mu_multi_index_first(&index, 42);
+    check(first42 != MU_MULTI_INDEX_NONE, "multi-index first key 42 exists");
+    if(first42 != MU_MULTI_INDEX_NONE)
+    {
+        uint32_t second42 = mu_multi_index_next(&index, first42, first42);
+        check(second42 != MU_MULTI_INDEX_NONE, "multi-index next returns second");
+        if(second42 != MU_MULTI_INDEX_NONE)
+        {
+            uint32_t third42 = mu_multi_index_next(&index, first42, second42);
+            check(third42 == MU_MULTI_INDEX_NONE, "multi-index next loops back to none");
+        }
+    }
+
+    check(mu_multi_index_remove(&index, n0), "multi-index remove n0");
+    check(!mu_multi_index_node_valid(&index, n0), "multi-index n0 invalid after remove");
+    check(mu_multi_index_count_key(&index, 42) == 1, "multi-index key 42 count after remove");
+    check(mu_multi_index_remove(&index, n1), "multi-index remove n1");
+    check(mu_multi_index_first(&index, 42) == MU_MULTI_INDEX_NONE, "multi-index key 42 empty after removes");
+    check(mu_multi_index_count_key(&index, 7) == 1, "multi-index key 7 unaffected");
+    mu_multi_index_deinit(&index);
+
+    // Part 3: arrays-of-arrays with fixed-size chunks
+    mu_chunked_u32_pool  pool;
+    mu_chunked_u32_array carr;
+    mu_chunked_u32_pool_init(&pool, 0);
+    mu_chunked_u32_array_init(&carr);
+
+    for(uint32_t v = 0; v < 40; ++v)
+    {
+        check(mu_chunked_u32_array_push(&pool, &carr, v), "chunked array push");
+    }
+    check(carr.count == 40, "chunked array count == 40");
+
+    uint32_t got = 0;
+    check(mu_chunked_u32_array_get(&pool, &carr, 0, &got) && got == 0, "chunked get index 0");
+    check(mu_chunked_u32_array_get(&pool, &carr, 13, &got) && got == 13, "chunked get index 13");
+    check(mu_chunked_u32_array_get(&pool, &carr, 14, &got) && got == 14, "chunked get index 14");
+    check(mu_chunked_u32_array_get(&pool, &carr, 39, &got) && got == 39, "chunked get index 39");
+    check(!mu_chunked_u32_array_get(&pool, &carr, 40, &got), "chunked get out of range fails");
+
+    ChunkedVisitState cvs = {0, 0};
+    mu_chunked_u32_array_visit(&pool, &carr, visit_chunked_collect, &cvs);
+    check(cvs.count == 40, "chunked visit count == 40");
+    check(cvs.sum == ((39 * 40) / 2), "chunked visit sum == 0..39");
+
+    for(uint32_t expect = 39; expect >= 30; --expect)
+    {
+        uint32_t popped = 0;
+        check(mu_chunked_u32_array_pop(&pool, &carr, &popped), "chunked pop succeeds");
+        check(popped == expect, "chunked pop order is LIFO");
+        if(expect == 30)
+            break;
+    }
+    check(carr.count == 30, "chunked count after pops == 30");
+    check(mu_chunked_u32_array_get(&pool, &carr, 29, &got) && got == 29, "chunked tail value after pops");
+
+    mu_chunked_u32_array_clear(&pool, &carr);
+    check(carr.count == 0, "chunked clear resets count");
+    check(carr.first_chunk == MU_CHUNKED_U32_NONE, "chunked clear resets first chunk");
+    check(carr.last_chunk == MU_CHUNKED_U32_NONE, "chunked clear resets last chunk");
+    mu_chunked_u32_pool_deinit(&pool);
+
+    // Part 1: bulk data with holes + weak handles
+    mu_bulk_storage storage;
+    check(mu_bulk_storage_init(&storage, sizeof(BulkItem), 8), "bulk storage init");
+
+    uint32_t id_a = mu_bulk_storage_alloc(&storage);
+    uint32_t id_b = mu_bulk_storage_alloc(&storage);
+    uint32_t id_c = mu_bulk_storage_alloc(&storage);
+    check(id_a != 0, "bulk alloc id_a");
+    check(id_b != 0, "bulk alloc id_b");
+    check(id_c != 0, "bulk alloc id_c");
+
+    BulkItem* a_item = (BulkItem*)mu_bulk_storage_ptr(&storage, id_a);
+    BulkItem* b_item = (BulkItem*)mu_bulk_storage_ptr(&storage, id_b);
+    BulkItem* c_item = (BulkItem*)mu_bulk_storage_ptr(&storage, id_c);
+    check(a_item != nullptr, "bulk ptr id_a");
+    check(b_item != nullptr, "bulk ptr id_b");
+    check(c_item != nullptr, "bulk ptr id_c");
+    if(a_item)
+        a_item->value = 10;
+    if(b_item)
+        b_item->value = 20;
+    if(c_item)
+        c_item->value = 30;
+
+    mu_weak_handle hb = mu_bulk_storage_make_handle(&storage, id_b);
+    check(mu_bulk_storage_validate_handle(&storage, hb), "bulk weak handle valid before free");
+    check(mu_bulk_storage_resolve_handle(&storage, hb) == b_item, "bulk resolve handle returns b");
+
+    check(mu_bulk_storage_free(&storage, id_b), "bulk free id_b");
+    check(!mu_bulk_storage_is_live(&storage, id_b), "bulk id_b not live after free");
+    check(!mu_bulk_storage_validate_handle(&storage, hb), "bulk weak handle invalid after free");
+    check(mu_bulk_storage_resolve_handle(&storage, hb) == nullptr, "bulk resolve stale handle null");
+
+    uint32_t id_d = mu_bulk_storage_alloc(&storage);
+    check(id_d == id_b, "bulk reuses hole slot");
+    BulkItem* d_item = (BulkItem*)mu_bulk_storage_ptr(&storage, id_d);
+    check(d_item != nullptr, "bulk ptr id_d");
+    if(d_item)
+        d_item->value = 40;
+
+    mu_weak_handle hd = mu_bulk_storage_make_handle(&storage, id_d);
+    check(mu_bulk_storage_validate_handle(&storage, hd), "bulk new weak handle valid");
+
+    BulkVisitState bvs = {0, 0};
+    mu_bulk_storage_visit_live(&storage, visit_bulk_collect, &bvs);
+    check(bvs.count == 3, "bulk visit count == 3");
+    check(bvs.sum == (10 + 30 + 40), "bulk visit sum matches live values");
+
+    check(!mu_bulk_storage_free(&storage, 0), "bulk free rejects header slot");
+    check(!mu_bulk_storage_free(&storage, 999999), "bulk free rejects out-of-range id");
+
+    mu_bulk_storage_deinit(&storage);
 
     mu_bitset_free(asg);
     mu_bitset_free(out);
