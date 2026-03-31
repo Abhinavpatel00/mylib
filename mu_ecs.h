@@ -763,11 +763,12 @@ static inline void mu_ecs_spawn_group_apply(mu_ecs_world* w, const mu_ecs_spawn_
 }
 
 /* =============================
-   Prefab Overrides (Part 5 model)
+    Prefab Overrides (Part 5 model)
    =============================
 
 Prefab data is a read-only description for spawning entities.
-Overrides let you keep a base prefab and patch per-entity component data.
+Overrides let you keep a base prefab and patch per-entity component data,
+with optional per-entity add/remove masks for component kinds.
 
 The merge rule is per entity:
 if override_mask[i] == 1 -> use override data
@@ -790,9 +791,28 @@ typedef struct mu_ecs_prefab {
     const uint8_t* local_override_mask;  /* Optional: per entity mask. */
     const uint8_t* parent_override_mask; /* Optional: per entity mask. */
 
+    const uint64_t* add_mask;    /* Optional: per entity bitset to add components. */
+    const uint64_t* remove_mask; /* Optional: per entity bitset to remove components. */
+    uint32_t mask_words;         /* Number of uint64 words per entity in add/remove masks. */
+
     const mu_ecs_prefab_component_block* blocks;
     uint32_t block_count;
 } mu_ecs_prefab;
+
+static inline int mu_ecs_prefab_mask_has(const uint64_t* mask,
+                                         uint32_t mask_words,
+                                         uint32_t entity_index,
+                                         uint32_t kind) {
+    if (!mask || mask_words == 0) {
+        return 0;
+    }
+    uint32_t word = kind / 64u;
+    if (word >= mask_words) {
+        return 0;
+    }
+    uint64_t bits = mask[entity_index * mask_words + word];
+    return (int)((bits >> (kind & 63u)) & 1u);
+}
 
 static inline const mu_ecs_prefab_component_block* mu_ecs_prefab_find_block(const mu_ecs_prefab* p, uint32_t kind) {
     if (!p) {
@@ -848,6 +868,9 @@ static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
 
         MU_ECS_ASSERT(base_block->pool);
         for (uint32_t i = 0; i < count; ++i) {
+            if (over && mu_ecs_prefab_mask_has(over->remove_mask, over->mask_words, i, base_block->kind)) {
+                continue;
+            }
             uint32_t stride = 0;
             const void* src = mu_ecs_prefab_pick_data(base_block, over_block, i, &stride);
             void* dst = mu_ecs_pool_add(base_block->pool, out_entities[i]);
@@ -865,6 +888,13 @@ static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
             }
             MU_ECS_ASSERT(over_block->pool);
             for (uint32_t i = 0; i < count; ++i) {
+                if (mu_ecs_prefab_mask_has(over->remove_mask, over->mask_words, i, over_block->kind)) {
+                    continue;
+                }
+                if (over->add_mask &&
+                    !mu_ecs_prefab_mask_has(over->add_mask, over->mask_words, i, over_block->kind)) {
+                    continue;
+                }
                 uint32_t stride = over_block->stride ? over_block->stride : over_block->pool->elem_size;
                 const void* src = (const uint8_t*)over_block->data + (size_t)i * stride;
                 void* dst = mu_ecs_pool_add(over_block->pool, out_entities[i]);
@@ -916,6 +946,86 @@ static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
 
         MU_ECS_FREE(inst);
     }
+}
+
+/* =============================
+   Resource Registry (lightweight)
+   =============================
+
+Registry for common pools and prefabs indexed by integer id.
+Use it to avoid carrying pool pointers through spawn setups.
+*/
+
+typedef struct mu_ecs_resource_registry {
+    mu_ecs_pool** pools;
+    uint32_t pool_capacity;
+
+    const mu_ecs_prefab** prefabs;
+    uint32_t prefab_capacity;
+} mu_ecs_resource_registry;
+
+static inline void mu_ecs_resource_registry_init(mu_ecs_resource_registry* r) {
+    MU_ECS_MEMSET(r, 0, sizeof(*r));
+}
+
+static inline void mu_ecs_resource_registry_free(mu_ecs_resource_registry* r) {
+    MU_ECS_FREE(r->pools);
+    MU_ECS_FREE(r->prefabs);
+    MU_ECS_MEMSET(r, 0, sizeof(*r));
+}
+
+static inline void mu_ecs_resource_registry_pool_reserve(mu_ecs_resource_registry* r, uint32_t cap) {
+    if (cap <= r->pool_capacity) {
+        return;
+    }
+    uint32_t new_cap = r->pool_capacity ? r->pool_capacity : 32u;
+    while (new_cap < cap) {
+        new_cap *= 2u;
+    }
+    r->pools = (mu_ecs_pool**)MU_ECS_REALLOC(r->pools, new_cap * sizeof(mu_ecs_pool*));
+    for (uint32_t i = r->pool_capacity; i < new_cap; ++i) {
+        r->pools[i] = NULL;
+    }
+    r->pool_capacity = new_cap;
+}
+
+static inline void mu_ecs_resource_registry_prefab_reserve(mu_ecs_resource_registry* r, uint32_t cap) {
+    if (cap <= r->prefab_capacity) {
+        return;
+    }
+    uint32_t new_cap = r->prefab_capacity ? r->prefab_capacity : 32u;
+    while (new_cap < cap) {
+        new_cap *= 2u;
+    }
+    r->prefabs = (const mu_ecs_prefab**)MU_ECS_REALLOC(r->prefabs, new_cap * sizeof(mu_ecs_prefab*));
+    for (uint32_t i = r->prefab_capacity; i < new_cap; ++i) {
+        r->prefabs[i] = NULL;
+    }
+    r->prefab_capacity = new_cap;
+}
+
+static inline void mu_ecs_resource_registry_set_pool(mu_ecs_resource_registry* r, uint32_t kind, mu_ecs_pool* pool) {
+    mu_ecs_resource_registry_pool_reserve(r, kind + 1u);
+    r->pools[kind] = pool;
+}
+
+static inline mu_ecs_pool* mu_ecs_resource_registry_get_pool(const mu_ecs_resource_registry* r, uint32_t kind) {
+    if (!r || kind >= r->pool_capacity) {
+        return NULL;
+    }
+    return r->pools[kind];
+}
+
+static inline void mu_ecs_resource_registry_set_prefab(mu_ecs_resource_registry* r, uint32_t id, const mu_ecs_prefab* prefab) {
+    mu_ecs_resource_registry_prefab_reserve(r, id + 1u);
+    r->prefabs[id] = prefab;
+}
+
+static inline const mu_ecs_prefab* mu_ecs_resource_registry_get_prefab(const mu_ecs_resource_registry* r, uint32_t id) {
+    if (!r || id >= r->prefab_capacity) {
+        return NULL;
+    }
+    return r->prefabs[id];
 }
 
 /* =============================
