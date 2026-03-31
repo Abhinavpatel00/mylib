@@ -112,8 +112,7 @@ after : [a0][a4][a2][a3][  ]
 static inline void remove_swap(sound_array_t *a, uint32_t i)
 {
     uint32_t last = a->count - 1;
-    if (i != last)
-        a->data[i] = a->data[last];
+     a->data[i] = a->data[last];
     --a->count;
 }
 ```

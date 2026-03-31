@@ -19,9 +19,6 @@
 #include <stdio.h>
 #ifndef MU_API
 
-#define internal static
-#define global static
-#define local_persist static
 
 
 #if defined(MU_STATIC)
