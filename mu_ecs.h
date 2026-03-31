@@ -59,6 +59,10 @@ extern "C" {
 #define MU_ECS_ENTITY_GENERATION_BITS 8u
 #endif
 
+#ifndef MU_ECS_INLINE_MASK_WORDS
+#define MU_ECS_INLINE_MASK_WORDS 0u
+#endif
+
 #define MU_ECS_ENTITY_INDEX_MASK ((1u << MU_ECS_ENTITY_INDEX_BITS) - 1u)
 #define MU_ECS_ENTITY_GENERATION_MASK ((1u << MU_ECS_ENTITY_GENERATION_BITS) - 1u)
 
@@ -783,6 +787,16 @@ typedef struct mu_ecs_prefab_component_block {
     const uint8_t* override_mask; /* Optional: per entity mask. */
 } mu_ecs_prefab_component_block;
 
+#if MU_ECS_INLINE_MASK_WORDS > 0
+typedef struct mu_ecs_inline_mask {
+    uint64_t words[MU_ECS_INLINE_MASK_WORDS];
+} mu_ecs_inline_mask;
+#else
+typedef struct mu_ecs_inline_mask {
+    uint64_t words[1];
+} mu_ecs_inline_mask;
+#endif
+
 typedef struct mu_ecs_prefab {
     uint32_t count;
 
@@ -793,6 +807,8 @@ typedef struct mu_ecs_prefab {
 
     const uint64_t* add_mask;    /* Optional: per entity bitset to add components. */
     const uint64_t* remove_mask; /* Optional: per entity bitset to remove components. */
+    const mu_ecs_inline_mask* add_mask_inline;    /* Optional: per entity inline masks. */
+    const mu_ecs_inline_mask* remove_mask_inline; /* Optional: per entity inline masks. */
     uint32_t mask_words;         /* Number of uint64 words per entity in add/remove masks. */
 
     const mu_ecs_prefab_component_block* blocks;
@@ -812,6 +828,51 @@ static inline int mu_ecs_prefab_mask_has(const uint64_t* mask,
     }
     uint64_t bits = mask[entity_index * mask_words + word];
     return (int)((bits >> (kind & 63u)) & 1u);
+}
+
+static inline int mu_ecs_inline_mask_has(const mu_ecs_inline_mask* mask, uint32_t kind) {
+#if MU_ECS_INLINE_MASK_WORDS == 0
+    (void)mask;
+    (void)kind;
+    return 0;
+#else
+    if (!mask) {
+        return 0;
+    }
+    uint32_t word = kind / 64u;
+    if (word >= MU_ECS_INLINE_MASK_WORDS) {
+        return 0;
+    }
+    return (int)((mask->words[word] >> (kind & 63u)) & 1u);
+#endif
+}
+
+static inline int mu_ecs_inline_mask_array_has(const mu_ecs_inline_mask* masks,
+                                               uint32_t entity_index,
+                                               uint32_t kind) {
+#if MU_ECS_INLINE_MASK_WORDS == 0
+    (void)masks;
+    (void)entity_index;
+    (void)kind;
+    return 0;
+#else
+    if (!masks) {
+        return 0;
+    }
+    return mu_ecs_inline_mask_has(&masks[entity_index], kind);
+#endif
+}
+
+static inline int mu_ecs_prefab_mask_has_any(const uint64_t* mask,
+                                             const mu_ecs_inline_mask* inline_mask,
+                                             uint32_t mask_words,
+                                             uint32_t entity_index,
+                                             uint32_t kind) {
+    /* If both are provided, inline masks take precedence over pointer masks. */
+    if (inline_mask) {
+        return mu_ecs_inline_mask_array_has(inline_mask, entity_index, kind);
+    }
+    return mu_ecs_prefab_mask_has(mask, mask_words, entity_index, kind);
 }
 
 static inline const mu_ecs_prefab_component_block* mu_ecs_prefab_find_block(const mu_ecs_prefab* p, uint32_t kind) {
@@ -868,7 +929,11 @@ static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
 
         MU_ECS_ASSERT(base_block->pool);
         for (uint32_t i = 0; i < count; ++i) {
-            if (over && mu_ecs_prefab_mask_has(over->remove_mask, over->mask_words, i, base_block->kind)) {
+            if (over && mu_ecs_prefab_mask_has_any(over->remove_mask,
+                                                   over->remove_mask_inline,
+                                                   over->mask_words,
+                                                   i,
+                                                   base_block->kind)) {
                 continue;
             }
             uint32_t stride = 0;
@@ -888,11 +953,19 @@ static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
             }
             MU_ECS_ASSERT(over_block->pool);
             for (uint32_t i = 0; i < count; ++i) {
-                if (mu_ecs_prefab_mask_has(over->remove_mask, over->mask_words, i, over_block->kind)) {
+                if (mu_ecs_prefab_mask_has_any(over->remove_mask,
+                                               over->remove_mask_inline,
+                                               over->mask_words,
+                                               i,
+                                               over_block->kind)) {
                     continue;
                 }
-                if (over->add_mask &&
-                    !mu_ecs_prefab_mask_has(over->add_mask, over->mask_words, i, over_block->kind)) {
+                if ((over->add_mask || over->add_mask_inline) &&
+                    !mu_ecs_prefab_mask_has_any(over->add_mask,
+                                                over->add_mask_inline,
+                                                over->mask_words,
+                                                i,
+                                                over_block->kind)) {
                     continue;
                 }
                 uint32_t stride = over_block->stride ? over_block->stride : over_block->pool->elem_size;
@@ -1028,6 +1101,19 @@ static inline const mu_ecs_prefab* mu_ecs_resource_registry_get_prefab(const mu_
     return r->prefabs[id];
 }
 
+static inline void mu_ecs_prefab_blocks_bind_pools(mu_ecs_prefab_component_block* blocks,
+                                                   uint32_t block_count,
+                                                   const mu_ecs_resource_registry* r) {
+    if (!blocks || !r) {
+        return;
+    }
+    for (uint32_t i = 0; i < block_count; ++i) {
+        if (!blocks[i].pool) {
+            blocks[i].pool = mu_ecs_resource_registry_get_pool(r, blocks[i].kind);
+        }
+    }
+}
+
 /* =============================
    World (minimal)
    =============================
@@ -1076,6 +1162,36 @@ Example: create two entities, add transforms, parent child under root.
     mu_ecs_transform_set_parent(&world.transforms, child_t, root_t);
 
     mu_ecs_world_free(&world);
+
+Example: per-entity add/remove masks (inline bitset) in prefab override.
+
+    #define MU_ECS_INLINE_MASK_WORDS 1
+
+    enum { COMP_RENDER = 0, COMP_PHYS = 1, COMP_TAG = 2 };
+
+    mu_ecs_inline_mask add_mask[2] = {0};
+    mu_ecs_inline_mask remove_mask[2] = {0};
+
+    add_mask[0].words[0] = (1ull << COMP_TAG);
+    remove_mask[1].words[0] = (1ull << COMP_PHYS);
+
+    mu_ecs_prefab over = {0};
+    over.count = 2;
+    over.add_mask_inline = add_mask;
+    over.remove_mask_inline = remove_mask;
+
+Example: registry binding for prefab blocks by kind.
+
+    mu_ecs_resource_registry reg;
+    mu_ecs_resource_registry_init(&reg);
+    mu_ecs_resource_registry_set_pool(&reg, COMP_RENDER, &render_pool);
+
+    mu_ecs_prefab_component_block blocks[1] = {
+        { COMP_RENDER, NULL, render_data, sizeof(RenderComp), NULL }
+    };
+    mu_ecs_prefab_blocks_bind_pools(blocks, 1, &reg);
+
+    mu_ecs_resource_registry_free(&reg);
 */
 
 #ifdef __cplusplus
