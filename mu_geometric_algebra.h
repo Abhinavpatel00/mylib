@@ -52,14 +52,31 @@
     --------------------------------------------------------------------------
     CGLM NOTE
     --------------------------------------------------------------------------
-    This file is standalone and does not require cglm.
-    If you already use cglm, these structs are easy to bridge because they are
-    plain POD floats.
+    This file is standalone in the sense that it is a single header, but it
+    intentionally uses cglm for low-level vector math (dot/cross/norm/add/sub)
+    to reduce local boilerplate and keep hot-path primitives centralized in one
+    math backend.
 */
 
 #include <math.h>
 #include <float.h>
 #include <stdbool.h>
+
+#if defined(MU_GA_CGLM_HEADER)
+#include MU_GA_CGLM_HEADER
+#elif defined(__has_include)
+#if __has_include(<cglm/cglm.h>)
+#include <cglm/cglm.h>
+#elif __has_include("../external/cglm/include/cglm/cglm.h")
+#include "../external/cglm/include/cglm/cglm.h"
+#elif __has_include("external/cglm/include/cglm/cglm.h")
+#include "external/cglm/include/cglm/cglm.h"
+#else
+#error "mu_geometric_algebra.h requires cglm. Define MU_GA_CGLM_HEADER to your cglm umbrella header path."
+#endif
+#else
+#error "mu_geometric_algebra.h requires cglm. Compiler lacks __has_include; define MU_GA_CGLM_HEADER first."
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -101,31 +118,84 @@ MU_GA_INLINE mu_ga_vec2 mu_ga_v2(float x, float y) { mu_ga_vec2 r = {x,y}; retur
 MU_GA_INLINE mu_ga_vec3 mu_ga_v3(float x, float y, float z) { mu_ga_vec3 r = {x,y,z}; return r; }
 MU_GA_INLINE mu_ga_vec4 mu_ga_v4(float x, float y, float z, float w) { mu_ga_vec4 r = {x,y,z,w}; return r; }
 
-MU_GA_INLINE mu_ga_vec2 mu_ga_v2_add(mu_ga_vec2 a, mu_ga_vec2 b) { return mu_ga_v2(a.x + b.x, a.y + b.y); }
-MU_GA_INLINE mu_ga_vec2 mu_ga_v2_sub(mu_ga_vec2 a, mu_ga_vec2 b) { return mu_ga_v2(a.x - b.x, a.y - b.y); }
-MU_GA_INLINE mu_ga_vec2 mu_ga_v2_mul(mu_ga_vec2 a, float s) { return mu_ga_v2(a.x * s, a.y * s); }
-MU_GA_INLINE float mu_ga_v2_dot(mu_ga_vec2 a, mu_ga_vec2 b) { return a.x * b.x + a.y * b.y; }
-
-MU_GA_INLINE mu_ga_vec3 mu_ga_v3_add(mu_ga_vec3 a, mu_ga_vec3 b) { return mu_ga_v3(a.x + b.x, a.y + b.y, a.z + b.z); }
-MU_GA_INLINE mu_ga_vec3 mu_ga_v3_sub(mu_ga_vec3 a, mu_ga_vec3 b) { return mu_ga_v3(a.x - b.x, a.y - b.y, a.z - b.z); }
-MU_GA_INLINE mu_ga_vec3 mu_ga_v3_mul(mu_ga_vec3 a, float s) { return mu_ga_v3(a.x * s, a.y * s, a.z * s); }
-MU_GA_INLINE float mu_ga_v3_dot(mu_ga_vec3 a, mu_ga_vec3 b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-MU_GA_INLINE mu_ga_vec3 mu_ga_v3_cross(mu_ga_vec3 a, mu_ga_vec3 b)
+MU_GA_INLINE mu_ga_vec2 mu_ga_v2_add(mu_ga_vec2 a, mu_ga_vec2 b)
 {
-    return mu_ga_v3(
-        a.y * b.z - a.z * b.y,
-        a.z * b.x - a.x * b.z,
-        a.x * b.y - a.y * b.x
-    );
+    vec2 out;
+    glm_vec2_add((vec2){a.x, a.y}, (vec2){b.x, b.y}, out);
+    return mu_ga_v2(out[0], out[1]);
 }
 
-MU_GA_INLINE float mu_ga_v3_mag2(mu_ga_vec3 a) { return mu_ga_v3_dot(a, a); }
-MU_GA_INLINE float mu_ga_v3_mag(mu_ga_vec3 a) { return mu_ga_sqrt(mu_ga_v3_mag2(a)); }
+MU_GA_INLINE mu_ga_vec2 mu_ga_v2_sub(mu_ga_vec2 a, mu_ga_vec2 b)
+{
+    vec2 out;
+    glm_vec2_sub((vec2){a.x, a.y}, (vec2){b.x, b.y}, out);
+    return mu_ga_v2(out[0], out[1]);
+}
+
+MU_GA_INLINE mu_ga_vec2 mu_ga_v2_mul(mu_ga_vec2 a, float s)
+{
+    vec2 out;
+    glm_vec2_scale((vec2){a.x, a.y}, s, out);
+    return mu_ga_v2(out[0], out[1]);
+}
+
+MU_GA_INLINE float mu_ga_v2_dot(mu_ga_vec2 a, mu_ga_vec2 b)
+{
+    return glm_vec2_dot((vec2){a.x, a.y}, (vec2){b.x, b.y});
+}
+
+MU_GA_INLINE mu_ga_vec3 mu_ga_v3_add(mu_ga_vec3 a, mu_ga_vec3 b)
+{
+    vec3 out;
+    glm_vec3_add((vec3){a.x, a.y, a.z}, (vec3){b.x, b.y, b.z}, out);
+    return mu_ga_v3(out[0], out[1], out[2]);
+}
+
+MU_GA_INLINE mu_ga_vec3 mu_ga_v3_sub(mu_ga_vec3 a, mu_ga_vec3 b)
+{
+    vec3 out;
+    glm_vec3_sub((vec3){a.x, a.y, a.z}, (vec3){b.x, b.y, b.z}, out);
+    return mu_ga_v3(out[0], out[1], out[2]);
+}
+
+MU_GA_INLINE mu_ga_vec3 mu_ga_v3_mul(mu_ga_vec3 a, float s)
+{
+    vec3 out;
+    glm_vec3_scale((vec3){a.x, a.y, a.z}, s, out);
+    return mu_ga_v3(out[0], out[1], out[2]);
+}
+
+MU_GA_INLINE float mu_ga_v3_dot(mu_ga_vec3 a, mu_ga_vec3 b)
+{
+    return glm_vec3_dot((vec3){a.x, a.y, a.z}, (vec3){b.x, b.y, b.z});
+}
+
+MU_GA_INLINE mu_ga_vec3 mu_ga_v3_cross(mu_ga_vec3 a, mu_ga_vec3 b)
+{
+    vec3 out;
+    glm_vec3_cross((vec3){a.x, a.y, a.z}, (vec3){b.x, b.y, b.z}, out);
+    return mu_ga_v3(out[0], out[1], out[2]);
+}
+
+MU_GA_INLINE float mu_ga_v3_mag2(mu_ga_vec3 a)
+{
+    return glm_vec3_norm2((vec3){a.x, a.y, a.z});
+}
+
+MU_GA_INLINE float mu_ga_v3_mag(mu_ga_vec3 a)
+{
+    return glm_vec3_norm((vec3){a.x, a.y, a.z});
+}
+
 MU_GA_INLINE mu_ga_vec3 mu_ga_v3_norm(mu_ga_vec3 a)
 {
-    float m2 = mu_ga_v3_mag2(a);
-    if (m2 <= FLT_EPSILON) return mu_ga_v3(0.0f, 0.0f, 0.0f);
-    return mu_ga_v3_mul(a, mu_ga_inv_sqrt(m2));
+    vec3 out;
+    if (glm_vec3_norm2((vec3){a.x, a.y, a.z}) <= FLT_EPSILON)
+    {
+        return mu_ga_v3(0.0f, 0.0f, 0.0f);
+    }
+    glm_vec3_normalize_to((vec3){a.x, a.y, a.z}, out);
+    return mu_ga_v3(out[0], out[1], out[2]);
 }
 
 /*

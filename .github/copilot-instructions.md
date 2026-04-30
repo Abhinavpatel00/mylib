@@ -8,7 +8,8 @@
 
 ## Compatibility
 - Keep [mu.h](../mu.h) C99-compliant.
-- Prefer C standard headers (`<stddef.h>`, `<stdint.h>`, `<stdbool.h>`, `<stdlib.h>`, `<string.h>`, `<stdio.h>`) in the public header.
+- Prefer C standard headers (`<stddef.h>`, `<stdint.h>`, `<stdbool.h>`, `<stdlib.h>`, `<string.h>`, `<stdio.h>`) and cglm in the public header 
+
 
 ## Code style
 - Keep code clean and readable.
