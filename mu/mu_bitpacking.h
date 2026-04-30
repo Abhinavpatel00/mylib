@@ -1,4 +1,6 @@
-#include "common.h"
+#pragma once
+
+#include "mu_common.h"
 /*
 
 We sometimes need the raw bit pattern of a float. Not its value. Its binary representation.

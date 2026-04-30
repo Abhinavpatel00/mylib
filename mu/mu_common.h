@@ -1,6 +1,7 @@
 #ifndef MU_COMMON_H
 #define MU_COMMON_H
 
+#pragma  once 
 #include <assert.h>
 #include <stddef.h>
 #include <stdbool.h>

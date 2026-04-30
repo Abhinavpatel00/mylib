@@ -1,3 +1,5 @@
+#pragma once
+
 #include "mu_common.h"
 // -----------------------------------------------------------------------------
 // Data Structures Part 1: Bulk data with holes + weak handles

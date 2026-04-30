@@ -4876,7 +4876,6 @@ GzipDecoderState	.venv/lib64/python3.14/site-packages/pip/_vendor/urllib3/respon
 H	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	c	function:anonymousFunction2389634023600.anonymousFunction2389634026b00.anonymousFunction238963402b400
 HASHFUNC_MAP	.venv/lib/python3.14/site-packages/pip/_vendor/urllib3/util/ssl_.py	/^HASHFUNC_MAP = {$/;"	v
 HASHFUNC_MAP	.venv/lib64/python3.14/site-packages/pip/_vendor/urllib3/util/ssl_.py	/^HASHFUNC_MAP = {$/;"	v
-HASH_EMPTY	mu/ds.h	/^#define HASH_EMPTY /;"	d
 HASH_EMPTY	mu/mu_hash_table.h	/^#define HASH_EMPTY /;"	d
 HASH_REGEX	.venv/lib/python3.14/site-packages/pip/_internal/vcs/git.py	/^HASH_REGEX = re.compile("^[a-fA-F0-9]{40}$")$/;"	v
 HASH_REGEX	.venv/lib64/python3.14/site-packages/pip/_internal/vcs/git.py	/^HASH_REGEX = re.compile("^[a-fA-F0-9]{40}$")$/;"	v
@@ -5959,15 +5958,12 @@ MU_ALIGN_UP	mu/mu_common.h	/^#define MU_ALIGN_UP(/;"	d
 MU_ALLOCATORS_H	allocators.h	/^#define MU_ALLOCATORS_H$/;"	d
 MU_API	mu/mu_common.h	/^#define MU_API /;"	d
 MU_ARRAY_COUNT	mu/mu_common.h	/^#define MU_ARRAY_COUNT(/;"	d
-MU_ARRAY_OF_ARRAYS_CHUNK_SIZE	mu/ds.h	/^#define MU_ARRAY_OF_ARRAYS_CHUNK_SIZE /;"	d
 MU_ARRAY_OF_ARRAYS_CHUNK_SIZE	mu/mu_chunked_array.h	/^#define MU_ARRAY_OF_ARRAYS_CHUNK_SIZE /;"	d
 MU_ASSERT	mu/mu_common.h	/^#define MU_ASSERT(/;"	d
 MU_BEGIN_EXTERN_C	mu/mu_common.h	/^#define MU_BEGIN_EXTERN_C /;"	d
 MU_BEGIN_EXTERN_C	mu/mu_common.h	/^#define MU_BEGIN_EXTERN_C$/;"	d
 MU_BIT	mu/mu_common.h	/^#define MU_BIT(/;"	d
-MU_BITSET_H	mu/bitset.h	/^#define MU_BITSET_H$/;"	d
 MU_CEIL	mu/mu_common.h	/^#define MU_CEIL(/;"	d
-MU_CHUNKED_U32_NONE	mu/ds.h	/^#define MU_CHUNKED_U32_NONE /;"	d
 MU_CHUNKED_U32_NONE	mu/mu_chunked_array.h	/^#define MU_CHUNKED_U32_NONE /;"	d
 MU_CLAMP	mu/mu_common.h	/^#define MU_CLAMP(/;"	d
 MU_CLEAR_FLAG	mu/mu_common.h	/^#define MU_CLEAR_FLAG(/;"	d
@@ -5976,7 +5972,6 @@ MU_CONTAINER_OF	mu/mu_common.h	/^#define MU_CONTAINER_OF(/;"	d
 MU_CORE_CONTAINERS_H	mu/mu_string.h	/^#define MU_CORE_CONTAINERS_H$/;"	d
 MU_DEBUG_BREAK	mu/mu_common.h	/^#define MU_DEBUG_BREAK(/;"	d
 MU_DEPRECATED	mu/mu_common.h	/^#define MU_DEPRECATED(/;"	d
-MU_DS_H	mu/ds.h	/^#define MU_DS_H$/;"	d
 MU_ECS_ASSERT	mu_ecs.h	/^#define MU_ECS_ASSERT(/;"	d
 MU_ECS_ENTITY_GENERATION_BITS	mu_ecs.h	/^#define MU_ECS_ENTITY_GENERATION_BITS /;"	d
 MU_ECS_ENTITY_GENERATION_MASK	mu_ecs.h	/^#define MU_ECS_ENTITY_GENERATION_MASK /;"	d
@@ -5998,9 +5993,9 @@ MU_FLOOR	mu/mu_common.h	/^#define MU_FLOOR(/;"	d
 MU_GA_INLINE	mu_geometric_algebra.h	/^#define MU_GA_INLINE /;"	d
 MU_GB	mu/mu_common.h	/^#define MU_GB(/;"	d
 MU_GEOMETRIC_ALGEBRA_H	mu_geometric_algebra.h	/^#define MU_GEOMETRIC_ALGEBRA_H$/;"	d
+MU_H	mu.h	/^#define MU_H$/;"	d
 MU_HASH_EMPTY	mu_min_containers.h	/^#define MU_HASH_EMPTY /;"	d
 MU_HASH_TOMBSTONE	mu_min_containers.h	/^#define MU_HASH_TOMBSTONE /;"	d
-MU_HASH_UNUSED	mu/ds.h	/^#define MU_HASH_UNUSED /;"	d
 MU_HASH_UNUSED	mu/mu_hash_table.h	/^#define MU_HASH_UNUSED /;"	d
 MU_HAS_FLAG	mu/mu_common.h	/^#define MU_HAS_FLAG(/;"	d
 MU_IMPLEMENTATION	test.cpp	/^#define MU_IMPLEMENTATION$/;"	d	file:
@@ -6033,13 +6028,9 @@ MU_MMGR_H	mu_mmgr.h	/^#define MU_MMGR_H$/;"	d
 MU_MMGR_LOG_TO_STDERR	mu_mmgr.h	/^#define MU_MMGR_LOG_TO_STDERR /;"	d
 MU_MMGR_PATH_MAX	mu_mmgr.h	/^#define MU_MMGR_PATH_MAX /;"	d
 MU_MMGR_UNUSED	mu_mmgr.h	/^#define MU_MMGR_UNUSED(/;"	d
-MU_MULTI_INDEX_MAP_EMPTY	mu/ds.c	/^    MU_MULTI_INDEX_MAP_EMPTY = 0,$/;"	e	enum:__anondec2523e0103	file:
 MU_MULTI_INDEX_MAP_EMPTY	mu/mu_multi_index.c	/^    MU_MULTI_INDEX_MAP_EMPTY = 0,$/;"	e	enum:__anon665dd0ea0103	file:
-MU_MULTI_INDEX_MAP_TOMB	mu/ds.c	/^    MU_MULTI_INDEX_MAP_TOMB  = 2,$/;"	e	enum:__anondec2523e0103	file:
 MU_MULTI_INDEX_MAP_TOMB	mu/mu_multi_index.c	/^    MU_MULTI_INDEX_MAP_TOMB  = 2,$/;"	e	enum:__anon665dd0ea0103	file:
-MU_MULTI_INDEX_MAP_USED	mu/ds.c	/^    MU_MULTI_INDEX_MAP_USED  = 1,$/;"	e	enum:__anondec2523e0103	file:
 MU_MULTI_INDEX_MAP_USED	mu/mu_multi_index.c	/^    MU_MULTI_INDEX_MAP_USED  = 1,$/;"	e	enum:__anon665dd0ea0103	file:
-MU_MULTI_INDEX_NONE	mu/ds.h	/^#define MU_MULTI_INDEX_NONE /;"	d
 MU_MULTI_INDEX_NONE	mu/mu_multi_index.h	/^#define MU_MULTI_INDEX_NONE /;"	d
 MU_NOINLINE	mu/mu_common.h	/^#define MU_NOINLINE /;"	d
 MU_NOINLINE	mu/mu_common.h	/^#define MU_NOINLINE$/;"	d
@@ -6072,7 +6063,6 @@ MU_SCHED_PRIORITY_COUNT	mu_task_scheduler.h	/^    MU_SCHED_PRIORITY_COUNT = 3$/;
 MU_SCHED_PRIORITY_HIGH	mu_task_scheduler.h	/^    MU_SCHED_PRIORITY_HIGH = 0,$/;"	e	enum:mu_sched_priority
 MU_SCHED_PRIORITY_LOW	mu_task_scheduler.h	/^    MU_SCHED_PRIORITY_LOW = 2,$/;"	e	enum:mu_sched_priority
 MU_SCHED_PRIORITY_NORMAL	mu_task_scheduler.h	/^    MU_SCHED_PRIORITY_NORMAL = 1,$/;"	e	enum:mu_sched_priority
-MU_SCOPE_TIMER	mu/ds.h	/^#define MU_SCOPE_TIMER(/;"	d
 MU_SCOPE_TIMER	mu/mu_perf.h	/^#define MU_SCOPE_TIMER(/;"	d
 MU_SET_FLAG	mu/mu_common.h	/^#define MU_SET_FLAG(/;"	d
 MU_STATIC_ASSERT	mu/mu_common.h	/^#define MU_STATIC_ASSERT(/;"	d
@@ -10445,7 +10435,6 @@ __anon632ea9681408	mu_geometric_algebra.h	/^typedef struct { float vx, vy, vz, m
 __anon632ea9681508	mu_geometric_algebra.h	/^typedef struct { float gx, gy, gz, gw, vx, vy, vz, mx, my, mz; } mu_ga_circle3;$/;"	s
 __anon632ea9681608	mu_geometric_algebra.h	/^typedef struct { float u, x, y, z, w; } mu_ga_sphere3;$/;"	s
 __anon665dd0ea0103	mu/mu_multi_index.c	/^{$/;"	g	file:
-__anon7c9accdd0108	mu.h	/^{$/;"	s
 __anon9bb242070108	mu/mu_pcg.h	/^{$/;"	s
 __anonadd73c29010a	mu/mu_bitpacking.h	/^{$/;"	u
 __anonbf3c9a330108	mu/mu_id_pool.h	/^{$/;"	s
@@ -10459,17 +10448,6 @@ __anonc862d93d060a	Terathon-Math-Library/TSAlgebra.h	/^			{$/;"	u	class:Terathon
 __anoncc259a010108	mu/mu_allocators.h	/^{$/;"	s
 __anoncc259a010208	mu/mu_allocators.h	/^{$/;"	s
 __anoncc259a010308	mu/mu_allocators.h	/^{$/;"	s
-__anondec2523e0103	mu/ds.c	/^{$/;"	g	file:
-__anondec252430108	mu/ds.h	/^{$/;"	s
-__anondec252430208	mu/ds.h	/^{$/;"	s
-__anondec252430308	mu/ds.h	/^{$/;"	s
-__anondec252430408	mu/ds.h	/^{$/;"	s
-__anondec252430508	mu/ds.h	/^{$/;"	s
-__anondec252430608	mu/ds.h	/^{$/;"	s
-__anondec252430708	mu/ds.h	/^{$/;"	s
-__anondec252430808	mu/ds.h	/^{$/;"	s
-__anondec252430908	mu/ds.h	/^{$/;"	s
-__anondec252430a08	mu/ds.h	/^{$/;"	s
 __anone11288d40111	Terathon-Math-Library/TSMath.cpp	/^{$/;"	n	file:
 __anone11288d40211	Terathon-Math-Library/TSMath.cpp	/^{$/;"	n	file:
 __anonf282056c0108	mu/mu_array.h	/^{$/;"	s
@@ -15228,7 +15206,6 @@ align_text	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/panel.py	/^    
 align_top	.venv/lib/python3.14/site-packages/pip/_vendor/rich/segment.py	/^    def align_top($/;"	m	class:Segment	typeref:typename:List[List["Segment"]]
 align_top	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/segment.py	/^    def align_top($/;"	m	class:Segment	typeref:typename:List[List["Segment"]]
 alignment	mu_mmgr.h	/^    size_t alignment;$/;"	m	struct:tag_au	typeref:typename:size_t
-alive	mu/ds.h	/^    uint32_t alive;$/;"	m	struct:mu_multi_index_node	typeref:typename:uint32_t
 alive	mu/mu_multi_index.h	/^    uint32_t alive;$/;"	m	struct:mu_multi_index_node	typeref:typename:uint32_t
 allSyntheticRegionMarkers	mapgen4/dual-mesh/dual-mesh-diagrams.js	/^        allSyntheticRegionMarkers() {$/;"	m	property:anonymousObject2da04d4f0805.methods
 all_releases	.venv/lib/python3.14/site-packages/pip/_internal/cli/cmdoptions.py	/^def all_releases() -> Option:$/;"	f	typeref:typename:Option
@@ -16547,31 +16524,19 @@ args	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/syntax.py	/^    args 
 ariaHidden	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.esm.js	/^import{b as i}from".\/p-6f4eae92.js";import{p as a}from".\/p-4372c4bc.js";a().then(a=>i([["p-206/;"	p	variable:anonymousObjectb89bcf330305
 ariaLabel	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.esm.js	/^import{b as i}from".\/p-6f4eae92.js";import{p as a}from".\/p-4372c4bc.js";a().then(a=>i([["p-206/;"	p	variable:anonymousObjectb89bcf330305
 arm-support	machinery_blog_archive/post/release-2021-9/index.html	/^<h2 id="arm-support">ARM Support<\/h2>$/;"	I
-array	mu/bitset.h	/^    uint64_t* MU_RESTRICT array;         \/* pointer to 64-bit word storage *\/$/;"	m	struct:mu_bitset	typeref:typename:uint64_t * MU_RESTRICT
 array	mu/mu_bitset.h	/^    uint64_t* MU_RESTRICT array;         \/* pointer to 64-bit word storage *\/$/;"	m	struct:mu_bitset	typeref:typename:uint64_t * MU_RESTRICT
 array-of-structures-vs-structure-of-arrays	machinery_blog_archive/post/data-structures-part-1-bulk-data/index.html	/^<h2 id="array-of-structures-vs-structure-of-arrays">Array of Structures vs Structure of Arrays<\//;"	I
 arrayBuffer	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeo/;"	p	variable:anonymousFunction2389634023600.anonymousFunction2389634026b00.anonymousFunction238963402f300.e
-array_back	mu/ds.h	/^#define array_back(/;"	d
 array_back	mu/mu_array.h	/^#define array_back(/;"	d
-array_capacity	mu/ds.h	/^#define array_capacity(/;"	d
 array_capacity	mu/mu_array.h	/^#define array_capacity(/;"	d
-array_free	mu/ds.h	/^#define array_free(/;"	d
 array_free	mu/mu_array.h	/^#define array_free(/;"	d
-array_full	mu/ds.h	/^#define array_full(/;"	d
 array_full	mu/mu_array.h	/^#define array_full(/;"	d
-array_grow	mu/ds.h	/^static void* array_grow(void* arr, size_t elem_size, uint32_t min_capacity)$/;"	f	typeref:typename:void *
 array_grow	mu/mu_array.h	/^static void* array_grow(void* arr, size_t elem_size, uint32_t min_capacity)$/;"	f	typeref:typename:void *
-array_header	mu/ds.h	/^#define array_header(a) ((array_header_t*)((char*)(a) - sizeof(array_header_/;"	d
 array_header	mu/mu_array.h	/^#define array_header(a) ((array_header_t*)((char*)(a) - sizeof(array_header_/;"	d
-array_header_t	mu/ds.h	/^} array_header_t;$/;"	t	typeref:struct:__anondec252430908
 array_header_t	mu/mu_array.h	/^} array_header_t;$/;"	t	typeref:struct:__anonf282056c0108
-array_pop	mu/ds.h	/^#define array_pop(/;"	d
 array_pop	mu/mu_array.h	/^#define array_pop(/;"	d
-array_push	mu/ds.h	/^#define array_push(/;"	d
 array_push	mu/mu_array.h	/^#define array_push(/;"	d
-array_reserve	mu/ds.h	/^#define array_reserve(/;"	d
 array_reserve	mu/mu_array.h	/^#define array_reserve(/;"	d
-array_size	mu/ds.h	/^#define array_size(/;"	d
 array_size	mu/mu_array.h	/^#define array_size(/;"	d
 arrays-of-arrays	machinery_blog_archive/post/minimalist-container-library-in-c-part-2/index.html	/^<h2 id="arrays-of-arrays">Arrays of arrays<\/h2>$/;"	I
 arrays-of-strings	machinery_blog_archive/post/data-structures-part-3-arrays-of-arrays/index.html	/^<h2 id="arrays-of-strings">Arrays of strings<\/h2>$/;"	I
@@ -17188,8 +17153,6 @@ buffer	.venv/lib/python3.14/site-packages/pip/_vendor/rich/console.py	/^    buff
 buffer	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/console.py	/^    buffer: List[Segment] = field(default_factory=list)$/;"	v	class:ConsoleThreadLocals	typeref:typename:List[Segment]
 buffer	mapgen4/render.ts	/^                const buffer = new Uint8Array(bytesPerRow * this.screenshotCanvas.height);$/;"	C	method:Renderer.startDrawingLoop
 buffer	mapgen4/render.ts	/^        const buffer = gl.createBuffer();$/;"	C	method:WebGLWrapper.createBuffer
-buffer	mu/ds.h	/^    mu_buffer buffer;$/;"	m	struct:__anondec252430708	typeref:typename:mu_buffer
-buffer	mu/ds.h	/^    mu_buffer buffer;$/;"	m	struct:__anondec252430808	typeref:typename:mu_buffer
 buffer	mu/mu_allocators.h	/^    mu_buffer buffer;$/;"	m	struct:__anoncc259a010208	typeref:typename:mu_buffer
 buffer	mu/mu_allocators.h	/^    mu_buffer buffer;$/;"	m	struct:__anoncc259a010308	typeref:typename:mu_buffer
 buffer	mu_ecs.h	/^    void* buffer;$/;"	m	struct:mu_ecs_transform_store	typeref:typename:void *
@@ -17691,10 +17654,6 @@ canonicalize_version	.venv/lib64/python3.14/site-packages/pip/_vendor/packaging/
 canvas	mapgen4/render.ts	/^        const canvas = document.getElementById('mapgen4') as HTMLCanvasElement;$/;"	C	method:Renderer.constructor
 cap	mu_roguelike.h	/^	int cap;$/;"	m	struct:mu_rog_scheduler	typeref:typename:int
 capacity	allocators.h	/^	uint32_t capacity;$/;"	m	struct:mu_arena	typeref:typename:uint32_t
-capacity	mu/ds.h	/^    uint32_t          capacity;$/;"	m	struct:__anondec252430208	typeref:typename:uint32_t
-capacity	mu/ds.h	/^    uint32_t  capacity;$/;"	m	struct:__anondec252430308	typeref:typename:uint32_t
-capacity	mu/ds.h	/^    uint32_t  capacity;$/;"	m	struct:__anondec252430a08	typeref:typename:uint32_t
-capacity	mu/ds.h	/^    uint32_t capacity;$/;"	m	struct:__anondec252430908	typeref:typename:uint32_t
 capacity	mu/mu_array.h	/^    uint32_t capacity;$/;"	m	struct:__anonf282056c0108	typeref:typename:uint32_t
 capacity	mu/mu_hash_table.h	/^    uint32_t  capacity;$/;"	m	struct:__anon2cfea5380108	typeref:typename:uint32_t
 capacity	mu/mu_id_pool.h	/^    uint32_t          capacity;$/;"	m	struct:__anonbf3c9a330208	typeref:typename:uint32_t
@@ -17865,14 +17824,11 @@ choose_boundary	.venv/lib/python3.14/site-packages/pip/_vendor/urllib3/filepost.
 choose_boundary	.venv/lib64/python3.14/site-packages/pip/_vendor/urllib3/filepost.py	/^def choose_boundary() -> str:$/;"	f	typeref:typename:str
 chop_cells	.venv/lib/python3.14/site-packages/pip/_vendor/rich/cells.py	/^def chop_cells($/;"	f	typeref:typename:list[str]
 chop_cells	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/cells.py	/^def chop_cells($/;"	f	typeref:typename:list[str]
-chunk_capacity	mu/ds.h	/^    uint32_t              chunk_capacity;$/;"	m	struct:mu_chunked_u32_pool	typeref:typename:uint32_t
 chunk_capacity	mu/mu_chunked_array.h	/^    uint32_t              chunk_capacity;$/;"	m	struct:mu_chunked_u32_pool	typeref:typename:uint32_t
-chunk_count	mu/ds.h	/^    uint32_t              chunk_count;$/;"	m	struct:mu_chunked_u32_pool	typeref:typename:uint32_t
 chunk_count	mu/mu_chunked_array.h	/^    uint32_t              chunk_count;$/;"	m	struct:mu_chunked_u32_pool	typeref:typename:uint32_t
 chunk_readable	.venv/lib/python3.14/site-packages/pip/_vendor/urllib3/util/request.py	/^        def chunk_readable() -> typing.Iterable[bytes]:$/;"	f	function:body_to_chunks	typeref:typename:typing.Iterable[bytes]	file:
 chunk_readable	.venv/lib64/python3.14/site-packages/pip/_vendor/urllib3/util/request.py	/^        def chunk_readable() -> typing.Iterable[bytes]:$/;"	f	function:body_to_chunks	typeref:typename:typing.Iterable[bytes]	file:
 chunked-allocator	machinery_blog_archive/post/data-structures-part-3-arrays-of-arrays/index.html	/^<h2 id="chunked-allocator">Chunked allocator<\/h2>$/;"	I
-chunks	mu/ds.h	/^    mu_chunked_u32_chunk* chunks;$/;"	m	struct:mu_chunked_u32_pool	typeref:typename:mu_chunked_u32_chunk *
 chunks	mu/mu_chunked_array.h	/^    mu_chunked_u32_chunk* chunks;$/;"	m	struct:mu_chunked_u32_pool	typeref:typename:mu_chunked_u32_chunk *
 cinematic-depth-of-field	machinery_blog_archive/post/release-2022-2/index.html	/^<h2 id="cinematic-depth-of-field">Cinematic Depth of Field<\/h2>$/;"	I
 cipher	.venv/lib/python3.14/site-packages/pip/_vendor/urllib3/util/ssltransport.py	/^    def cipher(self) -> tuple[str, str, int] | None:$/;"	m	class:SSLTransport	typeref:typename:tuple[str,str,int]|None
@@ -18760,9 +18716,6 @@ core-nodes	machinery_blog_archive/post/gpu-simulation/index.html	/^<h2 id="core-
 count	mapgen4/dual-mesh/tests.js	/^    count: 0,$/;"	p	variable:Test
 count	mapgen4/map.ts	/^            let count = 0, e = 0, water = false;$/;"	v
 count	mapgen4/map.ts	/^            let count = 0, sum = 0.0;$/;"	v
-count	mu/ds.h	/^    uint32_t          count;$/;"	m	struct:__anondec252430208	typeref:typename:uint32_t
-count	mu/ds.h	/^    uint32_t  count;$/;"	m	struct:__anondec252430a08	typeref:typename:uint32_t
-count	mu/ds.h	/^    uint32_t count;$/;"	m	struct:mu_chunked_u32_array	typeref:typename:uint32_t
 count	mu/mu_chunked_array.h	/^    uint32_t count;$/;"	m	struct:mu_chunked_u32_array	typeref:typename:uint32_t
 count	mu/mu_hash_table.h	/^    uint32_t  count;$/;"	m	struct:__anon2cfea5380108	typeref:typename:uint32_t
 count	mu/mu_id_pool.h	/^    uint32_t          count;$/;"	m	struct:__anonbf3c9a330208	typeref:typename:uint32_t
@@ -19048,7 +19001,6 @@ delete	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js
 delete	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	m	variable:anonymousObject2389634018005
 deletion-strategy	machinery_blog_archive/post/data-structures-part-1-bulk-data/index.html	/^<h2 id="deletion-strategy">Deletion strategy<\/h2>$/;"	I
 deltaTimeInMs	mapgen4/painting.ts	/^            deltaTimeInMs: number) {$/;"	p	class:Generator
-dense	mu/ds.h	/^    uint32_t* dense;   \/\/ size = capacity$/;"	m	struct:__anondec252430308	typeref:typename:uint32_t *
 dense	mu/mu_sparse_set.h	/^    uint32_t* dense;   \/\/ size = capacity$/;"	m	struct:__anon4b0147a60108	typeref:typename:uint32_t *
 dependencies	.venv/lib/python3.14/site-packages/pip/_vendor/packaging/pylock.py	/^    dependencies: Sequence[Mapping[str, Any]] | None = None$/;"	v	class:Package	typeref:typename:Sequence[Mapping[str, Any]]|None
 dependencies	.venv/lib64/python3.14/site-packages/pip/_vendor/packaging/pylock.py	/^    dependencies: Sequence[Mapping[str, Any]] | None = None$/;"	v	class:Package	typeref:typename:Sequence[Mapping[str, Any]]|None
@@ -20211,12 +20163,10 @@ finished_speed	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/progress.py
 finished_time	.venv/lib/python3.14/site-packages/pip/_vendor/rich/progress.py	/^    finished_time: Optional[float] = None$/;"	v	class:Task	typeref:typename:Optional[float]
 finished_time	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/progress.py	/^    finished_time: Optional[float] = None$/;"	v	class:Task	typeref:typename:Optional[float]
 first	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:t.exports.getConstructor.anonymousFunction2389634013a00.anonymousObject2389634013b05
-first	mu/ds.h	/^    uint32_t first;$/;"	m	struct:__anondec252430108	typeref:typename:uint32_t
 first	mu/mu_id_pool.h	/^    uint32_t first;$/;"	m	struct:__anonbf3c9a330108	typeref:typename:uint32_t
 first-triangle	machinery_blog_archive/post/compiling-the-machinery-with-emscripten-part-2/index.html	/^<h2 id="first-triangle">First Triangle<\/h2>$/;"	I
 firstUnpairedEdge	mapgen4/dual-mesh/index.ts	/^        let numUnpairedSides = 0, firstUnpairedEdge = -1;$/;"	v
 first_child	mu_ecs.h	/^    int32_t* first_child;$/;"	m	struct:mu_ecs_transform_store	typeref:typename:int32_t *
-first_chunk	mu/ds.h	/^    uint32_t first_chunk;$/;"	m	struct:mu_chunked_u32_array	typeref:typename:uint32_t
 first_chunk	mu/mu_chunked_array.h	/^    uint32_t first_chunk;$/;"	m	struct:mu_chunked_u32_array	typeref:typename:uint32_t
 fit	.venv/lib/python3.14/site-packages/pip/_vendor/rich/panel.py	/^    def fit($/;"	m	class:Panel	typeref:typename:"Panel"
 fit	.venv/lib/python3.14/site-packages/pip/_vendor/rich/text.py	/^    def fit(self, width: int) -> Lines:$/;"	m	class:Text	typeref:typename:Lines
@@ -20478,13 +20428,10 @@ free_capacity	mu_ecs.h	/^    uint32_t free_capacity;$/;"	m	struct:mu_ecs_entity_
 free_count	mu_ecs.h	/^    uint32_t free_count;$/;"	m	struct:mu_ecs_entity_manager	typeref:typename:uint32_t
 free_head	allocators.h	/^	uint32_t free_head; \/* index of first free block, or 0xFFFFFFFF *\/$/;"	m	struct:mu_pool	typeref:typename:uint32_t
 free_head	allocators.h	/^	uint32_t* free_head; \/* array [num_levels], head indices or 0xFFFFFFFF *\/$/;"	m	struct:mu_buddy	typeref:typename:uint32_t *
-free_head	mu/ds.h	/^    uint32_t              free_head;$/;"	m	struct:mu_chunked_u32_pool	typeref:typename:uint32_t
-free_head	mu/ds.h	/^    uint32_t             free_head;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t
 free_head	mu/mu_chunked_array.h	/^    uint32_t              free_head;$/;"	m	struct:mu_chunked_u32_pool	typeref:typename:uint32_t
 free_head	mu/mu_multi_index.h	/^    uint32_t             free_head;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t
 free_head	mu_ecs.h	/^    uint32_t free_head;$/;"	m	struct:mu_ecs_entity_manager	typeref:typename:uint32_t
 free_next	allocators.h	/^	uint32_t* free_next; \/* array [num_blocks], singly-linked free list nodes *\/$/;"	m	struct:mu_buddy	typeref:typename:uint32_t *
-free_next	mu/ds.h	/^    uint32_t free_next;$/;"	m	struct:mu_chunked_u32_chunk	typeref:typename:uint32_t
 free_next	mu/mu_chunked_array.h	/^    uint32_t free_next;$/;"	m	struct:mu_chunked_u32_chunk	typeref:typename:uint32_t
 free_queue	mu_ecs.h	/^    uint32_t* free_queue;$/;"	m	struct:mu_ecs_entity_manager	typeref:typename:uint32_t *
 free_tail	mu_ecs.h	/^    uint32_t free_tail;$/;"	m	struct:mu_ecs_entity_manager	typeref:typename:uint32_t
@@ -20653,12 +20600,10 @@ generate_metadata	.venv/lib/python3.14/site-packages/pip/_internal/operations/bu
 generate_metadata	.venv/lib64/python3.14/site-packages/pip/_internal/operations/build/metadata.py	/^def generate_metadata($/;"	f	typeref:typename:str
 generate_segments	.venv/lib/python3.14/site-packages/pip/_vendor/rich/align.py	/^        def generate_segments() -> Iterable[Segment]:$/;"	f	member:Align.__rich_console__	typeref:typename:Iterable[Segment]	file:
 generate_segments	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/align.py	/^        def generate_segments() -> Iterable[Segment]:$/;"	f	member:Align.__rich_console__	typeref:typename:Iterable[Segment]	file:
-generation	mu/ds.h	/^    uint32_t generation;$/;"	m	struct:mu_weak_handle	typeref:typename:uint32_t
 generation	mu/mu_bulk_storage.h	/^    uint32_t generation;$/;"	m	struct:mu_weak_handle	typeref:typename:uint32_t
 generation	mu_ecs.h	/^    uint8_t* generation;$/;"	m	struct:mu_ecs_entity_manager	typeref:typename:uint8_t *
 generation_capacity	mu_ecs.h	/^    uint32_t generation_capacity;$/;"	m	struct:mu_ecs_entity_manager	typeref:typename:uint32_t
 generation_count	mu_ecs.h	/^    uint32_t generation_count;$/;"	m	struct:mu_ecs_entity_manager	typeref:typename:uint32_t
-generations	mu/ds.h	/^    uint32_t* generations;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint32_t *
 generations	mu/mu_bulk_storage.h	/^    uint32_t* generations;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint32_t *
 generic_tags	.venv/lib/python3.14/site-packages/pip/_vendor/packaging/tags.py	/^def generic_tags($/;"	f	typeref:typename:Iterator[Tag]
 generic_tags	.venv/lib64/python3.14/site-packages/pip/_vendor/packaging/tags.py	/^def generic_tags($/;"	f	typeref:typename:Iterator[Tag]
@@ -21732,23 +21677,16 @@ hash	.venv/lib64/python3.14/site-packages/pip/_internal/models/link.py	/^    def
 hash	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:anonymousFunction2389634023600.anonymousFunction2389634026b00.anonymousObject238963402de05
 hash_file	.venv/lib/python3.14/site-packages/pip/_internal/utils/misc.py	/^def hash_file(path: str, blocksize: int = 1 << 20) -> tuple[Any, int]:$/;"	f	typeref:typename:tuple[Any,int]
 hash_file	.venv/lib64/python3.14/site-packages/pip/_internal/utils/misc.py	/^def hash_file(path: str, blocksize: int = 1 << 20) -> tuple[Any, int]:$/;"	f	typeref:typename:tuple[Any,int]
-hash_find_slot	mu/ds.h	/^static uint32_t hash_find_slot(hash_t* h, uint64_t key)$/;"	f	typeref:typename:uint32_t
 hash_find_slot	mu/mu_hash_table.h	/^static uint32_t hash_find_slot(hash_t* h, uint64_t key)$/;"	f	typeref:typename:uint32_t
-hash_free	mu/ds.h	/^static void hash_free(hash_t* h)$/;"	f	typeref:typename:void
 hash_free	mu/mu_hash_table.h	/^static void hash_free(hash_t* h)$/;"	f	typeref:typename:void
-hash_get	mu/ds.h	/^static uint64_t hash_get(hash_t* h, uint64_t key, uint64_t def)$/;"	f	typeref:typename:uint64_t
 hash_get	mu/mu_hash_table.h	/^static uint64_t hash_get(hash_t* h, uint64_t key, uint64_t def)$/;"	f	typeref:typename:uint64_t
-hash_init	mu/ds.h	/^static void hash_init(hash_t* h, uint32_t cap)$/;"	f	typeref:typename:void
 hash_init	mu/mu_hash_table.h	/^static void hash_init(hash_t* h, uint32_t cap)$/;"	f	typeref:typename:void
 hash_name	.venv/lib/python3.14/site-packages/pip/_internal/models/link.py	/^    def hash_name(self) -> str | None:$/;"	m	class:Link	typeref:typename:str|None
 hash_name	.venv/lib64/python3.14/site-packages/pip/_internal/models/link.py	/^    def hash_name(self) -> str | None:$/;"	m	class:Link	typeref:typename:str|None
-hash_put	mu/ds.h	/^static void hash_put(hash_t* h, uint64_t key, uint64_t value)$/;"	f	typeref:typename:void
 hash_put	mu/mu_hash_table.h	/^static void hash_put(hash_t* h, uint64_t key, uint64_t value)$/;"	f	typeref:typename:void
-hash_t	mu/ds.h	/^} hash_t;$/;"	t	typeref:struct:__anondec252430a08
 hash_t	mu/mu_hash_table.h	/^} hash_t;$/;"	t	typeref:struct:__anon2cfea5380108
 hash_then_or	.venv/lib/python3.14/site-packages/pip/_internal/exceptions.py	/^        def hash_then_or(hash_name: str) -> chain[str]:$/;"	f	member:HashMismatch._hash_comparison	typeref:typename:chain[str]	file:
 hash_then_or	.venv/lib64/python3.14/site-packages/pip/_internal/exceptions.py	/^        def hash_then_or(hash_name: str) -> chain[str]:$/;"	f	member:HashMismatch._hash_comparison	typeref:typename:chain[str]	file:
-hash_u64	mu/ds.h	/^static uint64_t hash_u64(uint64_t x)$/;"	f	typeref:typename:uint64_t
 hash_u64	mu/mu_hash_table.h	/^static uint64_t hash_u64(uint64_t x)$/;"	f	typeref:typename:uint64_t
 hashcmp	.venv/lib/python3.14/site-packages/pip/_vendor/pkg_resources/__init__.py	/^    def hashcmp(self):$/;"	m	class:Distribution
 hashcmp	.venv/lib64/python3.14/site-packages/pip/_vendor/pkg_resources/__init__.py	/^    def hashcmp(self):$/;"	m	class:Distribution
@@ -21773,10 +21711,6 @@ head	.venv/lib64/python3.14/site-packages/pip/_internal/exceptions.py	/^    head
 head	.venv/lib64/python3.14/site-packages/pip/_internal/exceptions.py	/^    head = ($/;"	v	class:VcsHashUnsupported
 head	.venv/lib64/python3.14/site-packages/pip/_vendor/requests/api.py	/^def head(url, **kwargs):$/;"	f
 head	.venv/lib64/python3.14/site-packages/pip/_vendor/requests/sessions.py	/^    def head(self, url, **kwargs):$/;"	m	class:Session
-head	mu.h	/^    mu_list_node* head;$/;"	m	struct:mu_list	typeref:typename:mu_list_node *
-head	mu/ds.h	/^    mu_list_node* head;$/;"	m	struct:mu_list	typeref:typename:mu_list_node *
-head	mu/ds.h	/^    uint32_t  head;$/;"	m	struct:__anondec252430708	typeref:typename:uint32_t
-head	mu/ds.h	/^    uint32_t head;$/;"	m	struct:__anondec252430808	typeref:typename:uint32_t
 head	mu/mu_allocators.h	/^    uint32_t  head;$/;"	m	struct:__anoncc259a010208	typeref:typename:uint32_t
 head	mu/mu_allocators.h	/^    uint32_t head;$/;"	m	struct:__anoncc259a010308	typeref:typename:uint32_t
 header	.venv/lib/python3.14/site-packages/pip/_vendor/pygments/unistring.py	/^    header = content[:content.find('Cc =')]$/;"	v
@@ -22319,7 +22253,6 @@ id	.venv/lib/python3.14/site-packages/pip/_vendor/distro/distro.py	/^def id() ->
 id	.venv/lib64/python3.14/site-packages/pip/_vendor/distro/distro.py	/^    def id(self) -> str:$/;"	m	class:LinuxDistribution	typeref:typename:str
 id	.venv/lib64/python3.14/site-packages/pip/_vendor/distro/distro.py	/^def id() -> str:$/;"	f	typeref:typename:str
 id	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:t.exports.getConstructor.anonymousFunction2389634016600.anonymousObject2389634016705
-id	mu/ds.h	/^    uint32_t id;$/;"	m	struct:mu_weak_handle	typeref:typename:uint32_t
 id	mu/mu_bulk_storage.h	/^    uint32_t id;$/;"	m	struct:mu_weak_handle	typeref:typename:uint32_t
 id	mu_ecs.h	/^    uint32_t id;$/;"	m	struct:mu_ecs_entity	typeref:typename:uint32_t
 id	mu_roguelike.h	/^	int id;$/;"	m	struct:mu_rog_weighted_entry	typeref:typename:int
@@ -22433,7 +22366,6 @@ in_usersite	.venv/lib/python3.14/site-packages/pip/_internal/metadata/base.py	/^
 in_usersite	.venv/lib64/python3.14/site-packages/pip/_internal/metadata/base.py	/^    def in_usersite(self) -> bool:$/;"	m	class:BaseDistribution	typeref:typename:bool
 in_venv	.venv/lib/python3.14/site-packages/pip/_vendor/distlib/util.py	/^def in_venv():$/;"	f
 in_venv	.venv/lib64/python3.14/site-packages/pip/_vendor/distlib/util.py	/^def in_venv():$/;"	f
-inc	mu/ds.h	/^    uint64_t inc;$/;"	m	struct:__anondec252430508	typeref:typename:uint64_t
 inc	mu/mu_pcg.h	/^    uint64_t inc;$/;"	m	struct:__anon9bb242070108	typeref:typename:uint64_t
 inc_convert	.venv/lib/python3.14/site-packages/pip/_vendor/distlib/util.py	/^    def inc_convert(self, value):$/;"	m	class:Configurator
 inc_convert	.venv/lib64/python3.14/site-packages/pip/_vendor/distlib/util.py	/^    def inc_convert(self, value):$/;"	m	class:Configurator
@@ -23140,7 +23072,6 @@ key	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^
 key	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:anonymousObject2389634017e05
 key	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:anonymousObject2389634018105
 key	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:anonymousObject2389634018205
-key	mu/ds.h	/^    uint64_t key;$/;"	m	struct:mu_multi_index_node	typeref:typename:uint64_t
 key	mu/mu_multi_index.h	/^    uint64_t key;$/;"	m	struct:mu_multi_index_node	typeref:typename:uint64_t
 key_fn_by_scheme	.venv/lib/python3.14/site-packages/pip/_vendor/urllib3/poolmanager.py	/^key_fn_by_scheme = {$/;"	v
 key_fn_by_scheme	.venv/lib64/python3.14/site-packages/pip/_vendor/urllib3/poolmanager.py	/^key_fn_by_scheme = {$/;"	v
@@ -23172,8 +23103,6 @@ keys	.venv/lib64/python3.14/site-packages/pip/_vendor/urllib3/_collections.py	/^
 keys	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	m	variable:anonymousFunction2389634022100.anonymousObject2389634022305
 keys	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	m	variable:anonymousObject2389634018005
 keys	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:t.exports.anonymousObject23896340f205
-keys	mu/ds.h	/^    uint64_t* keys;    \/\/ hashed keys$/;"	m	struct:mu_hash32_static_t	typeref:typename:uint64_t *
-keys	mu/ds.h	/^    uint64_t* keys;$/;"	m	struct:__anondec252430a08	typeref:typename:uint64_t *
 keys	mu/mu_hash_table.h	/^    uint64_t* keys;    \/\/ hashed keys$/;"	m	struct:mu_hash32_static_t	typeref:typename:uint64_t *
 keys	mu/mu_hash_table.h	/^    uint64_t* keys;$/;"	m	struct:__anon2cfea5380108	typeref:typename:uint64_t *
 keys	mu_min_containers.h	/^    uint64_t *keys;$/;"	m	struct:mu_hash64	typeref:typename:uint64_t *
@@ -23222,11 +23151,7 @@ last	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/pretty.py	/^    last:
 last	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/pretty.py	/^    last: bool = False$/;"	v	class:_Line	typeref:typename:bool
 last	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:anonymousFunction2389634014200.anonymousFunction2389634014300.anonymousObject2389634014405
 last	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:t.exports.getConstructor.anonymousFunction2389634013a00.anonymousObject2389634013b05
-last	mu.h	/^    mu_list_node* last;$/;"	m	struct:__anon7c9accdd0108	typeref:typename:mu_list_node *
-last	mu/ds.h	/^    mu_list_node* last;$/;"	m	struct:__anondec252430408	typeref:typename:mu_list_node *
-last	mu/ds.h	/^    uint32_t last;$/;"	m	struct:__anondec252430108	typeref:typename:uint32_t
 last	mu/mu_id_pool.h	/^    uint32_t last;$/;"	m	struct:__anonbf3c9a330108	typeref:typename:uint32_t
-last_chunk	mu/ds.h	/^    uint32_t last_chunk;$/;"	m	struct:mu_chunked_u32_array	typeref:typename:uint32_t
 last_chunk	mu/mu_chunked_array.h	/^    uint32_t last_chunk;$/;"	m	struct:mu_chunked_u32_array	typeref:typename:uint32_t
 last_instruction	.venv/lib/python3.14/site-packages/pip/_vendor/rich/traceback.py	/^    last_instruction: Optional[Tuple[Tuple[int, int], Tuple[int, int]]] = None$/;"	v	class:Frame	typeref:typename:Optional[Tuple[Tuple[int, int], Tuple[int, int]]]
 last_instruction	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/traceback.py	/^    last_instruction: Optional[Tuple[Tuple[int, int], Tuple[int, int]]] = None$/;"	v	class:Frame	typeref:typename:Optional[Tuple[Tuple[int, int], Tuple[int, int]]]
@@ -23356,9 +23281,7 @@ literal	machinery_blog_archive/cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0
 literal	machinery_blog_archive/cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js	/^!function(e){var t="object"==typeof window&&window||"object"==typeof self&&self;"undefined"!=typ/;"	p	variable:anonymousFunction429820f26100.t
 literal	machinery_blog_archive/cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js	/^!function(e){var t="object"==typeof window&&window||"object"==typeof self&&self;"undefined"!=typ/;"	p	variable:anonymousFunction429820f2d200.t
 literal	machinery_blog_archive/cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js	/^e:"}[a-z]*"},{b:"%r\\\\(",e:"\\\\)[a-z]*"},{b:"%r!",e:"![a-z]*"},{b:"%r\\\\[",e:"\\\\][a-z]*"}]}/;"	p	property:anonymousFunction429820f218600.anonymousObject429820f218705.k
-live	mu/ds.h	/^    uint8_t*  live;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint8_t *
 live	mu/mu_bulk_storage.h	/^    uint8_t*  live;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint8_t *
-live_count	mu/ds.h	/^    uint32_t  live_count;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint32_t
 live_count	mu/mu_bulk_storage.h	/^    uint32_t  live_count;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint32_t
 ln_10	Terathon-Math-Library/TSMath.cpp	/^const float Math::ln_10 =				2.3025850929940456840179914546844F;$/;"	m	class:Math	typeref:typename:const float
 ln_2	Terathon-Math-Library/TSMath.cpp	/^const float Math::ln_2 =				0.69314718055994530941723212145818F;$/;"	m	class:Math	typeref:typename:const float
@@ -23886,16 +23809,11 @@ map	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/layout.py	/^    def ma
 map	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	m	variable:anonymousFunction238963401ba00.anonymousObject238963401bc05
 map	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:anonymousFunction238963400300.anonymousFunction238963400500.n.anonymousObject238963407505
 map	mapgen4/embed.html	/^  <div id="map"><canvas id="mapgen4" width="2048" height="2048"\/><\/div>$/;"	I
-map_capacity	mu/ds.h	/^    uint32_t  map_capacity;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t
 map_capacity	mu/mu_multi_index.h	/^    uint32_t  map_capacity;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t
-map_count	mu/ds.h	/^    uint32_t  map_count;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t
 map_count	mu/mu_multi_index.h	/^    uint32_t  map_count;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t
 map_h	mu_roguelike.h	/^	int map_h;$/;"	m	struct:mu_rog_roomgen_params	typeref:typename:int
-map_keys	mu/ds.h	/^    uint64_t* map_keys;$/;"	m	struct:mu_multi_index	typeref:typename:uint64_t *
 map_keys	mu/mu_multi_index.h	/^    uint64_t* map_keys;$/;"	m	struct:mu_multi_index	typeref:typename:uint64_t *
-map_states	mu/ds.h	/^    uint8_t*  map_states;$/;"	m	struct:mu_multi_index	typeref:typename:uint8_t *
 map_states	mu/mu_multi_index.h	/^    uint8_t*  map_states;$/;"	m	struct:mu_multi_index	typeref:typename:uint8_t *
-map_values	mu/ds.h	/^    uint32_t* map_values;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t *
 map_values	mu/mu_multi_index.h	/^    uint32_t* map_values;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t *
 map_w	mu_roguelike.h	/^	int map_w;$/;"	m	struct:mu_rog_roomgen_params	typeref:typename:int
 mapgen4	mapgen4/embed.html	/^  <div id="map"><canvas id="mapgen4" width="2048" height="2048"\/><\/div>$/;"	I
@@ -23969,7 +23887,6 @@ matrix4D_type	Terathon-Math-Library/TSMatrix4D.h	/^		typedef Matrix4D matrix4D_t
 max_decode_links	.venv/lib/python3.14/site-packages/pip/_vendor/urllib3/response.py	/^    max_decode_links = 5$/;"	v	class:MultiDecoder
 max_decode_links	.venv/lib64/python3.14/site-packages/pip/_vendor/urllib3/response.py	/^    max_decode_links = 5$/;"	v	class:MultiDecoder
 max_float	Terathon-Math-Library/TSMath.cpp	/^const float Math::max_float =			(float&) hex_7F7FFFFF;$/;"	m	class:Math	typeref:typename:const float
-max_id	mu/ds.h	/^    uint32_t          max_id;$/;"	m	struct:__anondec252430208	typeref:typename:uint32_t
 max_id	mu/mu_id_pool.h	/^    uint32_t          max_id;$/;"	m	struct:__anonbf3c9a330208	typeref:typename:uint32_t
 max_line_length	.venv/lib/python3.14/site-packages/pip/_vendor/packaging/metadata.py	/^    max_line_length = 0$/;"	v	class:RFC822Policy
 max_line_length	.venv/lib64/python3.14/site-packages/pip/_vendor/packaging/metadata.py	/^    max_line_length = 0$/;"	v	class:RFC822Policy
@@ -23999,7 +23916,6 @@ measure_renderables	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/measur
 medium	mapgen4/embed.html	/^  <button id="medium"><svg viewBox="-50 -50 100 100"><circle r="35"\/><\/svg><\/button>$/;"	I
 memGetStatistics	mu_mmgr.h	/^MemoryStatistics memGetStatistics(void)$/;"	f	typeref:typename:MemoryStatistics
 memSetStackSkipCount	mu_mmgr.h	/^void memSetStackSkipCount(int stackDepth)$/;"	f	typeref:typename:void
-memory	mu/ds.h	/^    uint8_t* memory;$/;"	m	struct:__anondec252430608	typeref:typename:uint8_t *
 memory	mu/mu_allocators.h	/^    uint8_t* memory;$/;"	m	struct:__anoncc259a010108	typeref:typename:uint8_t *
 memory-overwrite-detection	machinery_blog_archive/post/virtual-memory-tricks/index.html	/^<h2 id="memory-overwrite-detection">Memory overwrite detection<\/h2>$/;"	I
 memory-tracking	machinery_blog_archive/post/beta-2020-6/index.html	/^<h2 id="memory-tracking">Memory Tracking<\/h2>$/;"	I
@@ -24254,118 +24170,62 @@ mu_array_vprintf	mu_min_containers.h	/^static inline void mu_array_vprintf(char 
 mu_bit_flip	allocators.h	/^static inline void mu_bit_flip(uint8_t* bits, uint32_t idx) {$/;"	f	typeref:typename:void
 mu_bit_get	allocators.h	/^static inline uint32_t mu_bit_get(const uint8_t* bits, uint32_t idx) {$/;"	f	typeref:typename:uint32_t
 mu_bit_set	allocators.h	/^static inline void mu_bit_set(uint8_t* bits, uint32_t idx, uint32_t v) {$/;"	f	typeref:typename:void
-mu_bitset	mu/bitset.h	/^typedef struct mu_bitset$/;"	s
-mu_bitset	mu/bitset.h	/^} mu_bitset;$/;"	t	typeref:struct:mu_bitset
 mu_bitset	mu/mu_bitset.h	/^typedef struct mu_bitset$/;"	s
 mu_bitset	mu/mu_bitset.h	/^} mu_bitset;$/;"	t	typeref:struct:mu_bitset
-mu_bitset_and	mu/bitset.c	/^bool mu_bitset_and(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* /;"	f	typeref:typename:bool
 mu_bitset_and	mu/mu_bitset.c	/^bool mu_bitset_and(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* /;"	f	typeref:typename:bool
-mu_bitset_and_assign	mu/bitset.c	/^bool mu_bitset_and_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b)$/;"	f	typeref:typename:bool
 mu_bitset_and_assign	mu/mu_bitset.c	/^bool mu_bitset_and_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b)$/;"	f	typeref:typename:bool
-mu_bitset_any_bits_set	mu/bitset.c	/^static bool mu_bitset_any_bits_set(const mu_bitset* b, size_t starting_loc)$/;"	f	typeref:typename:bool	file:
 mu_bitset_any_bits_set	mu/mu_bitset.c	/^static bool mu_bitset_any_bits_set(const mu_bitset* b, size_t starting_loc)$/;"	f	typeref:typename:bool	file:
 mu_bitset_bytes	allocators.h	/^static inline uint32_t mu_bitset_bytes(uint32_t bits) {$/;"	f	typeref:typename:uint32_t
-mu_bitset_clear	mu/bitset.c	/^void mu_bitset_clear(mu_bitset* bitset)$/;"	f	typeref:typename:void
 mu_bitset_clear	mu/mu_bitset.c	/^void mu_bitset_clear(mu_bitset* bitset)$/;"	f	typeref:typename:void
-mu_bitset_contains_all	mu/bitset.c	/^bool mu_bitset_contains_all(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:bool
 mu_bitset_contains_all	mu/mu_bitset.c	/^bool mu_bitset_contains_all(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:bool
-mu_bitset_copy	mu/bitset.c	/^mu_bitset* mu_bitset_copy(const mu_bitset* src)$/;"	f	typeref:typename:mu_bitset *
 mu_bitset_copy	mu/mu_bitset.c	/^mu_bitset* mu_bitset_copy(const mu_bitset* src)$/;"	f	typeref:typename:mu_bitset *
-mu_bitset_count	mu/bitset.c	/^size_t mu_bitset_count(const mu_bitset* bs)$/;"	f	typeref:typename:size_t
 mu_bitset_count	mu/mu_bitset.c	/^size_t mu_bitset_count(const mu_bitset* bs)$/;"	f	typeref:typename:size_t
-mu_bitset_create	mu/bitset.c	/^mu_bitset* mu_bitset_create()$/;"	f	typeref:typename:mu_bitset *
 mu_bitset_create	mu/mu_bitset.c	/^mu_bitset* mu_bitset_create()$/;"	f	typeref:typename:mu_bitset *
-mu_bitset_create_with_capacity	mu/bitset.c	/^mu_bitset* mu_bitset_create_with_capacity(size_t size)$/;"	f	typeref:typename:mu_bitset *
 mu_bitset_create_with_capacity	mu/mu_bitset.c	/^mu_bitset* mu_bitset_create_with_capacity(size_t size)$/;"	f	typeref:typename:mu_bitset *
-mu_bitset_difference_count	mu/bitset.c	/^size_t mu_bitset_difference_count(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT /;"	f	typeref:typename:size_t
 mu_bitset_difference_count	mu/mu_bitset.c	/^size_t mu_bitset_difference_count(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT /;"	f	typeref:typename:size_t
-mu_bitset_disable_bit	mu/bitset.c	/^void mu_bitset_disable_bit(mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:void
 mu_bitset_disable_bit	mu/mu_bitset.c	/^void mu_bitset_disable_bit(mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:void
-mu_bitset_empty	mu/bitset.c	/^bool mu_bitset_empty(const mu_bitset* bs)$/;"	f	typeref:typename:bool
 mu_bitset_empty	mu/mu_bitset.c	/^bool mu_bitset_empty(const mu_bitset* bs)$/;"	f	typeref:typename:bool
-mu_bitset_enable_bit	mu/bitset.c	/^void mu_bitset_enable_bit(mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:void
 mu_bitset_enable_bit	mu/mu_bitset.c	/^void mu_bitset_enable_bit(mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:void
-mu_bitset_equal	mu/bitset.c	/^bool mu_bitset_equal(const mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b)$/;"	f	typeref:typename:bool
 mu_bitset_equal	mu/mu_bitset.c	/^bool mu_bitset_equal(const mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b)$/;"	f	typeref:typename:bool
-mu_bitset_fill	mu/bitset.c	/^void mu_bitset_fill(mu_bitset* bitset)$/;"	f	typeref:typename:void
 mu_bitset_fill	mu/mu_bitset.c	/^void mu_bitset_fill(mu_bitset* bitset)$/;"	f	typeref:typename:void
-mu_bitset_for_each	mu/bitset.h	/^static MU_INLINE bool mu_bitset_for_each(const mu_bitset* bs, mu_bitset_iterator iterator, void*/;"	f	typeref:typename:MU_INLINE bool
 mu_bitset_for_each	mu/mu_bitset.h	/^static MU_INLINE bool mu_bitset_for_each(const mu_bitset* bs, mu_bitset_iterator iterator, void*/;"	f	typeref:typename:MU_INLINE bool
-mu_bitset_free	mu/bitset.c	/^void mu_bitset_free(mu_bitset* bitset)$/;"	f	typeref:typename:void
 mu_bitset_free	mu/mu_bitset.c	/^void mu_bitset_free(mu_bitset* bitset)$/;"	f	typeref:typename:void
-mu_bitset_get_bit	mu/bitset.c	/^bool mu_bitset_get_bit(const mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:bool
 mu_bitset_get_bit	mu/mu_bitset.c	/^bool mu_bitset_get_bit(const mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:bool
-mu_bitset_grow	mu/bitset.c	/^bool mu_bitset_grow(mu_bitset* bs, size_t new_word_count)$/;"	f	typeref:typename:bool
 mu_bitset_grow	mu/mu_bitset.c	/^bool mu_bitset_grow(mu_bitset* bs, size_t new_word_count)$/;"	f	typeref:typename:bool
-mu_bitset_inplace_difference	mu/bitset.c	/^void mu_bitset_inplace_difference(mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:void
 mu_bitset_inplace_difference	mu/mu_bitset.c	/^void mu_bitset_inplace_difference(mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:void
-mu_bitset_inplace_intersection	mu/bitset.c	/^void mu_bitset_inplace_intersection(mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:void
 mu_bitset_inplace_intersection	mu/mu_bitset.c	/^void mu_bitset_inplace_intersection(mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:void
-mu_bitset_inplace_symmetric_difference	mu/bitset.c	/^bool mu_bitset_inplace_symmetric_difference(mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTR/;"	f	typeref:typename:bool
 mu_bitset_inplace_symmetric_difference	mu/mu_bitset.c	/^bool mu_bitset_inplace_symmetric_difference(mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTR/;"	f	typeref:typename:bool
-mu_bitset_inplace_union	mu/bitset.c	/^bool mu_bitset_inplace_union(mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:bool
 mu_bitset_inplace_union	mu/mu_bitset.c	/^bool mu_bitset_inplace_union(mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:bool
-mu_bitset_intersection_count	mu/bitset.c	/^size_t mu_bitset_intersection_count(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRIC/;"	f	typeref:typename:size_t
 mu_bitset_intersection_count	mu/mu_bitset.c	/^size_t mu_bitset_intersection_count(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRIC/;"	f	typeref:typename:size_t
-mu_bitset_iterator	mu/bitset.h	/^typedef bool (*mu_bitset_iterator)(size_t value, void* param);$/;"	t	typeref:typename:bool (*)(size_t value,void * param)
 mu_bitset_iterator	mu/mu_bitset.h	/^typedef bool (*mu_bitset_iterator)(size_t value, void* param);$/;"	t	typeref:typename:bool (*)(size_t value,void * param)
-mu_bitset_maximum	mu/bitset.c	/^size_t mu_bitset_maximum(const mu_bitset* bs)$/;"	f	typeref:typename:size_t
 mu_bitset_maximum	mu/mu_bitset.c	/^size_t mu_bitset_maximum(const mu_bitset* bs)$/;"	f	typeref:typename:size_t
-mu_bitset_minimum	mu/bitset.c	/^size_t mu_bitset_minimum(const mu_bitset* bs)$/;"	f	typeref:typename:size_t
 mu_bitset_minimum	mu/mu_bitset.c	/^size_t mu_bitset_minimum(const mu_bitset* bs)$/;"	f	typeref:typename:size_t
-mu_bitset_next_set_bit	mu/bitset.h	/^static MU_INLINE bool mu_bitset_next_set_bit(const mu_bitset* bs, size_t* i)$/;"	f	typeref:typename:MU_INLINE bool
 mu_bitset_next_set_bit	mu/mu_bitset.h	/^static MU_INLINE bool mu_bitset_next_set_bit(const mu_bitset* bs, size_t* i)$/;"	f	typeref:typename:MU_INLINE bool
-mu_bitset_next_set_bits	mu/bitset.h	/^static MU_INLINE size_t mu_bitset_next_set_bits(const mu_bitset* bs, size_t* buffer, size_t capa/;"	f	typeref:typename:MU_INLINE size_t
 mu_bitset_next_set_bits	mu/mu_bitset.h	/^static MU_INLINE size_t mu_bitset_next_set_bits(const mu_bitset* bs, size_t* buffer, size_t capa/;"	f	typeref:typename:MU_INLINE size_t
-mu_bitset_not	mu/bitset.c	/^bool mu_bitset_not(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a)$/;"	f	typeref:typename:bool
 mu_bitset_not	mu/mu_bitset.c	/^bool mu_bitset_not(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a)$/;"	f	typeref:typename:bool
-mu_bitset_or	mu/bitset.c	/^bool mu_bitset_or(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* M/;"	f	typeref:typename:bool
 mu_bitset_or	mu/mu_bitset.c	/^bool mu_bitset_or(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* M/;"	f	typeref:typename:bool
-mu_bitset_or_assign	mu/bitset.c	/^bool mu_bitset_or_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b)$/;"	f	typeref:typename:bool
 mu_bitset_or_assign	mu/mu_bitset.c	/^bool mu_bitset_or_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b)$/;"	f	typeref:typename:bool
-mu_bitset_print	mu/bitset.c	/^void mu_bitset_print(const mu_bitset* b)$/;"	f	typeref:typename:void
 mu_bitset_print	mu/mu_bitset.c	/^void mu_bitset_print(const mu_bitset* b)$/;"	f	typeref:typename:void
-mu_bitset_reset	mu/bitset.c	/^void mu_bitset_reset(mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:void
 mu_bitset_reset	mu/mu_bitset.c	/^void mu_bitset_reset(mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:void
-mu_bitset_resize_impl	mu/bitset.c	/^static bool mu_bitset_resize_impl(mu_bitset* bs, size_t new_word_count, bool padwithzeroes)$/;"	f	typeref:typename:bool	file:
 mu_bitset_resize_impl	mu/mu_bitset.c	/^static bool mu_bitset_resize_impl(mu_bitset* bs, size_t new_word_count, bool padwithzeroes)$/;"	f	typeref:typename:bool	file:
-mu_bitset_resize_words	mu/bitset.c	/^bool mu_bitset_resize_words(mu_bitset* bs, size_t new_word_count)$/;"	f	typeref:typename:bool
 mu_bitset_resize_words	mu/mu_bitset.c	/^bool mu_bitset_resize_words(mu_bitset* bs, size_t new_word_count)$/;"	f	typeref:typename:bool
-mu_bitset_set	mu/bitset.c	/^void mu_bitset_set(mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:void
 mu_bitset_set	mu/mu_bitset.c	/^void mu_bitset_set(mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:void
-mu_bitset_set_bit	mu/bitset.c	/^void mu_bitset_set_bit(mu_bitset* bs, size_t bit_index, bool value)$/;"	f	typeref:typename:void
 mu_bitset_set_bit	mu/mu_bitset.c	/^void mu_bitset_set_bit(mu_bitset* bs, size_t bit_index, bool value)$/;"	f	typeref:typename:void
-mu_bitset_shift_left	mu/bitset.c	/^void mu_bitset_shift_left(mu_bitset* bs, size_t shift)$/;"	f	typeref:typename:void
 mu_bitset_shift_left	mu/mu_bitset.c	/^void mu_bitset_shift_left(mu_bitset* bs, size_t shift)$/;"	f	typeref:typename:void
-mu_bitset_shift_right	mu/bitset.c	/^void mu_bitset_shift_right(mu_bitset* bs, size_t shift)$/;"	f	typeref:typename:void
 mu_bitset_shift_right	mu/mu_bitset.c	/^void mu_bitset_shift_right(mu_bitset* bs, size_t shift)$/;"	f	typeref:typename:void
-mu_bitset_size_in_bits	mu/bitset.h	/^static MU_INLINE size_t mu_bitset_size_in_bits(const mu_bitset* bs)$/;"	f	typeref:typename:MU_INLINE size_t
 mu_bitset_size_in_bits	mu/mu_bitset.h	/^static MU_INLINE size_t mu_bitset_size_in_bits(const mu_bitset* bs)$/;"	f	typeref:typename:MU_INLINE size_t
-mu_bitset_size_in_bytes	mu/bitset.h	/^static MU_INLINE size_t mu_bitset_size_in_bytes(const mu_bitset* bs)$/;"	f	typeref:typename:MU_INLINE size_t
 mu_bitset_size_in_bytes	mu/mu_bitset.h	/^static MU_INLINE size_t mu_bitset_size_in_bytes(const mu_bitset* bs)$/;"	f	typeref:typename:MU_INLINE size_t
-mu_bitset_size_in_words	mu/bitset.h	/^static MU_INLINE size_t mu_bitset_size_in_words(const mu_bitset* bs)$/;"	f	typeref:typename:MU_INLINE size_t
 mu_bitset_size_in_words	mu/mu_bitset.h	/^static MU_INLINE size_t mu_bitset_size_in_words(const mu_bitset* bs)$/;"	f	typeref:typename:MU_INLINE size_t
-mu_bitset_symmetric_difference_count	mu/bitset.c	/^size_t mu_bitset_symmetric_difference_count(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU/;"	f	typeref:typename:size_t
 mu_bitset_symmetric_difference_count	mu/mu_bitset.c	/^size_t mu_bitset_symmetric_difference_count(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU/;"	f	typeref:typename:size_t
-mu_bitset_test	mu/bitset.c	/^bool mu_bitset_test(const mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:bool
 mu_bitset_test	mu/mu_bitset.c	/^bool mu_bitset_test(const mu_bitset* bs, size_t bit_index)$/;"	f	typeref:typename:bool
-mu_bitset_traverse	mu/bitset.c	/^void mu_bitset_traverse(const mu_bitset* bs, mu_bitset_visit_fn visitor, void* user)$/;"	f	typeref:typename:void
 mu_bitset_traverse	mu/mu_bitset.c	/^void mu_bitset_traverse(const mu_bitset* bs, mu_bitset_visit_fn visitor, void* user)$/;"	f	typeref:typename:void
-mu_bitset_traverse_range	mu/bitset.c	/^void mu_bitset_traverse_range(const mu_bitset* bs, mu_bitset_visit_fn visitor, void* user, size_/;"	f	typeref:typename:void
 mu_bitset_traverse_range	mu/mu_bitset.c	/^void mu_bitset_traverse_range(const mu_bitset* bs, mu_bitset_visit_fn visitor, void* user, size_/;"	f	typeref:typename:void
-mu_bitset_trim	mu/bitset.c	/^bool mu_bitset_trim(mu_bitset* bs)$/;"	f	typeref:typename:bool
 mu_bitset_trim	mu/mu_bitset.c	/^bool mu_bitset_trim(mu_bitset* bs)$/;"	f	typeref:typename:bool
-mu_bitset_union_count	mu/bitset.c	/^size_t mu_bitset_union_count(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:size_t
 mu_bitset_union_count	mu/mu_bitset.c	/^size_t mu_bitset_union_count(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:size_t
-mu_bitset_visit_fn	mu/bitset.h	/^typedef mu_bitset_iterator mu_bitset_visit_fn;$/;"	t	typeref:typename:mu_bitset_iterator
 mu_bitset_visit_fn	mu/mu_bitset.h	/^typedef mu_bitset_iterator mu_bitset_visit_fn;$/;"	t	typeref:typename:mu_bitset_iterator
-mu_bitset_xor	mu/bitset.c	/^bool mu_bitset_xor(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* /;"	f	typeref:typename:bool
 mu_bitset_xor	mu/mu_bitset.c	/^bool mu_bitset_xor(mu_bitset* MU_RESTRICT out, const mu_bitset* MU_RESTRICT a, const mu_bitset* /;"	f	typeref:typename:bool
-mu_bitset_xor_assign	mu/bitset.c	/^bool mu_bitset_xor_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b)$/;"	f	typeref:typename:bool
 mu_bitset_xor_assign	mu/mu_bitset.c	/^bool mu_bitset_xor_assign(mu_bitset* MU_RESTRICT a, const mu_bitset* MU_RESTRICT b)$/;"	f	typeref:typename:bool
-mu_bitsets_disjoint	mu/bitset.c	/^bool mu_bitsets_disjoint(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:bool
 mu_bitsets_disjoint	mu/mu_bitset.c	/^bool mu_bitsets_disjoint(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:bool
-mu_bitsets_intersect	mu/bitset.c	/^bool mu_bitsets_intersect(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:bool
 mu_bitsets_intersect	mu/mu_bitset.c	/^bool mu_bitsets_intersect(const mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_RESTRICT b2)$/;"	f	typeref:typename:bool
 mu_block_index	allocators.h	/^static inline uint32_t mu_block_index(const mu_buddy* b, uint32_t level, uint32_t index_in_level/;"	f	typeref:typename:uint32_t
 mu_buddy	allocators.h	/^typedef struct mu_buddy {$/;"	s
@@ -24382,98 +24242,43 @@ mu_buddy_num_blocks	allocators.h	/^static inline uint32_t mu_buddy_num_blocks(ui
 mu_buddy_num_internal	allocators.h	/^static inline uint32_t mu_buddy_num_internal(uint32_t num_levels) {$/;"	f	typeref:typename:uint32_t
 mu_buddy_num_levels	allocators.h	/^static inline uint32_t mu_buddy_num_levels(uint32_t total_size, uint32_t leaf_size) {$/;"	f	typeref:typename:uint32_t
 mu_buddy_split_to_level	allocators.h	/^static uint32_t mu_buddy_split_to_level(mu_buddy* b, uint32_t level) {$/;"	f	typeref:typename:uint32_t
-mu_buffer	mu/ds.h	/^} mu_buffer;$/;"	t	typeref:struct:__anondec252430608
 mu_buffer	mu/mu_allocators.h	/^} mu_buffer;$/;"	t	typeref:struct:__anoncc259a010108
-mu_bulk_storage	mu/ds.h	/^typedef struct mu_bulk_storage$/;"	s
-mu_bulk_storage	mu/ds.h	/^} mu_bulk_storage;$/;"	t	typeref:struct:mu_bulk_storage
 mu_bulk_storage	mu/mu_bulk_storage.h	/^typedef struct mu_bulk_storage$/;"	s
 mu_bulk_storage	mu/mu_bulk_storage.h	/^} mu_bulk_storage;$/;"	t	typeref:struct:mu_bulk_storage
-mu_bulk_storage_alloc	mu/ds.c	/^uint32_t mu_bulk_storage_alloc(mu_bulk_storage* storage)$/;"	f	typeref:typename:uint32_t
 mu_bulk_storage_alloc	mu/mu_bulk_storage.c	/^uint32_t mu_bulk_storage_alloc(mu_bulk_storage* storage)$/;"	f	typeref:typename:uint32_t
-mu_bulk_storage_deinit	mu/ds.c	/^void mu_bulk_storage_deinit(mu_bulk_storage* storage)$/;"	f	typeref:typename:void
 mu_bulk_storage_deinit	mu/mu_bulk_storage.c	/^void mu_bulk_storage_deinit(mu_bulk_storage* storage)$/;"	f	typeref:typename:void
-mu_bulk_storage_free	mu/ds.c	/^bool mu_bulk_storage_free(mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:bool
 mu_bulk_storage_free	mu/mu_bulk_storage.c	/^bool mu_bulk_storage_free(mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:bool
-mu_bulk_storage_free_header	mu/ds.c	/^static MU_INLINE uint32_t* mu_bulk_storage_free_header(mu_bulk_storage* storage)$/;"	f	typeref:typename:MU_INLINE uint32_t *	file:
 mu_bulk_storage_free_header	mu/mu_bulk_storage.c	/^static MU_INLINE uint32_t* mu_bulk_storage_free_header(mu_bulk_storage* storage)$/;"	f	typeref:typename:MU_INLINE uint32_t *	file:
-mu_bulk_storage_grow	mu/ds.c	/^static bool mu_bulk_storage_grow(mu_bulk_storage* storage, uint32_t min_capacity)$/;"	f	typeref:typename:bool	file:
 mu_bulk_storage_grow	mu/mu_bulk_storage.c	/^static bool mu_bulk_storage_grow(mu_bulk_storage* storage, uint32_t min_capacity)$/;"	f	typeref:typename:bool	file:
-mu_bulk_storage_init	mu/ds.c	/^bool mu_bulk_storage_init(mu_bulk_storage* storage, size_t slot_size, uint32_t initial_slot_capa/;"	f	typeref:typename:bool
 mu_bulk_storage_init	mu/mu_bulk_storage.c	/^bool mu_bulk_storage_init(mu_bulk_storage* storage, size_t slot_size, uint32_t initial_slot_capa/;"	f	typeref:typename:bool
-mu_bulk_storage_is_live	mu/ds.c	/^bool mu_bulk_storage_is_live(const mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:bool
 mu_bulk_storage_is_live	mu/mu_bulk_storage.c	/^bool mu_bulk_storage_is_live(const mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:bool
-mu_bulk_storage_make_handle	mu/ds.c	/^mu_weak_handle mu_bulk_storage_make_handle(const mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:mu_weak_handle
 mu_bulk_storage_make_handle	mu/mu_bulk_storage.c	/^mu_weak_handle mu_bulk_storage_make_handle(const mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:mu_weak_handle
-mu_bulk_storage_ptr	mu/ds.c	/^void* mu_bulk_storage_ptr(mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:void *
 mu_bulk_storage_ptr	mu/mu_bulk_storage.c	/^void* mu_bulk_storage_ptr(mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:void *
-mu_bulk_storage_ptr_const	mu/ds.c	/^const void* mu_bulk_storage_ptr_const(const mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:const void *
 mu_bulk_storage_ptr_const	mu/mu_bulk_storage.c	/^const void* mu_bulk_storage_ptr_const(const mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:const void *
-mu_bulk_storage_resolve_handle	mu/ds.c	/^void* mu_bulk_storage_resolve_handle(mu_bulk_storage* storage, mu_weak_handle handle)$/;"	f	typeref:typename:void *
 mu_bulk_storage_resolve_handle	mu/mu_bulk_storage.c	/^void* mu_bulk_storage_resolve_handle(mu_bulk_storage* storage, mu_weak_handle handle)$/;"	f	typeref:typename:void *
-mu_bulk_storage_resolve_handle_const	mu/ds.c	/^const void* mu_bulk_storage_resolve_handle_const(const mu_bulk_storage* storage, mu_weak_handle /;"	f	typeref:typename:const void *
 mu_bulk_storage_resolve_handle_const	mu/mu_bulk_storage.c	/^const void* mu_bulk_storage_resolve_handle_const(const mu_bulk_storage* storage, mu_weak_handle /;"	f	typeref:typename:const void *
-mu_bulk_storage_slot_next_ptr	mu/ds.c	/^static MU_INLINE uint32_t* mu_bulk_storage_slot_next_ptr(mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:MU_INLINE uint32_t *	file:
 mu_bulk_storage_slot_next_ptr	mu/mu_bulk_storage.c	/^static MU_INLINE uint32_t* mu_bulk_storage_slot_next_ptr(mu_bulk_storage* storage, uint32_t id)$/;"	f	typeref:typename:MU_INLINE uint32_t *	file:
-mu_bulk_storage_validate_handle	mu/ds.c	/^bool mu_bulk_storage_validate_handle(const mu_bulk_storage* storage, mu_weak_handle handle)$/;"	f	typeref:typename:bool
 mu_bulk_storage_validate_handle	mu/mu_bulk_storage.c	/^bool mu_bulk_storage_validate_handle(const mu_bulk_storage* storage, mu_weak_handle handle)$/;"	f	typeref:typename:bool
-mu_bulk_storage_visit_fn	mu/ds.h	/^typedef bool (*mu_bulk_storage_visit_fn)(uint32_t id, void* slot, void* user);$/;"	t	typeref:typename:bool (*)(uint32_t id,void * slot,void * user)
 mu_bulk_storage_visit_fn	mu/mu_bulk_storage.h	/^typedef bool (*mu_bulk_storage_visit_fn)(uint32_t id, void* slot, void* user);$/;"	t	typeref:typename:bool (*)(uint32_t id,void * slot,void * user)
-mu_bulk_storage_visit_live	mu/ds.c	/^void mu_bulk_storage_visit_live(mu_bulk_storage* storage, mu_bulk_storage_visit_fn visitor, void/;"	f	typeref:typename:void
 mu_bulk_storage_visit_live	mu/mu_bulk_storage.c	/^void mu_bulk_storage_visit_live(mu_bulk_storage* storage, mu_bulk_storage_visit_fn visitor, void/;"	f	typeref:typename:void
-mu_chunked_u32_array	mu/ds.h	/^typedef struct mu_chunked_u32_array$/;"	s
-mu_chunked_u32_array	mu/ds.h	/^} mu_chunked_u32_array;$/;"	t	typeref:struct:mu_chunked_u32_array
 mu_chunked_u32_array	mu/mu_chunked_array.h	/^typedef struct mu_chunked_u32_array$/;"	s
 mu_chunked_u32_array	mu/mu_chunked_array.h	/^} mu_chunked_u32_array;$/;"	t	typeref:struct:mu_chunked_u32_array
-mu_chunked_u32_array_clear	mu/ds.c	/^void mu_chunked_u32_array_clear(mu_chunked_u32_pool* pool, mu_chunked_u32_array* array)$/;"	f	typeref:typename:void
 mu_chunked_u32_array_clear	mu/mu_chunked_array.c	/^void mu_chunked_u32_array_clear(mu_chunked_u32_pool* pool, mu_chunked_u32_array* array)$/;"	f	typeref:typename:void
-mu_chunked_u32_array_get	mu/ds.c	/^bool mu_chunked_u32_array_get(const mu_chunked_u32_pool* pool, const mu_chunked_u32_array* array/;"	f	typeref:typename:bool
 mu_chunked_u32_array_get	mu/mu_chunked_array.c	/^bool mu_chunked_u32_array_get(const mu_chunked_u32_pool* pool, const mu_chunked_u32_array* array/;"	f	typeref:typename:bool
-mu_chunked_u32_array_init	mu/ds.c	/^void mu_chunked_u32_array_init(mu_chunked_u32_array* array)$/;"	f	typeref:typename:void
 mu_chunked_u32_array_init	mu/mu_chunked_array.c	/^void mu_chunked_u32_array_init(mu_chunked_u32_array* array)$/;"	f	typeref:typename:void
-mu_chunked_u32_array_pop	mu/ds.c	/^bool mu_chunked_u32_array_pop(mu_chunked_u32_pool* pool, mu_chunked_u32_array* array, uint32_t* /;"	f	typeref:typename:bool
 mu_chunked_u32_array_pop	mu/mu_chunked_array.c	/^bool mu_chunked_u32_array_pop(mu_chunked_u32_pool* pool, mu_chunked_u32_array* array, uint32_t* /;"	f	typeref:typename:bool
-mu_chunked_u32_array_push	mu/ds.c	/^bool mu_chunked_u32_array_push(mu_chunked_u32_pool* pool, mu_chunked_u32_array* array, uint32_t /;"	f	typeref:typename:bool
 mu_chunked_u32_array_push	mu/mu_chunked_array.c	/^bool mu_chunked_u32_array_push(mu_chunked_u32_pool* pool, mu_chunked_u32_array* array, uint32_t /;"	f	typeref:typename:bool
-mu_chunked_u32_array_visit	mu/ds.c	/^void mu_chunked_u32_array_visit($/;"	f	typeref:typename:void
 mu_chunked_u32_array_visit	mu/mu_chunked_array.c	/^void mu_chunked_u32_array_visit(const mu_chunked_u32_pool* pool, const mu_chunked_u32_array* arr/;"	f	typeref:typename:void
-mu_chunked_u32_chunk	mu/ds.h	/^typedef struct mu_chunked_u32_chunk$/;"	s
-mu_chunked_u32_chunk	mu/ds.h	/^} mu_chunked_u32_chunk;$/;"	t	typeref:struct:mu_chunked_u32_chunk
 mu_chunked_u32_chunk	mu/mu_chunked_array.h	/^typedef struct mu_chunked_u32_chunk$/;"	s
 mu_chunked_u32_chunk	mu/mu_chunked_array.h	/^} mu_chunked_u32_chunk;$/;"	t	typeref:struct:mu_chunked_u32_chunk
-mu_chunked_u32_pool	mu/ds.h	/^typedef struct mu_chunked_u32_pool$/;"	s
-mu_chunked_u32_pool	mu/ds.h	/^} mu_chunked_u32_pool;$/;"	t	typeref:struct:mu_chunked_u32_pool
 mu_chunked_u32_pool	mu/mu_chunked_array.h	/^typedef struct mu_chunked_u32_pool$/;"	s
 mu_chunked_u32_pool	mu/mu_chunked_array.h	/^} mu_chunked_u32_pool;$/;"	t	typeref:struct:mu_chunked_u32_pool
-mu_chunked_u32_pool_alloc_chunk	mu/ds.c	/^static uint32_t mu_chunked_u32_pool_alloc_chunk(mu_chunked_u32_pool* pool)$/;"	f	typeref:typename:uint32_t	file:
 mu_chunked_u32_pool_alloc_chunk	mu/mu_chunked_array.c	/^static uint32_t mu_chunked_u32_pool_alloc_chunk(mu_chunked_u32_pool* pool)$/;"	f	typeref:typename:uint32_t	file:
-mu_chunked_u32_pool_deinit	mu/ds.c	/^void mu_chunked_u32_pool_deinit(mu_chunked_u32_pool* pool)$/;"	f	typeref:typename:void
 mu_chunked_u32_pool_deinit	mu/mu_chunked_array.c	/^void mu_chunked_u32_pool_deinit(mu_chunked_u32_pool* pool)$/;"	f	typeref:typename:void
-mu_chunked_u32_pool_free_chunk	mu/ds.c	/^static void mu_chunked_u32_pool_free_chunk(mu_chunked_u32_pool* pool, uint32_t chunk_index)$/;"	f	typeref:typename:void	file:
 mu_chunked_u32_pool_free_chunk	mu/mu_chunked_array.c	/^static void mu_chunked_u32_pool_free_chunk(mu_chunked_u32_pool* pool, uint32_t chunk_index)$/;"	f	typeref:typename:void	file:
-mu_chunked_u32_pool_grow	mu/ds.c	/^static bool mu_chunked_u32_pool_grow(mu_chunked_u32_pool* pool, uint32_t min_capacity)$/;"	f	typeref:typename:bool	file:
 mu_chunked_u32_pool_grow	mu/mu_chunked_array.c	/^static bool mu_chunked_u32_pool_grow(mu_chunked_u32_pool* pool, uint32_t min_capacity)$/;"	f	typeref:typename:bool	file:
-mu_chunked_u32_pool_init	mu/ds.c	/^void mu_chunked_u32_pool_init(mu_chunked_u32_pool* pool, uint32_t initial_capacity)$/;"	f	typeref:typename:void
 mu_chunked_u32_pool_init	mu/mu_chunked_array.c	/^void mu_chunked_u32_pool_init(mu_chunked_u32_pool* pool, uint32_t initial_capacity)$/;"	f	typeref:typename:void
-mu_chunked_u32_visit_fn	mu/ds.h	/^typedef bool (*mu_chunked_u32_visit_fn)(uint32_t value, void* user);$/;"	t	typeref:typename:bool (*)(uint32_t value,void * user)
 mu_chunked_u32_visit_fn	mu/mu_chunked_array.h	/^typedef bool (*mu_chunked_u32_visit_fn)(uint32_t value, void* user);$/;"	t	typeref:typename:bool (*)(uint32_t value,void * user)
-mu_circular_list	mu.h	/^} mu_circular_list;$/;"	t	typeref:struct:__anon7c9accdd0108
-mu_circular_list	mu/ds.h	/^} mu_circular_list;$/;"	t	typeref:struct:__anondec252430408
-mu_circular_list_clear	mu.h	/^void mu_circular_list_clear(mu_circular_list* list)$/;"	f	typeref:typename:void
-mu_circular_list_clear	mu/ds.c	/^void mu_circular_list_clear(mu_circular_list* list)$/;"	f	typeref:typename:void
-mu_circular_list_find	mu.h	/^mu_list_node* mu_circular_list_find(mu_circular_list* list, int value)$/;"	f	typeref:typename:mu_list_node *
-mu_circular_list_find	mu/ds.c	/^mu_list_node* mu_circular_list_find(mu_circular_list* list, int value)$/;"	f	typeref:typename:mu_list_node *
-mu_circular_list_init	mu.h	/^void mu_circular_list_init(mu_circular_list* list)$/;"	f	typeref:typename:void
-mu_circular_list_init	mu/ds.c	/^void mu_circular_list_init(mu_circular_list* list)$/;"	f	typeref:typename:void
-mu_circular_list_pop_front	mu.h	/^int mu_circular_list_pop_front(mu_circular_list* list, int* out_value)$/;"	f	typeref:typename:int
-mu_circular_list_pop_front	mu/ds.c	/^int mu_circular_list_pop_front(mu_circular_list* list, int* out_value)$/;"	f	typeref:typename:int
-mu_circular_list_print	mu.h	/^void mu_circular_list_print(const mu_circular_list* list)$/;"	f	typeref:typename:void
-mu_circular_list_print	mu/ds.c	/^void mu_circular_list_print(const mu_circular_list* list)$/;"	f	typeref:typename:void
-mu_circular_list_push_back	mu.h	/^void mu_circular_list_push_back(mu_circular_list* list, int value)$/;"	f	typeref:typename:void
-mu_circular_list_push_back	mu/ds.c	/^void mu_circular_list_push_back(mu_circular_list* list, int value)$/;"	f	typeref:typename:void
-mu_circular_list_push_front	mu.h	/^void mu_circular_list_push_front(mu_circular_list* list, int value)$/;"	f	typeref:typename:void
-mu_circular_list_push_front	mu/ds.c	/^void mu_circular_list_push_front(mu_circular_list* list, int value)$/;"	f	typeref:typename:void
-mu_circular_list_remove_first	mu.h	/^int mu_circular_list_remove_first(mu_circular_list* list, int value)$/;"	f	typeref:typename:int
-mu_circular_list_remove_first	mu/ds.c	/^int mu_circular_list_remove_first(mu_circular_list* list, int value)$/;"	f	typeref:typename:int
 mu_dequantize_half	mu/mu_bitpacking.h	/^MU_INLINE float mu_dequantize_half(uint16_t h)$/;"	f	typeref:typename:MU_INLINE float
 mu_dequantize_snorm	mu/mu_bitpacking.h	/^MU_INLINE float mu_dequantize_snorm(int v, int n)$/;"	f	typeref:typename:MU_INLINE float
 mu_dequantize_unorm	mu/mu_bitpacking.h	/^MU_INLINE float mu_dequantize_unorm(int v, int n)$/;"	f	typeref:typename:MU_INLINE float
@@ -24799,16 +24604,10 @@ mu_ga_xform2_vec	mu_geometric_algebra.h	/^MU_GA_INLINE mu_ga_vec2 mu_ga_xform2_v
 mu_ga_xform3	mu_geometric_algebra.h	/^} mu_ga_xform3;$/;"	t	typeref:struct:__anon632ea9680508
 mu_ga_xform3_point	mu_geometric_algebra.h	/^MU_GA_INLINE mu_ga_point3 mu_ga_xform3_point(mu_ga_xform3 m, mu_ga_point3 p)$/;"	f	typeref:typename:MU_GA_INLINE mu_ga_point3
 mu_ga_xform3_vec	mu_geometric_algebra.h	/^MU_GA_INLINE mu_ga_vec3 mu_ga_xform3_vec(mu_ga_xform3 m, mu_ga_vec3 v)$/;"	f	typeref:typename:MU_GA_INLINE mu_ga_vec3
-mu_hash32_static_clear	mu/ds.h	/^static inline void mu_hash32_static_clear(mu_hash32_static_t* h)$/;"	f	typeref:typename:void
 mu_hash32_static_clear	mu/mu_hash_table.h	/^static inline void mu_hash32_static_clear(mu_hash32_static_t* h)$/;"	f	typeref:typename:void
-mu_hash32_static_get	mu/ds.h	/^static inline uint32_t mu_hash32_static_get(const mu_hash32_static_t* h, uint64_t key)$/;"	f	typeref:typename:uint32_t
 mu_hash32_static_get	mu/mu_hash_table.h	/^static inline uint32_t mu_hash32_static_get(const mu_hash32_static_t* h, uint64_t key)$/;"	f	typeref:typename:uint32_t
-mu_hash32_static_init	mu/ds.h	/^static inline void mu_hash32_static_init(mu_hash32_static_t* h, uint64_t* keys, uint32_t* values/;"	f	typeref:typename:void
 mu_hash32_static_init	mu/mu_hash_table.h	/^static inline void mu_hash32_static_init(mu_hash32_static_t* h, uint64_t* keys, uint32_t* values/;"	f	typeref:typename:void
-mu_hash32_static_set	mu/ds.h	/^static inline void mu_hash32_static_set(mu_hash32_static_t* h, uint64_t key, uint32_t value)$/;"	f	typeref:typename:void
 mu_hash32_static_set	mu/mu_hash_table.h	/^static inline void mu_hash32_static_set(mu_hash32_static_t* h, uint64_t key, uint32_t value)$/;"	f	typeref:typename:void
-mu_hash32_static_t	mu/ds.h	/^typedef struct mu_hash32_static_t$/;"	s
-mu_hash32_static_t	mu/ds.h	/^} mu_hash32_static_t;$/;"	t	typeref:struct:mu_hash32_static_t
 mu_hash32_static_t	mu/mu_hash_table.h	/^typedef struct mu_hash32_static_t$/;"	s
 mu_hash32_static_t	mu/mu_hash_table.h	/^} mu_hash32_static_t;$/;"	t	typeref:struct:mu_hash32_static_t
 mu_hash64	mu_min_containers.h	/^typedef struct mu_hash64$/;"	s
@@ -24830,39 +24629,22 @@ mu_hash64_static_clear	mu_min_containers.h	/^static inline void mu_hash64_static
 mu_hash64_static_get	mu_min_containers.h	/^static inline bool mu_hash64_static_get(const mu_hash64_static *h, uint64_t key, uint64_t *out_v/;"	f	typeref:typename:bool
 mu_hash64_static_get_or	mu_min_containers.h	/^static inline uint64_t mu_hash64_static_get_or(const mu_hash64_static *h, uint64_t key, uint64_t/;"	f	typeref:typename:uint64_t
 mu_hash64_static_set	mu_min_containers.h	/^static inline bool mu_hash64_static_set(mu_hash64_static *h, uint64_t key, uint64_t value)$/;"	f	typeref:typename:bool
-mu_id_pool	mu/ds.h	/^} mu_id_pool;$/;"	t	typeref:struct:__anondec252430208
 mu_id_pool	mu/mu_id_pool.h	/^} mu_id_pool;$/;"	t	typeref:struct:__anonbf3c9a330208
-mu_id_pool_check_ranges	mu/ds.c	/^void mu_id_pool_check_ranges(const mu_id_pool* pool)$/;"	f	typeref:typename:void
 mu_id_pool_check_ranges	mu/mu_id_pool.c	/^void mu_id_pool_check_ranges(const mu_id_pool* pool)$/;"	f	typeref:typename:void
-mu_id_pool_create_id	mu/ds.c	/^bool mu_id_pool_create_id(mu_id_pool* pool, uint32_t* out_id)$/;"	f	typeref:typename:bool
 mu_id_pool_create_id	mu/mu_id_pool.c	/^bool mu_id_pool_create_id(mu_id_pool* pool, uint32_t* out_id)$/;"	f	typeref:typename:bool
-mu_id_pool_create_range_id	mu/ds.c	/^bool mu_id_pool_create_range_id(mu_id_pool* pool, uint32_t* out_id, uint32_t count)$/;"	f	typeref:typename:bool
 mu_id_pool_create_range_id	mu/mu_id_pool.c	/^bool mu_id_pool_create_range_id(mu_id_pool* pool, uint32_t* out_id, uint32_t count)$/;"	f	typeref:typename:bool
-mu_id_pool_deinit	mu/ds.c	/^void mu_id_pool_deinit(mu_id_pool* pool)$/;"	f	typeref:typename:void
 mu_id_pool_deinit	mu/mu_id_pool.c	/^void mu_id_pool_deinit(mu_id_pool* pool)$/;"	f	typeref:typename:void
-mu_id_pool_destroy_all	mu/ds.c	/^void mu_id_pool_destroy_all(mu_id_pool* pool)$/;"	f	typeref:typename:void
 mu_id_pool_destroy_all	mu/mu_id_pool.c	/^void mu_id_pool_destroy_all(mu_id_pool* pool)$/;"	f	typeref:typename:void
-mu_id_pool_destroy_id	mu/ds.c	/^bool mu_id_pool_destroy_id(mu_id_pool* pool, uint32_t id)$/;"	f	typeref:typename:bool
 mu_id_pool_destroy_id	mu/mu_id_pool.c	/^bool mu_id_pool_destroy_id(mu_id_pool* pool, uint32_t id)$/;"	f	typeref:typename:bool
-mu_id_pool_destroy_range	mu/ds.c	/^static void mu_id_pool_destroy_range(mu_id_pool* pool, uint32_t index)$/;"	f	typeref:typename:void	file:
 mu_id_pool_destroy_range	mu/mu_id_pool.c	/^static void mu_id_pool_destroy_range(mu_id_pool* pool, uint32_t index)$/;"	f	typeref:typename:void	file:
-mu_id_pool_destroy_range_id	mu/ds.c	/^bool mu_id_pool_destroy_range_id(mu_id_pool* pool, uint32_t id, uint32_t count)$/;"	f	typeref:typename:bool
 mu_id_pool_destroy_range_id	mu/mu_id_pool.c	/^bool mu_id_pool_destroy_range_id(mu_id_pool* pool, uint32_t id, uint32_t count)$/;"	f	typeref:typename:bool
-mu_id_pool_get_available_ids	mu/ds.c	/^uint32_t mu_id_pool_get_available_ids(const mu_id_pool* pool)$/;"	f	typeref:typename:uint32_t
 mu_id_pool_get_available_ids	mu/mu_id_pool.c	/^uint32_t mu_id_pool_get_available_ids(const mu_id_pool* pool)$/;"	f	typeref:typename:uint32_t
-mu_id_pool_get_largest_continuous_range	mu/ds.c	/^uint32_t mu_id_pool_get_largest_continuous_range(const mu_id_pool* pool)$/;"	f	typeref:typename:uint32_t
 mu_id_pool_get_largest_continuous_range	mu/mu_id_pool.c	/^uint32_t mu_id_pool_get_largest_continuous_range(const mu_id_pool* pool)$/;"	f	typeref:typename:uint32_t
-mu_id_pool_init	mu/ds.c	/^void mu_id_pool_init(mu_id_pool* pool, uint32_t pool_size)$/;"	f	typeref:typename:void
 mu_id_pool_init	mu/mu_id_pool.c	/^void mu_id_pool_init(mu_id_pool* pool, uint32_t pool_size)$/;"	f	typeref:typename:void
-mu_id_pool_insert_range	mu/ds.c	/^static void mu_id_pool_insert_range(mu_id_pool* pool, uint32_t index)$/;"	f	typeref:typename:void	file:
 mu_id_pool_insert_range	mu/mu_id_pool.c	/^static void mu_id_pool_insert_range(mu_id_pool* pool, uint32_t index)$/;"	f	typeref:typename:void	file:
-mu_id_pool_is_id	mu/ds.c	/^bool mu_id_pool_is_id(const mu_id_pool* pool, uint32_t id)$/;"	f	typeref:typename:bool
 mu_id_pool_is_id	mu/mu_id_pool.c	/^bool mu_id_pool_is_id(const mu_id_pool* pool, uint32_t id)$/;"	f	typeref:typename:bool
-mu_id_pool_is_range_available	mu/ds.c	/^bool mu_id_pool_is_range_available(const mu_id_pool* pool, uint32_t search_count)$/;"	f	typeref:typename:bool
 mu_id_pool_is_range_available	mu/mu_id_pool.c	/^bool mu_id_pool_is_range_available(const mu_id_pool* pool, uint32_t search_count)$/;"	f	typeref:typename:bool
-mu_id_pool_print_ranges	mu/ds.c	/^void mu_id_pool_print_ranges(const mu_id_pool* pool)$/;"	f	typeref:typename:void
 mu_id_pool_print_ranges	mu/mu_id_pool.c	/^void mu_id_pool_print_ranges(const mu_id_pool* pool)$/;"	f	typeref:typename:void
-mu_id_pool_range	mu/ds.h	/^} mu_id_pool_range;$/;"	t	typeref:struct:__anondec252430108
 mu_id_pool_range	mu/mu_id_pool.h	/^} mu_id_pool_range;$/;"	t	typeref:struct:__anonbf3c9a330108
 mu_index_freelist_empty	mu_min_containers.h	/^static inline bool mu_index_freelist_empty(const mu_index_link *links, uint32_t head)$/;"	f	typeref:typename:bool
 mu_index_freelist_init	mu_min_containers.h	/^static inline void mu_index_freelist_init(mu_index_link *links, uint32_t head)$/;"	f	typeref:typename:void
@@ -24886,42 +24668,10 @@ mu_left_child	allocators.h	/^static inline uint32_t mu_left_child(uint32_t block
 mu_level_block_size	allocators.h	/^static inline uint32_t mu_level_block_size(const mu_buddy* b, uint32_t level) {$/;"	f	typeref:typename:uint32_t
 mu_level_first_index	allocators.h	/^static inline uint32_t mu_level_first_index(uint32_t level) {$/;"	f	typeref:typename:uint32_t
 mu_level_of_size	allocators.h	/^static inline uint32_t mu_level_of_size(const mu_buddy* b, uint32_t size) {$/;"	f	typeref:typename:uint32_t
-mu_linear_alloc	mu/ds.h	/^MU_INLINE void* mu_linear_alloc(mu_linear_allocator* a, uint32_t size, uint32_t align)$/;"	f	typeref:typename:MU_INLINE void *
 mu_linear_alloc	mu/mu_allocators.h	/^MU_INLINE void* mu_linear_alloc(mu_linear_allocator* a, uint32_t size, uint32_t align)$/;"	f	typeref:typename:MU_INLINE void *
-mu_linear_allocator	mu/ds.h	/^} mu_linear_allocator;$/;"	t	typeref:struct:__anondec252430708
 mu_linear_allocator	mu/mu_allocators.h	/^} mu_linear_allocator;$/;"	t	typeref:struct:__anoncc259a010208
-mu_linear_init	mu/ds.h	/^MU_INLINE void mu_linear_init(mu_linear_allocator* a, void* memory, uint32_t size)$/;"	f	typeref:typename:MU_INLINE void
 mu_linear_init	mu/mu_allocators.h	/^MU_INLINE void mu_linear_init(mu_linear_allocator* a, void* memory, uint32_t size)$/;"	f	typeref:typename:MU_INLINE void
-mu_linear_reset	mu/ds.h	/^MU_INLINE void mu_linear_reset(mu_linear_allocator* a)$/;"	f	typeref:typename:MU_INLINE void
 mu_linear_reset	mu/mu_allocators.h	/^MU_INLINE void mu_linear_reset(mu_linear_allocator* a)$/;"	f	typeref:typename:MU_INLINE void
-mu_list	mu.h	/^typedef struct mu_list$/;"	s
-mu_list	mu.h	/^} mu_list;$/;"	t	typeref:struct:mu_list
-mu_list	mu/ds.h	/^typedef struct mu_list$/;"	s
-mu_list	mu/ds.h	/^} mu_list;$/;"	t	typeref:struct:mu_list
-mu_list_clear	mu.h	/^void mu_list_clear(mu_list* list)$/;"	f	typeref:typename:void
-mu_list_clear	mu/ds.c	/^void mu_list_clear(mu_list* list)$/;"	f	typeref:typename:void
-mu_list_find	mu.h	/^mu_list_node* mu_list_find(mu_list* list, int value)$/;"	f	typeref:typename:mu_list_node *
-mu_list_find	mu/ds.c	/^mu_list_node* mu_list_find(mu_list* list, int value)$/;"	f	typeref:typename:mu_list_node *
-mu_list_init	mu.h	/^void mu_list_init(mu_list* list)$/;"	f	typeref:typename:MU_END_EXTERN_C void
-mu_list_init	mu/ds.c	/^void mu_list_init(mu_list* list)$/;"	f	typeref:typename:void
-mu_list_length	mu.h	/^size_t mu_list_length(const mu_list* list)$/;"	f	typeref:typename:size_t
-mu_list_length	mu/ds.c	/^size_t mu_list_length(const mu_list* list)$/;"	f	typeref:typename:size_t
-mu_list_node	mu.h	/^typedef struct mu_list_node$/;"	s
-mu_list_node	mu.h	/^} mu_list_node;$/;"	t	typeref:struct:mu_list_node
-mu_list_node	mu/ds.h	/^typedef struct mu_list_node$/;"	s
-mu_list_node	mu/ds.h	/^} mu_list_node;$/;"	t	typeref:struct:mu_list_node
-mu_list_print	mu.h	/^void mu_list_print(const mu_list* list)$/;"	f	typeref:typename:void
-mu_list_print	mu/ds.c	/^void mu_list_print(const mu_list* list)$/;"	f	typeref:typename:void
-mu_list_push_back	mu.h	/^void mu_list_push_back(mu_list* list, int value)$/;"	f	typeref:typename:void
-mu_list_push_back	mu/ds.c	/^void mu_list_push_back(mu_list* list, int value)$/;"	f	typeref:typename:void
-mu_list_push_front	mu.h	/^void mu_list_push_front(mu_list* list, int value)$/;"	f	typeref:typename:void
-mu_list_push_front	mu/ds.c	/^void mu_list_push_front(mu_list* list, int value)$/;"	f	typeref:typename:void
-mu_list_remove_all	mu.h	/^int mu_list_remove_all(mu_list* list, int value)$/;"	f	typeref:typename:int
-mu_list_remove_all	mu/ds.c	/^int mu_list_remove_all(mu_list* list, int value)$/;"	f	typeref:typename:int
-mu_list_remove_first	mu.h	/^int mu_list_remove_first(mu_list* list, int value)$/;"	f	typeref:typename:int
-mu_list_remove_first	mu/ds.c	/^int mu_list_remove_first(mu_list* list, int value)$/;"	f	typeref:typename:int
-mu_list_reverse	mu.h	/^void mu_list_reverse(mu_list* list)$/;"	f	typeref:typename:void
-mu_list_reverse	mu/ds.c	/^void mu_list_reverse(mu_list* list)$/;"	f	typeref:typename:void
 mu_mapgen4_alloc_array	mapgen4/mu_mapgen4.h	/^static int32_t mu_mapgen4_alloc_array(void **ptr, size_t elem_size, int32_t count) {$/;"	f	typeref:typename:int32_t
 mu_mapgen4_assign_downslope	mapgen4/mu_mapgen4.h	/^static void mu_mapgen4_assign_downslope(mu_mapgen4_context *ctx) {$/;"	f	typeref:typename:void
 mu_mapgen4_assign_elevation	mapgen4/mu_mapgen4.h	/^mu_mapgen4_assign_elevation(mu_mapgen4_context *ctx,$/;"	f	typeref:typename:MU_MAPGEN4_API mu_mapgen4_result
@@ -25046,51 +24796,28 @@ mu_mmgr_unlock_alloc	mu_mmgr.h	/^static void mu_mmgr_unlock_alloc(void)$/;"	f	ty
 mu_mmgr_unlock_log	mu_mmgr.h	/^static void mu_mmgr_unlock_log(void)$/;"	f	typeref:typename:void
 mu_mmgr_unusedPattern	mu_mmgr.h	/^static unsigned int mu_mmgr_unusedPattern   = 0xfeedface;$/;"	v	typeref:typename:unsigned int
 mu_mmgr_wipeWithPattern	mu_mmgr.h	/^static void mu_mmgr_wipeWithPattern(sAllocUnit* allocUnit, uint32_t pattern, const unsigned int /;"	f	typeref:typename:void
-mu_multi_index	mu/ds.h	/^typedef struct mu_multi_index$/;"	s
-mu_multi_index	mu/ds.h	/^} mu_multi_index;$/;"	t	typeref:struct:mu_multi_index
 mu_multi_index	mu/mu_multi_index.h	/^typedef struct mu_multi_index$/;"	s
 mu_multi_index	mu/mu_multi_index.h	/^} mu_multi_index;$/;"	t	typeref:struct:mu_multi_index
-mu_multi_index_add	mu/ds.c	/^uint32_t mu_multi_index_add(mu_multi_index* index, uint64_t key, uint32_t value)$/;"	f	typeref:typename:uint32_t
 mu_multi_index_add	mu/mu_multi_index.c	/^uint32_t mu_multi_index_add(mu_multi_index* index, uint64_t key, uint32_t value)$/;"	f	typeref:typename:uint32_t
-mu_multi_index_count_key	mu/ds.c	/^uint32_t mu_multi_index_count_key(const mu_multi_index* index, uint64_t key)$/;"	f	typeref:typename:uint32_t
 mu_multi_index_count_key	mu/mu_multi_index.c	/^uint32_t mu_multi_index_count_key(const mu_multi_index* index, uint64_t key)$/;"	f	typeref:typename:uint32_t
-mu_multi_index_deinit	mu/ds.c	/^void mu_multi_index_deinit(mu_multi_index* index)$/;"	f	typeref:typename:void
 mu_multi_index_deinit	mu/mu_multi_index.c	/^void mu_multi_index_deinit(mu_multi_index* index)$/;"	f	typeref:typename:void
-mu_multi_index_first	mu/ds.c	/^uint32_t mu_multi_index_first(const mu_multi_index* index, uint64_t key)$/;"	f	typeref:typename:uint32_t
 mu_multi_index_first	mu/mu_multi_index.c	/^uint32_t mu_multi_index_first(const mu_multi_index* index, uint64_t key)$/;"	f	typeref:typename:uint32_t
-mu_multi_index_grow_nodes	mu/ds.c	/^static bool mu_multi_index_grow_nodes(mu_multi_index* index, uint32_t min_capacity)$/;"	f	typeref:typename:bool	file:
 mu_multi_index_grow_nodes	mu/mu_multi_index.c	/^static bool mu_multi_index_grow_nodes(mu_multi_index* index, uint32_t min_capacity)$/;"	f	typeref:typename:bool	file:
-mu_multi_index_init	mu/ds.c	/^void mu_multi_index_init(mu_multi_index* index, uint32_t initial_node_capacity, uint32_t initial/;"	f	typeref:typename:void
 mu_multi_index_init	mu/mu_multi_index.c	/^void mu_multi_index_init(mu_multi_index* index, uint32_t initial_node_capacity, uint32_t initial/;"	f	typeref:typename:void
-mu_multi_index_key	mu/ds.c	/^uint64_t mu_multi_index_key(const mu_multi_index* index, uint32_t node_index)$/;"	f	typeref:typename:uint64_t
 mu_multi_index_key	mu/mu_multi_index.c	/^uint64_t mu_multi_index_key(const mu_multi_index* index, uint32_t node_index)$/;"	f	typeref:typename:uint64_t
-mu_multi_index_map_find_slot	mu/ds.c	/^static uint32_t mu_multi_index_map_find_slot(const mu_multi_index* index, uint64_t key)$/;"	f	typeref:typename:uint32_t	file:
 mu_multi_index_map_find_slot	mu/mu_multi_index.c	/^static uint32_t mu_multi_index_map_find_slot(const mu_multi_index* index, uint64_t key)$/;"	f	typeref:typename:uint32_t	file:
-mu_multi_index_map_get	mu/ds.c	/^static uint32_t mu_multi_index_map_get(const mu_multi_index* index, uint64_t key)$/;"	f	typeref:typename:uint32_t	file:
 mu_multi_index_map_get	mu/mu_multi_index.c	/^static uint32_t mu_multi_index_map_get(const mu_multi_index* index, uint64_t key)$/;"	f	typeref:typename:uint32_t	file:
-mu_multi_index_map_remove	mu/ds.c	/^static void mu_multi_index_map_remove(mu_multi_index* index, uint64_t key)$/;"	f	typeref:typename:void	file:
 mu_multi_index_map_remove	mu/mu_multi_index.c	/^static void mu_multi_index_map_remove(mu_multi_index* index, uint64_t key)$/;"	f	typeref:typename:void	file:
-mu_multi_index_map_resize	mu/ds.c	/^static bool mu_multi_index_map_resize(mu_multi_index* index, uint32_t new_capacity)$/;"	f	typeref:typename:bool	file:
 mu_multi_index_map_resize	mu/mu_multi_index.c	/^static bool mu_multi_index_map_resize(mu_multi_index* index, uint32_t new_capacity)$/;"	f	typeref:typename:bool	file:
-mu_multi_index_map_set	mu/ds.c	/^static bool mu_multi_index_map_set(mu_multi_index* index, uint64_t key, uint32_t value)$/;"	f	typeref:typename:bool	file:
 mu_multi_index_map_set	mu/mu_multi_index.c	/^static bool mu_multi_index_map_set(mu_multi_index* index, uint64_t key, uint32_t value)$/;"	f	typeref:typename:bool	file:
-mu_multi_index_next	mu/ds.c	/^uint32_t mu_multi_index_next(const mu_multi_index* index, uint32_t start_node, uint32_t node_ind/;"	f	typeref:typename:uint32_t
 mu_multi_index_next	mu/mu_multi_index.c	/^uint32_t mu_multi_index_next(const mu_multi_index* index, uint32_t start_node, uint32_t node_ind/;"	f	typeref:typename:uint32_t
-mu_multi_index_next_pow2_u32	mu/ds.c	/^static uint32_t mu_multi_index_next_pow2_u32(uint32_t value)$/;"	f	typeref:typename:uint32_t	file:
 mu_multi_index_next_pow2_u32	mu/mu_multi_index.c	/^static uint32_t mu_multi_index_next_pow2_u32(uint32_t value)$/;"	f	typeref:typename:uint32_t	file:
-mu_multi_index_node	mu/ds.h	/^typedef struct mu_multi_index_node$/;"	s
-mu_multi_index_node	mu/ds.h	/^} mu_multi_index_node;$/;"	t	typeref:struct:mu_multi_index_node
 mu_multi_index_node	mu/mu_multi_index.h	/^typedef struct mu_multi_index_node$/;"	s
 mu_multi_index_node	mu/mu_multi_index.h	/^} mu_multi_index_node;$/;"	t	typeref:struct:mu_multi_index_node
-mu_multi_index_node_valid	mu/ds.c	/^bool mu_multi_index_node_valid(const mu_multi_index* index, uint32_t node_index)$/;"	f	typeref:typename:bool
 mu_multi_index_node_valid	mu/mu_multi_index.c	/^bool mu_multi_index_node_valid(const mu_multi_index* index, uint32_t node_index)$/;"	f	typeref:typename:bool
-mu_multi_index_remove	mu/ds.c	/^bool mu_multi_index_remove(mu_multi_index* index, uint32_t node_index)$/;"	f	typeref:typename:bool
 mu_multi_index_remove	mu/mu_multi_index.c	/^bool mu_multi_index_remove(mu_multi_index* index, uint32_t node_index)$/;"	f	typeref:typename:bool
-mu_multi_index_value	mu/ds.c	/^uint32_t mu_multi_index_value(const mu_multi_index* index, uint32_t node_index)$/;"	f	typeref:typename:uint32_t
 mu_multi_index_value	mu/mu_multi_index.c	/^uint32_t mu_multi_index_value(const mu_multi_index* index, uint32_t node_index)$/;"	f	typeref:typename:uint32_t
-mu_multi_index_visit_fn	mu/ds.h	/^typedef bool (*mu_multi_index_visit_fn)(uint32_t value, uint32_t node_index, void* user);$/;"	t	typeref:typename:bool (*)(uint32_t value,uint32_t node_index,void * user)
 mu_multi_index_visit_fn	mu/mu_multi_index.h	/^typedef bool (*mu_multi_index_visit_fn)(uint32_t value, uint32_t node_index, void* user);$/;"	t	typeref:typename:bool (*)(uint32_t value,uint32_t node_index,void * user)
-mu_multi_index_visit_key	mu/ds.c	/^void mu_multi_index_visit_key(const mu_multi_index* index, uint64_t key, mu_multi_index_visit_fn/;"	f	typeref:typename:void
 mu_multi_index_visit_key	mu/mu_multi_index.c	/^void mu_multi_index_visit_key(const mu_multi_index* index, uint64_t key, mu_multi_index_visit_fn/;"	f	typeref:typename:void
 mu_next_pow2_u32	allocators.h	/^static inline uint32_t mu_next_pow2_u32(uint32_t x) {$/;"	f	typeref:typename:uint32_t
 mu_noise_abs	mu_noise_math.h	/^MU_NOISE_INLINE float mu_noise_abs(float x) { return fabsf(x); }$/;"	f	typeref:typename:MU_NOISE_INLINE float
@@ -25187,11 +24914,8 @@ mu_noise_worley3_result	mu_noise_math.h	/^typedef struct mu_noise_worley3_result
 mu_noise_worley3_result	mu_noise_math.h	/^} mu_noise_worley3_result;$/;"	t	typeref:struct:mu_noise_worley3_result
 mu_noise_wrap_period	mu_noise_math.h	/^MU_NOISE_INLINE float mu_noise_wrap_period(float x, float period)$/;"	f	typeref:typename:MU_NOISE_INLINE float
 mu_parent_index	allocators.h	/^static inline uint32_t mu_parent_index(uint32_t block_index) {$/;"	f	typeref:typename:uint32_t
-mu_pcg32	mu/ds.h	/^} mu_pcg32;$/;"	t	typeref:struct:__anondec252430508
 mu_pcg32	mu/mu_pcg.h	/^} mu_pcg32;$/;"	t	typeref:struct:__anon9bb242070108
-mu_pcg32_init	mu/ds.h	/^MU_INLINE void mu_pcg32_init(mu_pcg32* rng, uint64_t seed, uint64_t seq)$/;"	f	typeref:typename:MU_INLINE void
 mu_pcg32_init	mu/mu_pcg.h	/^MU_INLINE void mu_pcg32_init(mu_pcg32* rng, uint64_t seed, uint64_t seq)$/;"	f	typeref:typename:MU_INLINE void
-mu_pcg32_next_u32	mu/ds.h	/^MU_INLINE uint32_t mu_pcg32_next_u32(mu_pcg32* rng)$/;"	f	typeref:typename:MU_INLINE uint32_t
 mu_pcg32_next_u32	mu/mu_pcg.h	/^MU_INLINE uint32_t mu_pcg32_next_u32(mu_pcg32* rng)$/;"	f	typeref:typename:MU_INLINE uint32_t
 mu_pool	allocators.h	/^typedef struct mu_pool {$/;"	s
 mu_pool	allocators.h	/^} mu_pool;$/;"	t	typeref:struct:mu_pool
@@ -25207,15 +24931,10 @@ mu_quantize_half	mu/mu_bitpacking.h	/^MU_INLINE uint16_t mu_quantize_half(float 
 mu_quantize_snorm	mu/mu_bitpacking.h	/^MU_INLINE int mu_quantize_snorm(float v, int n)$/;"	f	typeref:typename:MU_INLINE int
 mu_quantize_unorm	mu/mu_bitpacking.h	/^MU_INLINE int mu_quantize_unorm(float v, int n)$/;"	f	typeref:typename:MU_INLINE int
 mu_right_child	allocators.h	/^static inline uint32_t mu_right_child(uint32_t block_index) {$/;"	f	typeref:typename:uint32_t
-mu_ring_alloc	mu/ds.h	/^MU_INLINE void* mu_ring_alloc(mu_ring_allocator* r, uint32_t size, uint32_t align, uint32_t* out/;"	f	typeref:typename:MU_INLINE void *
 mu_ring_alloc	mu/mu_allocators.h	/^MU_INLINE void* mu_ring_alloc(mu_ring_allocator* r, uint32_t size, uint32_t align, uint32_t* out/;"	f	typeref:typename:MU_INLINE void *
-mu_ring_allocator	mu/ds.h	/^} mu_ring_allocator;$/;"	t	typeref:struct:__anondec252430808
 mu_ring_allocator	mu/mu_allocators.h	/^} mu_ring_allocator;$/;"	t	typeref:struct:__anoncc259a010308
-mu_ring_free_to	mu/ds.h	/^MU_INLINE void mu_ring_free_to(mu_ring_allocator* r, uint32_t offset)$/;"	f	typeref:typename:MU_INLINE void
 mu_ring_free_to	mu/mu_allocators.h	/^MU_INLINE void mu_ring_free_to(mu_ring_allocator* r, uint32_t offset)$/;"	f	typeref:typename:MU_INLINE void
-mu_ring_init	mu/ds.h	/^MU_INLINE void mu_ring_init(mu_ring_allocator* r, void* memory, uint32_t size)$/;"	f	typeref:typename:MU_INLINE void
 mu_ring_init	mu/mu_allocators.h	/^MU_INLINE void mu_ring_init(mu_ring_allocator* r, void* memory, uint32_t size)$/;"	f	typeref:typename:MU_INLINE void
-mu_ring_used	mu/ds.h	/^MU_INLINE uint32_t mu_ring_used(const mu_ring_allocator* r)$/;"	f	typeref:typename:MU_INLINE uint32_t
 mu_ring_used	mu/mu_allocators.h	/^MU_INLINE uint32_t mu_ring_used(const mu_ring_allocator* r)$/;"	f	typeref:typename:MU_INLINE uint32_t
 mu_rog_astar_find_path	mu_roguelike.h	/^MU_ROG_INLINE int mu_rog_astar_find_path(int w,$/;"	f	typeref:typename:MU_ROG_INLINE int
 mu_rog_astar_heap_entry	mu_roguelike.h	/^typedef struct mu_rog_astar_heap_entry {$/;"	s
@@ -25354,19 +25073,12 @@ mu_sched_task_node	mu_task_scheduler.h	/^} mu_sched_task_node;$/;"	t	typeref:str
 mu_sched_wait_idle	mu_task_scheduler.h	/^MU_SCHED_INLINE void mu_sched_wait_idle(mu_task_scheduler* s)$/;"	f	typeref:typename:MU_SCHED_INLINE void
 mu_sched_wait_idle_timeout	mu_task_scheduler.h	/^MU_SCHED_INLINE bool mu_sched_wait_idle_timeout(mu_task_scheduler* s, uint32_t timeout_ms)$/;"	f	typeref:typename:MU_SCHED_INLINE bool
 mu_sched_worker_count	mu_task_scheduler.h	/^MU_SCHED_INLINE uint64_t mu_sched_worker_count(mu_task_scheduler* s)$/;"	f	typeref:typename:MU_SCHED_INLINE uint64_t
-mu_sparse_set	mu/ds.h	/^} mu_sparse_set;$/;"	t	typeref:struct:__anondec252430308
 mu_sparse_set	mu/mu_sparse_set.h	/^} mu_sparse_set;$/;"	t	typeref:struct:__anon4b0147a60108
-mu_sparse_set_add	mu/ds.c	/^bool mu_sparse_set_add(mu_sparse_set* set, uint32_t value)$/;"	f	typeref:typename:bool
 mu_sparse_set_add	mu/mu_sparse_set.c	/^bool mu_sparse_set_add(mu_sparse_set* set, uint32_t value)$/;"	f	typeref:typename:bool
-mu_sparse_set_at	mu/ds.h	/^static MU_INLINE uint32_t mu_sparse_set_at(const mu_sparse_set* set, uint32_t index)$/;"	f	typeref:typename:MU_INLINE uint32_t
 mu_sparse_set_at	mu/mu_sparse_set.h	/^static MU_INLINE uint32_t mu_sparse_set_at(const mu_sparse_set* set, uint32_t index)$/;"	f	typeref:typename:MU_INLINE uint32_t
-mu_sparse_set_clear	mu/ds.c	/^void mu_sparse_set_clear(mu_sparse_set* set)$/;"	f	typeref:typename:void
 mu_sparse_set_clear	mu/mu_sparse_set.c	/^void mu_sparse_set_clear(mu_sparse_set* set)$/;"	f	typeref:typename:void
-mu_sparse_set_contains	mu/ds.c	/^bool mu_sparse_set_contains(const mu_sparse_set* set, uint32_t value)$/;"	f	typeref:typename:bool
 mu_sparse_set_contains	mu/mu_sparse_set.c	/^bool mu_sparse_set_contains(const mu_sparse_set* set, uint32_t value)$/;"	f	typeref:typename:bool
-mu_sparse_set_init	mu/ds.c	/^void mu_sparse_set_init(mu_sparse_set* set, uint32_t* dense_buffer, uint32_t* sparse_buffer, uin/;"	f	typeref:typename:void
 mu_sparse_set_init	mu/mu_sparse_set.c	/^void mu_sparse_set_init(mu_sparse_set* set, uint32_t* dense_buffer, uint32_t* sparse_buffer, uin/;"	f	typeref:typename:void
-mu_sparse_set_remove	mu/ds.c	/^bool mu_sparse_set_remove(mu_sparse_set* set, uint32_t value)$/;"	f	typeref:typename:bool
 mu_sparse_set_remove	mu/mu_sparse_set.c	/^bool mu_sparse_set_remove(mu_sparse_set* set, uint32_t value)$/;"	f	typeref:typename:bool
 mu_string_arena	mu/mu_string.h	/^typedef struct mu_string_arena$/;"	s
 mu_string_arena	mu/mu_string.h	/^} mu_string_arena;$/;"	t	typeref:struct:mu_string_arena
@@ -25385,9 +25097,7 @@ mu_string_block_init	mu_min_containers.h	/^static inline void mu_string_block_in
 mu_string_block_push	mu_min_containers.h	/^static inline bool mu_string_block_push(mu_string_block *b, const char *s, uint32_t *out_index)$/;"	f	typeref:typename:bool
 mu_task_scheduler	mu_task_scheduler.h	/^struct mu_task_scheduler {$/;"	s
 mu_task_scheduler	mu_task_scheduler.h	/^typedef struct mu_task_scheduler mu_task_scheduler;$/;"	t	typeref:struct:mu_task_scheduler
-mu_time_freq	mu/ds.h	/^static double mu_time_freq()$/;"	f	typeref:typename:double
 mu_time_freq	mu/mu_perf.h	/^static double mu_time_freq()$/;"	f	typeref:typename:double
-mu_time_now	mu/ds.h	/^static uint64_t mu_time_now()$/;"	f	typeref:typename:uint64_t
 mu_time_now	mu/mu_perf.h	/^static uint64_t mu_time_now()$/;"	f	typeref:typename:uint64_t
 mu_trailing_zeroes_u64	mu/mu_common.h	/^static MU_INLINE int mu_trailing_zeroes_u64(uint64_t x)$/;"	f	typeref:typename:MU_BEGIN_EXTERN_C MU_INLINE int
 mu_ts__compact_queue	mu_thread_system.h	/^MU_TS_INLINE void mu_ts__compact_queue(mu_ts_system* t)$/;"	f	typeref:typename:MU_TS_INLINE void
@@ -25457,8 +25167,6 @@ mu_ts_wait_idle	mu_thread_system.h	/^MU_TS_INLINE void mu_ts_wait_idle(mu_ts_han
 mu_ts_wait_idle_timeout	mu_thread_system.h	/^MU_TS_INLINE bool mu_ts_wait_idle_timeout(mu_ts_handle h, uint32_t timeout_ms)$/;"	f	typeref:typename:MU_TS_INLINE bool
 mu_ts_worker_bootstrap	mu_thread_system.h	/^typedef struct mu_ts_worker_bootstrap$/;"	s
 mu_ts_worker_bootstrap	mu_thread_system.h	/^} mu_ts_worker_bootstrap;$/;"	t	typeref:struct:mu_ts_worker_bootstrap
-mu_weak_handle	mu/ds.h	/^typedef struct mu_weak_handle$/;"	s
-mu_weak_handle	mu/ds.h	/^} mu_weak_handle;$/;"	t	typeref:struct:mu_weak_handle
 mu_weak_handle	mu/mu_bulk_storage.h	/^typedef struct mu_weak_handle$/;"	s
 mu_weak_handle	mu/mu_bulk_storage.h	/^} mu_weak_handle;$/;"	t	typeref:struct:mu_weak_handle
 multi-edit	machinery_blog_archive/post/beta-2020-5/index.html	/^<h2 id="multi-edit">Multi-Edit<\/h2>$/;"	I
@@ -25521,7 +25229,6 @@ n	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!f
 n	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function(e){'classList'in e||Object.defineProperty(e,"classList",{get:function(){var e=this,t=(/;"	f	method:anonymousObject2389634036305.get
 n	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeo/;"	f	function:anonymousFunction2389634023600.anonymousFunction2389634026b00.anonymousFunction238963402f300
 n	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function/;"	f	function:anonymousFunction238963400300.anonymousFunction238963400500
-n	mu/ds.h	/^    uint32_t  n;       \/\/ capacity (fixed)$/;"	m	struct:mu_hash32_static_t	typeref:typename:uint32_t
 n	mu/mu_hash_table.h	/^    uint32_t  n;       \/\/ capacity (fixed)$/;"	m	struct:mu_hash32_static_t	typeref:typename:uint32_t
 n.c	machinery_blog_archive/cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js	/^!function(e){var t="object"==typeof window&&window||"object"==typeof self&&self;"undefined"!=typ/;"	p
 name	.venv/lib/python3.14/site-packages/pip/_internal/metadata/base.py	/^    def name(self) -> str:$/;"	m	class:BaseEntryPoint	typeref:typename:str
@@ -26038,9 +25745,6 @@ next	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/
 next	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:anonymousObject2389634013d05
 next	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:anonymousObject23896340f705
 next	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeo/;"	m	variable:anonymousFunction2389634023600.anonymousFunction2389634026b00.anonymousFunction238963402f300.s.r
-next	mu.h	/^    struct mu_list_node* next;$/;"	m	struct:mu_list_node	typeref:struct:mu_list_node *
-next	mu/ds.h	/^    struct mu_list_node* next;$/;"	m	struct:mu_list_node	typeref:struct:mu_list_node *
-next	mu/ds.h	/^    uint32_t next;$/;"	m	struct:mu_multi_index_node	typeref:typename:uint32_t
 next	mu/mu_multi_index.h	/^    uint32_t next;$/;"	m	struct:mu_multi_index_node	typeref:typename:uint32_t
 next	mu/mu_string.h	/^    uint32_t next;$/;"	m	struct:mu_pool_link	typeref:typename:uint32_t
 next	mu_min_containers.h	/^    uint32_t next;$/;"	m	struct:mu_index_link	typeref:typename:uint32_t
@@ -26051,10 +25755,8 @@ next-time	machinery_blog_archive/post/simple-parallel-rendering/index.html	/^<h2
 next-time	machinery_blog_archive/post/the-machinery-shader-system-part-1/index.html	/^<h2 id="next-time">Next time<\/h2>$/;"	I
 nextConnectionID	.venv/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib/emscripten/emscripten_fetch_worker.js	/^let nextConnectionID = 1;$/;"	v
 nextConnectionID	.venv/lib64/python3.14/site-packages/pip/_vendor/urllib3/contrib/emscripten/emscripten_fetch_worker.js	/^let nextConnectionID = 1;$/;"	v
-next_chunk	mu/ds.h	/^    uint32_t next_chunk;$/;"	m	struct:mu_chunked_u32_chunk	typeref:typename:uint32_t
 next_chunk	mu/mu_chunked_array.h	/^    uint32_t next_chunk;$/;"	m	struct:mu_chunked_u32_chunk	typeref:typename:uint32_t
 next_sibling	mu_ecs.h	/^    int32_t* next_sibling;$/;"	m	struct:mu_ecs_transform_store	typeref:typename:int32_t *
-next_unused	mu/ds.h	/^    uint32_t  next_unused;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint32_t
 next_unused	mu/mu_bulk_storage.h	/^    uint32_t  next_unused;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint32_t
 noEmit	mapgen4/jsconfig.json	/^        "noEmit": true,$/;"	b	object:compilerOptions
 no_binary	.venv/lib/python3.14/site-packages/pip/_internal/cli/cmdoptions.py	/^def no_binary() -> Option:$/;"	f	typeref:typename:Option
@@ -26085,11 +25787,8 @@ node	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/pretty.py	/^    node:
 node	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/tree.py	/^    node = root.add(":file_folder: Renderables", guide_style="red")$/;"	v
 node	machinery_blog_archive/cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js	/^!function(e){var t="object"==typeof window&&window||"object"==typeof self&&self;"undefined"!=typ/;"	p	variable:anonymousFunction429820f20600.c.a.anonymousObject429820f20805
 node	machinery_blog_archive/cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js	/^!function(e){var t="object"==typeof window&&window||"object"==typeof self&&self;"undefined"!=typ/;"	p	variable:anonymousFunction429820f20600.c.a.anonymousObject429820f20905
-node_capacity	mu/ds.h	/^    uint32_t             node_capacity;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t
 node_capacity	mu/mu_multi_index.h	/^    uint32_t             node_capacity;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t
-node_count	mu/ds.h	/^    uint32_t             node_count;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t
 node_count	mu/mu_multi_index.h	/^    uint32_t             node_count;$/;"	m	struct:mu_multi_index	typeref:typename:uint32_t
-nodes	mu/ds.h	/^    mu_multi_index_node* nodes;$/;"	m	struct:mu_multi_index	typeref:typename:mu_multi_index_node *
 nodes	mu/mu_multi_index.h	/^    mu_multi_index_node* nodes;$/;"	m	struct:mu_multi_index	typeref:typename:mu_multi_index_node *
 noise0_t	mapgen4/mu_mapgen4.h	/^    float *noise0_t;              \/* num_triangles *\/$/;"	m	struct:mu_mapgen4_context	typeref:typename:float *
 noise1_t	mapgen4/mu_mapgen4.h	/^    float *noise1_t;              \/* num_triangles *\/$/;"	m	struct:mu_mapgen4_context	typeref:typename:float *
@@ -27939,12 +27638,10 @@ prereleases	.venv/lib64/python3.14/site-packages/pip/_vendor/packaging/specifier
 prereleases	.venv/lib64/python3.14/site-packages/pip/_vendor/packaging/specifiers.py	/^    def prereleases(self, value: bool) -> None:$/;"	m	class:BaseSpecifier	typeref:typename:None
 pretty_repr	.venv/lib/python3.14/site-packages/pip/_vendor/rich/pretty.py	/^def pretty_repr($/;"	f	typeref:typename:str
 pretty_repr	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/pretty.py	/^def pretty_repr($/;"	f	typeref:typename:str
-prev	mu/ds.h	/^    uint32_t prev;$/;"	m	struct:mu_multi_index_node	typeref:typename:uint32_t
 prev	mu/mu_multi_index.h	/^    uint32_t prev;$/;"	m	struct:mu_multi_index_node	typeref:typename:uint32_t
 prev	mu/mu_string.h	/^    uint32_t prev;$/;"	m	struct:mu_pool_link	typeref:typename:uint32_t
 prev	mu_min_containers.h	/^    uint32_t prev;$/;"	m	struct:mu_index_link	typeref:typename:uint32_t
 prev	mu_mmgr.h	/^    struct tag_au* prev;$/;"	m	struct:tag_au	typeref:struct:tag_au *
-prev_chunk	mu/ds.h	/^    uint32_t prev_chunk;$/;"	m	struct:mu_chunked_u32_chunk	typeref:typename:uint32_t
 prev_chunk	mu/mu_chunked_array.h	/^    uint32_t prev_chunk;$/;"	m	struct:mu_chunked_u32_chunk	typeref:typename:uint32_t
 prev_length	.venv/bin/activate_this.py	/^prev_length = len(sys.path)$/;"	v
 prev_sibling	mu_ecs.h	/^    int32_t* prev_sibling;$/;"	m	struct:mu_ecs_transform_store	typeref:typename:int32_t *
@@ -28427,7 +28124,6 @@ raise_option_error	.venv/lib64/python3.14/site-packages/pip/_internal/cli/cmdopt
 raise_syntax_error	.venv/lib/python3.14/site-packages/pip/_vendor/packaging/_tokenizer.py	/^    def raise_syntax_error($/;"	m	class:Tokenizer	typeref:typename:NoReturn
 raise_syntax_error	.venv/lib64/python3.14/site-packages/pip/_vendor/packaging/_tokenizer.py	/^    def raise_syntax_error($/;"	m	class:Tokenizer	typeref:typename:NoReturn
 random_gaussian_state	mu/mu_rand.h	/^double random_gaussian_state(gaussian_state_t *state, double mean, double stddev)$/;"	f	typeref:typename:double
-ranges	mu/ds.h	/^    mu_id_pool_range* ranges;$/;"	m	struct:__anondec252430208	typeref:typename:mu_id_pool_range *
 ranges	mu/mu_id_pool.h	/^    mu_id_pool_range* ranges;$/;"	m	struct:__anonbf3c9a330208	typeref:typename:mu_id_pool_range *
 rate	mapgen4/painting.ts	/^        let {innerRadius, outerRadius, rate} = size;$/;"	v
 rate-emitter	machinery_blog_archive/post/gpu-simulation/index.html	/^<h3 id="rate-emitter"><code>Rate Emitter<\/code><\/h3>$/;"	I
@@ -29966,11 +29662,6 @@ size	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.esm.
 size	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:t.exports.getConstructor.anonymousFunction2389634013a00.anonymousObject2389634013b05
 size	mapgen4/map.ts	/^            const C = constraints.constraints, size = constraints.size;$/;"	C	function:constraintAt
 size	mapgen4/mu_mapgen4.h	/^    int32_t size;$/;"	m	struct:mu_mapgen4_constraints	typeref:typename:int32_t
-size	mu.h	/^    uint64_t      size;$/;"	m	struct:__anon7c9accdd0108	typeref:typename:uint64_t
-size	mu/ds.h	/^    uint32_t  size;    \/\/ number of active elements$/;"	m	struct:__anondec252430308	typeref:typename:uint32_t
-size	mu/ds.h	/^    uint32_t size;$/;"	m	struct:__anondec252430608	typeref:typename:uint32_t
-size	mu/ds.h	/^    uint32_t size;$/;"	m	struct:__anondec252430908	typeref:typename:uint32_t
-size	mu/ds.h	/^    uint64_t      size;$/;"	m	struct:__anondec252430408	typeref:typename:uint64_t
 size	mu/mu_allocators.h	/^    uint32_t size;$/;"	m	struct:__anoncc259a010108	typeref:typename:uint32_t
 size	mu/mu_array.h	/^    uint32_t size;$/;"	m	struct:__anonf282056c0108	typeref:typename:uint32_t
 size	mu/mu_sparse_set.h	/^    uint32_t  size;    \/\/ number of active elements$/;"	m	struct:__anon4b0147a60108	typeref:typename:uint32_t
@@ -30003,11 +29694,8 @@ sleep_for_retry	.venv/lib/python3.14/site-packages/pip/_vendor/urllib3/util/retr
 sleep_for_retry	.venv/lib64/python3.14/site-packages/pip/_vendor/urllib3/util/retry.py	/^    def sleep_for_retry(self, response: BaseHTTPResponse) -> bool:$/;"	m	class:Retry	typeref:typename:bool
 slice	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	m	variable:anonymousFunction238963401c000.anonymousObject238963401c205
 sliders	mapgen4/embed.html	/^  <div id="sliders">$/;"	I
-slot_capacity	mu/ds.h	/^    uint32_t  slot_capacity;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint32_t
 slot_capacity	mu/mu_bulk_storage.h	/^    uint32_t  slot_capacity;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint32_t
-slot_size	mu/ds.h	/^    size_t    slot_size;$/;"	m	struct:mu_bulk_storage	typeref:typename:size_t
 slot_size	mu/mu_bulk_storage.h	/^    size_t    slot_size;$/;"	m	struct:mu_bulk_storage	typeref:typename:size_t
-slots	mu/ds.h	/^    uint8_t*  slots;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint8_t *
 slots	mu/mu_bulk_storage.h	/^    uint8_t*  slots;$/;"	m	struct:mu_bulk_storage	typeref:typename:uint8_t *
 slow_identity	test.c	/^static MU_NOINLINE int slow_identity(int x)$/;"	f	typeref:typename:MU_NOINLINE int	file:
 small	machinery_blog_archive/css/bootstrap.min.css	/^* Licensed under MIT (https:\/\/github.com\/twbs\/bootstrap\/blob\/main\/LICENSE)*\/:root{--bs-b/;"	s
@@ -30060,7 +29748,6 @@ spans	.venv/lib/python3.14/site-packages/pip/_vendor/rich/text.py	/^    def span
 spans	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/text.py	/^    def spans(self) -> List[Span]:$/;"	m	class:Text	typeref:typename:List[Span]
 spans	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/text.py	/^    def spans(self, spans: List[Span]) -> None:$/;"	m	class:Text	typeref:typename:None
 spare	mu/mu_rand.h	/^    double spare;$/;"	m	struct:__anon168558720108	typeref:typename:double
-sparse	mu/ds.h	/^    uint32_t* sparse;  \/\/ size = capacity$/;"	m	struct:__anondec252430308	typeref:typename:uint32_t *
 sparse	mu/mu_sparse_set.h	/^    uint32_t* sparse;  \/\/ size = capacity$/;"	m	struct:__anon4b0147a60108	typeref:typename:uint32_t *
 sparse	mu_ecs.h	/^    uint32_t* sparse;$/;"	m	struct:mu_ecs_pool	typeref:typename:uint32_t *
 sparse	mu_ecs.h	/^    uint32_t* sparse;$/;"	m	struct:mu_ecs_transform_store	typeref:typename:uint32_t *
@@ -30232,7 +29919,6 @@ state	.venv/lib/python3.14/site-packages/pip/_vendor/resolvelib/resolvers/resolu
 state	.venv/lib64/python3.14/site-packages/pip/_vendor/resolvelib/resolvers/resolution.py	/^    def state(self) -> State[RT, CT, KT]:$/;"	m	class:Resolution	typeref:typename:State[RT,CT,KT]
 state	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:anonymousFunction2389634014200.anonymousFunction2389634014300.anonymousObject2389634014405
 state	mapgen4/mu_mapgen4.h	/^    uint32_t state;$/;"	m	struct:mu_mapgen4_rng	typeref:typename:uint32_t
-state	mu/ds.h	/^    uint64_t state;$/;"	m	struct:__anondec252430508	typeref:typename:uint64_t
 state	mu/mu_pcg.h	/^    uint64_t state;$/;"	m	struct:__anon9bb242070108	typeref:typename:uint64_t
 state-blocks	machinery_blog_archive/post/the-machinery-shader-system-part-1/index.html	/^<h3 id="state-blocks">State blocks<\/h3>$/;"	I
 state-transfer	machinery_blog_archive/post/dll-hot-reloading-in-theory-and-practice/index.html	/^<h2 id="state-transfer">State transfer<\/h2>$/;"	I
@@ -30524,7 +30210,6 @@ tabulate	.venv/lib64/python3.14/site-packages/pip/_internal/utils/misc.py	/^def 
 tag_au	mu_mmgr.h	/^typedef struct tag_au$/;"	s
 tag_re	.venv/lib/python3.14/site-packages/pip/_vendor/pygments/util.py	/^tag_re = re.compile(r'<(.+?)(\\s.*?)?>.*?<\/.+?>',$/;"	v
 tag_re	.venv/lib64/python3.14/site-packages/pip/_vendor/pygments/util.py	/^tag_re = re.compile(r'<(.+?)(\\s.*?)?>.*?<\/.+?>',$/;"	v
-tail	mu/ds.h	/^    uint32_t tail;$/;"	m	struct:__anondec252430808	typeref:typename:uint32_t
 tail	mu/mu_allocators.h	/^    uint32_t tail;$/;"	m	struct:__anoncc259a010308	typeref:typename:uint32_t
 taken	.venv/lib/python3.14/site-packages/pip/_vendor/rich/__main__.py	/^    taken = round((process_time() - start) * 1000.0, 1)$/;"	v
 taken	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/__main__.py	/^    taken = round((process_time() - start) * 1000.0, 1)$/;"	v
@@ -31323,10 +31008,8 @@ use_pep517	.venv/lib64/python3.14/site-packages/pip/_internal/cli/cmdoptions.py	
 use_theme	.venv/lib/python3.14/site-packages/pip/_vendor/rich/console.py	/^    def use_theme(self, theme: Theme, *, inherit: bool = True) -> ThemeContext:$/;"	m	class:Console	typeref:typename:ThemeContext
 use_theme	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/console.py	/^    def use_theme(self, theme: Theme, *, inherit: bool = True) -> ThemeContext:$/;"	m	class:Console	typeref:typename:ThemeContext
 used	allocators.h	/^	uint32_t used;$/;"	m	struct:mu_arena	typeref:typename:uint32_t
-used	mu/ds.h	/^    uint32_t used;$/;"	m	struct:mu_chunked_u32_chunk	typeref:typename:uint32_t
 used	mu/mu_chunked_array.h	/^    uint32_t used;$/;"	m	struct:mu_chunked_u32_chunk	typeref:typename:uint32_t
 used	mu_min_containers.h	/^    uint32_t used;$/;"	m	struct:mu_string_block	typeref:typename:uint32_t
-used_ids	mu/ds.h	/^    uint32_t          used_ids;$/;"	m	struct:__anondec252430208	typeref:typename:uint32_t
 used_ids	mu/mu_id_pool.h	/^    uint32_t          used_ids;$/;"	m	struct:__anonbf3c9a330208	typeref:typename:uint32_t
 user	mu_roguelike.h	/^	void* user;$/;"	m	struct:mu_rog_fov_ctx	typeref:typename:void *
 user	mu_roguelike.h	/^	void* user;$/;"	m	struct:mu_rog_los_ctx	typeref:typename:void *
@@ -31657,9 +31340,6 @@ value	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	
 value	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeo/;"	p	variable:anonymousFunction2389634023600.anonymousFunction2389634026b00.anonymousObject2389634032105
 value	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^(function(b){b.forEach(function(a){a.hasOwnProperty("remove")||Object.defineProperty(a,"remove",/;"	m	variable:anonymousObject2389634036105
 value	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^var StyleNode=function(){this.start=0,this.end=0,this.previous=null,this.parent=null,this.rules=/;"	p	variable:anonymousObject2389634039d05
-value	mu.h	/^    int                  value;$/;"	m	struct:mu_list_node	typeref:typename:int
-value	mu/ds.h	/^    int                  value;$/;"	m	struct:mu_list_node	typeref:typename:int
-value	mu/ds.h	/^    uint32_t value;$/;"	m	struct:mu_multi_index_node	typeref:typename:uint32_t
 value	mu/mu_multi_index.h	/^    uint32_t value;$/;"	m	struct:mu_multi_index_node	typeref:typename:uint32_t
 value	mu_task_scheduler.h	/^    mu_ts_atomic32_t value;$/;"	m	struct:mu_sched_counter	typeref:typename:mu_ts_atomic32_t
 value	test.c	/^    double value;$/;"	m	struct:__anon1dda1bf60108	typeref:typename:double	file:
@@ -31678,9 +31358,6 @@ values	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js
 values	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	m	variable:anonymousObject2389634018005
 values	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:anonymousObject2389634015205
 values	machinery_blog_archive/unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js	/^!function (undefined) { 'use strict'; !function(t){var r={};function n(e){if(r[e])return r[e].ex/;"	p	variable:t.exports.anonymousObject23896340f205
-values	mu/ds.h	/^    uint32_t values[MU_ARRAY_OF_ARRAYS_CHUNK_SIZE];$/;"	m	struct:mu_chunked_u32_chunk	typeref:typename:uint32_t[]
-values	mu/ds.h	/^    uint32_t* values;  \/\/ associated values$/;"	m	struct:mu_hash32_static_t	typeref:typename:uint32_t *
-values	mu/ds.h	/^    uint64_t* values;$/;"	m	struct:__anondec252430a08	typeref:typename:uint64_t *
 values	mu/mu_chunked_array.h	/^    uint32_t values[MU_ARRAY_OF_ARRAYS_CHUNK_SIZE];$/;"	m	struct:mu_chunked_u32_chunk	typeref:typename:uint32_t[]
 values	mu/mu_hash_table.h	/^    uint32_t* values;  \/\/ associated values$/;"	m	struct:mu_hash32_static_t	typeref:typename:uint32_t *
 values	mu/mu_hash_table.h	/^    uint64_t* values;$/;"	m	struct:__anon2cfea5380108	typeref:typename:uint64_t *
@@ -32046,9 +31723,7 @@ with_source	.venv/lib/python3.14/site-packages/pip/_internal/req/constructors.py
 with_source	.venv/lib64/python3.14/site-packages/pip/_internal/req/constructors.py	/^    def with_source(text: str) -> str:$/;"	f	function:parse_req_from_line	typeref:typename:str	file:
 without_color	.venv/lib/python3.14/site-packages/pip/_vendor/rich/style.py	/^    def without_color(self) -> "Style":$/;"	m	class:Style	typeref:typename:"Style"
 without_color	.venv/lib64/python3.14/site-packages/pip/_vendor/rich/style.py	/^    def without_color(self) -> "Style":$/;"	m	class:Style	typeref:typename:"Style"
-word_capacity	mu/bitset.h	/^    size_t                word_capacity; \/* allocated capacity in 64-bit words *\/$/;"	m	struct:mu_bitset	typeref:typename:size_t
 word_capacity	mu/mu_bitset.h	/^    size_t                word_capacity; \/* allocated capacity in 64-bit words *\/$/;"	m	struct:mu_bitset	typeref:typename:size_t
-word_count	mu/bitset.h	/^    size_t                word_count;    \/* number words stored *\/$/;"	m	struct:mu_bitset	typeref:typename:size_t
 word_count	mu/mu_bitset.h	/^    size_t                word_count;    \/* number words stored *\/$/;"	m	struct:mu_bitset	typeref:typename:size_t
 words	.venv/lib/python3.14/site-packages/pip/_vendor/pygments/lexer.py	/^class words(Future):$/;"	c
 words	.venv/lib/python3.14/site-packages/pip/_vendor/rich/_wrap.py	/^def words(text: str) -> Iterable[tuple[int, int, str]]:$/;"	f	typeref:typename:Iterable[tuple[int,int,str]]
