@@ -168,7 +168,7 @@ static inline void mu_string_arena_init(mu_string_arena *a)
 
 static inline void mu_string_arena_free(mu_string_arena *a)
 {
-    mu(a->data);
+    mu_array_free(a->data);
     mu_array_free(a->offsets);
 
     a->data     = NULL;
