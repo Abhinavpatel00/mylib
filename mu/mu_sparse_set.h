@@ -9,7 +9,7 @@ typedef struct
 {
     uint32_t* dense;   // size = capacity
     uint32_t* sparse;  // size = capacity
-    uint32_t  size;    // number of active elements
+    uint32_t  count;    // number of active elements
     uint32_t  capacity;
 } mu_sparse_set;
 
@@ -19,7 +19,7 @@ void mu_sparse_set_init(mu_sparse_set* set, uint32_t* dense_buffer, uint32_t* sp
 /* Basic operations */
 void mu_sparse_set_clear(mu_sparse_set* set);
 bool mu_sparse_set_contains(const mu_sparse_set* set, uint32_t value);
-bool mu_sparse_set_add(mu_sparse_set* set, uint32_t value);
+bool mu_sparse_set_insert(mu_sparse_set* set, uint32_t value);
 bool mu_sparse_set_remove(mu_sparse_set* set, uint32_t value);
 
 /* Iteration */

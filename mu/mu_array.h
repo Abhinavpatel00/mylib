@@ -28,7 +28,7 @@ typedef struct
 
 #define array_size(a) ((a) ? array_header(a)->size : 0)
 #define array_capacity(a) ((a) ? array_header(a)->capacity : 0)
-
+#define array_clear(a) ((a) ? (array_header(a)->size = 0) : 0)
 #define array_free(a) ((a) ? free(array_header(a)), (a) = NULL : 0)
 
 #define array_full(a) ((a) && array_size(a) >= array_capacity(a))

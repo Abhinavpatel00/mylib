@@ -255,6 +255,10 @@ static MU_INLINE uint32_t mu_popcount_u64(uint64_t x)
 
 
 
+#define KB(x) ((x) * 1024ULL)
+#define MB(x) ((x) * 1024ULL * 1024ULL)
+#define GB(x) ((x) * 1024ULL * 1024ULL * 1024ULL)
+#define PAD(name, size) uint8_t name[(size)]
 
 
 MU_END_EXTERN_C
