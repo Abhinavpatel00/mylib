@@ -22,6 +22,8 @@ typedef struct
 {
     uint32_t size;
     uint32_t capacity;
+    uint32_t _pad0;
+    uint32_t _pad1;
 } array_header_t;
 
 #define array_header(a) ((array_header_t*)((char*)(a) - sizeof(array_header_t)))

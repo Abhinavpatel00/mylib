@@ -2,6 +2,15 @@
 #pragma  once 
 
 #include "mu_common.h"
+
+#ifndef mu_malloc
+#define mu_malloc(size) malloc(size)
+#endif
+
+#ifndef mu_free
+#define mu_free(ptr) free(ptr)
+#endif
+
 typedef struct
 {
     uint32_t  capacity;
@@ -236,4 +245,342 @@ static inline uint32_t mu_hash32_static_get(const mu_hash32_static_t* h, uint64_
 
     return (h->keys[i] == MU_HASH_UNUSED) ? 0 : h->values[i];
 }
+
+
+/*
+    ============================================================================
+        mu_hash32.h
+    ============================================================================
+
+    Fixed-capacity owning hash table.
+    Open addressing + linear probing.
+    Heap-owned storage.
+    No resizing.
+    No allocator gymnastics.
+    No "static" lie in the name.
+    Just a small honest hash table for systems that need ownership.
+
+    Good for:
+        - asset caches
+        - resource lookup
+        - registries
+        - path -> handle maps
+
+    Not good for:
+        - unbounded growth
+        - deletion-heavy abuse
+        - people who think "fixed capacity" is a suggestion
+
+    ---------------------------------------------------------------------------
+    Mental Model
+    ---------------------------------------------------------------------------
+
+        hash(key) % capacity
+              |
+              v
+        ┌─────┬─────┬─────┬─────┬─────┐
+        │  -- │ K17 │ K42 │  -- │  -- │
+        └─────┴─────┴─────┴─────┴─────┘
+                  ^
+                  found slot
+
+        collision?
+            walk right until:
+                - same key   -> overwrite
+                - empty slot -> insert
+
+    ---------------------------------------------------------------------------
+    Memory Model
+    ---------------------------------------------------------------------------
+
+        mu_hash32_t
+        ├── keys   -> [k0][k1][k2][k3]...[kn]
+        ├── values -> [v0][v1][v2][v3]...[vn]
+        ├── n      -> fixed capacity
+        └── count  -> used slots
+
+        Table owns keys/values.
+        Caller owns table struct.
+        Civilization barely holds.
+*/
+
+#include "mu_common.h"
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
+
+#define MU_HASH_UNUSED 0xffffffffffffffffULL
+
+typedef struct mu_hash32_t
+{
+    uint64_t* keys;
+    uint32_t* values;
+    uint32_t  n;
+    uint32_t  count;
+} mu_hash32_t;
+
+/* ============================================================================
+   Internal Helpers
+   ============================================================================ */
+
+/*
+    Simple 64-bit mix.
+    Not crypto.
+    Not magical.
+    Just enough to stop your keys clustering like idiots.
+*/
+static inline uint64_t mu_hash64_mix(uint64_t x)
+{
+    x ^= x >> 33;
+    x *= 0xff51afd7ed558ccdULL;
+    x ^= x >> 33;
+    x *= 0xc4ceb9fe1a85ec53ULL;
+    x ^= x >> 33;
+    return x;
+}
+
+/*
+    Find slot for key.
+
+    Returns:
+        - matching key slot
+        - or first empty slot
+
+    ASCII:
+
+        index = hash(key) % n
+
+        [--][--][K1][K2][--]
+                ^
+              start
+
+        if occupied:
+            probe right until match or empty
+*/
+static inline uint32_t mu_hash32_find_slot(const mu_hash32_t* h, uint64_t key)
+{
+    uint32_t i = (uint32_t)(mu_hash64_mix(key) % h->n);
+
+    while(h->keys[i] != key && h->keys[i] != MU_HASH_UNUSED)
+        i = (i + 1) % h->n;
+
+    return i;
+}
+
+/* ============================================================================
+   Lifetime
+   ============================================================================ */
+
+/*
+    Allocate and initialize table.
+
+    Layout after init:
+
+        keys   = [--][--][--][--]
+        values = [??][??][??][??]
+        count  = 0
+*/
+static inline bool mu_hash32_init(mu_hash32_t* h, uint32_t capacity)
+{
+    MU_ASSERT(h);
+    MU_ASSERT(capacity > 0);
+
+    h->keys   = (uint64_t*)mu_malloc(sizeof(uint64_t) * capacity);
+    h->values = (uint32_t*)mu_malloc(sizeof(uint32_t) * capacity);
+    h->n      = capacity;
+    h->count  = 0;
+
+    if(!h->keys || !h->values)
+    {
+        mu_free(h->keys);
+        mu_free(h->values);
+        memset(h, 0, sizeof(*h));
+        return false;
+    }
+
+    memset(h->keys, 0xFF, sizeof(uint64_t) * capacity);
+    return true;
+}
+
+/*
+    Destroy owned memory.
+
+    Caller still owns the struct.
+    We just gut it cleanly.
+*/
+static inline void mu_hash32_destroy(mu_hash32_t* h)
+{
+    MU_ASSERT(h);
+
+    mu_free(h->keys);
+    mu_free(h->values);
+
+    memset(h, 0, sizeof(*h));
+}
+
+/*
+    Clear table contents, keep capacity.
+
+    Before:
+        [K1][K2][K3][--]
+
+    After:
+        [--][--][--][--]
+*/
+static inline void mu_hash32_clear(mu_hash32_t* h)
+{
+    MU_ASSERT(h);
+    MU_ASSERT(h->keys);
+
+    memset(h->keys, 0xFF, sizeof(uint64_t) * h->n);
+    h->count = 0;
+}
+
+/* ============================================================================
+   Queries
+   ============================================================================ */
+
+static inline bool mu_hash32_empty(const mu_hash32_t* h)
+{
+    return h->count == 0;
+}
+
+static inline uint32_t mu_hash32_count(const mu_hash32_t* h)
+{
+    return h->count;
+}
+
+static inline uint32_t mu_hash32_capacity(const mu_hash32_t* h)
+{
+    return h->n;
+}
+
+/* ============================================================================
+   Insert / Lookup
+   ============================================================================ */
+
+/*
+    Insert or overwrite.
+
+    If key exists:
+        overwrite value
+
+    If key is new:
+        insert and increment count
+
+    No resize.
+    If full, that's your bug.
+*/
+static inline void mu_hash32_set(mu_hash32_t* h, uint64_t key, uint32_t value)
+{
+    MU_ASSERT(h);
+    MU_ASSERT(key != MU_HASH_UNUSED);
+    MU_ASSERT(h->count < h->n); /* full table = your capacity planning sucked */
+
+    uint32_t i = mu_hash32_find_slot(h, key);
+
+    if(h->keys[i] == MU_HASH_UNUSED)
+        h->count++;
+
+    h->keys[i]   = key;
+    h->values[i] = value;
+}
+
+/*
+    Lookup key.
+
+    Returns:
+        true  -> found, writes out_value
+        false -> not found
+
+    This avoids the "0 means maybe missing maybe valid" nonsense.
+*/
+static inline bool mu_hash32_get(const mu_hash32_t* h, uint64_t key, uint32_t* out_value)
+{
+    MU_ASSERT(h);
+    MU_ASSERT(out_value);
+
+    uint32_t i = mu_hash32_find_slot(h, key);
+
+    if(h->keys[i] == MU_HASH_UNUSED)
+        return false;
+
+    *out_value = h->values[i];
+    return true;
+}
+
+static inline bool mu_hash32_contains(const mu_hash32_t* h, uint64_t key)
+{
+    uint32_t ignored;
+    return mu_hash32_get(h, key, &ignored);
+}
+
+/* ============================================================================
+   Removal
+   ============================================================================ */
+
+/*
+    Remove key using backshift repair.
+
+    Why repair?
+    Because linear probing creates clusters.
+
+    If you just blank a slot:
+
+        [K1][K2][K3][--]
+
+    remove K1 naively:
+
+        [--][K2][K3][--]
+
+    lookup(K3):
+        starts at K1 slot
+        sees empty
+        wrongly concludes "not found"
+
+    Brilliant. Broken.
+
+    So after deletion we reinsert the cluster tail.
+
+    Before:
+        [K1][K2][K3][--]
+
+    remove K1:
+        [--][K2][K3][--]
+
+    repair:
+        remove K2 -> reinsert
+        remove K3 -> reinsert
+
+    After:
+        [K2][K3][--][--]
+*/
+static inline void mu_hash32_remove(mu_hash32_t* h, uint64_t key)
+{
+    MU_ASSERT(h);
+
+    uint32_t i = mu_hash32_find_slot(h, key);
+
+    if(h->keys[i] == MU_HASH_UNUSED)
+        return; /* not found */
+
+    h->keys[i] = MU_HASH_UNUSED;
+    h->count--;
+
+    uint32_t j = (i + 1) % h->n;
+
+    while(h->keys[j] != MU_HASH_UNUSED)
+    {
+        uint64_t rekey = h->keys[j];
+        uint32_t reval = h->values[j];
+
+        h->keys[j] = MU_HASH_UNUSED;
+        h->count--;
+
+        mu_hash32_set(h, rekey, reval);
+
+        j = (j + 1) % h->n;
+    }
+}
+
 
