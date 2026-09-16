@@ -88,6 +88,104 @@ int main()
         }
     };
 
+    // ---------------- span: construction and queries ----------------
+    {
+        uint32_t data[6] = {10, 20, 30, 40, 50, 60};
+        mu_span_u32 s = mu_span_u32_make(data, 6);
+
+        check(mu_span_u32_count(s) == 6, "span count");
+        check(!mu_span_u32_empty(s), "span not empty");
+        check(s.data[0] == 10 && s.data[5] == 60, "span element access");
+
+        mu_span_u32 empty = mu_span_u32_make(nullptr, 0);
+        check(mu_span_u32_empty(empty), "null span is empty");
+
+        mu_span_u32 from_arr = mu_span_u32_from_array(data);
+        check(mu_span_u32_count(from_arr) == 6, "span from C array");
+    }
+
+    // ---------------- span: subspans clamp ----------------
+    {
+        uint32_t data[6] = {10, 20, 30, 40, 50, 60};
+        mu_span_u32 s = mu_span_u32_make(data, 6);
+
+        mu_span_u32 mid = mu_span_u32_sub(s, 1, 3);
+        check(mu_span_u32_count(mid) == 3, "subspan count");
+        check(mid.data[0] == 20 && mid.data[2] == 40, "subspan contents");
+
+        mu_span_u32 clamped = mu_span_u32_sub(s, 4, 99);
+        check(mu_span_u32_count(clamped) == 2, "subspan clamps to parent");
+        check(clamped.data[0] == 50, "clamped subspan contents");
+
+        mu_span_u32 past = mu_span_u32_sub(s, 99, 1);
+        check(mu_span_u32_count(past) == 0 && past.data == nullptr, "subspan past end is empty");
+
+        mu_span_u32 head = mu_span_u32_first(s, 2);
+        mu_span_u32 tail = mu_span_u32_last(s, 2);
+        check(head.data[0] == 10 && mu_span_u32_count(head) == 2, "first(2)");
+        check(tail.data[0] == 50 && mu_span_u32_count(tail) == 2, "last(2)");
+    }
+
+    // ---------------- span: find / contains / copy ----------------
+    {
+        uint32_t data[5] = {7, 8, 9, 10, 11};
+        mu_span_u32 s = mu_span_u32_make(data, 5);
+
+        check(mu_span_u32_find(s, 9) == 2, "find hits");
+        check(mu_span_u32_find(s, 99) == -1, "find miss");
+        check(mu_span_u32_contains(s, 11), "contains true");
+        check(!mu_span_u32_contains(s, 12), "contains false");
+
+        uint32_t dst[8] = {0};
+        uint32_t copied = mu_span_u32_copy_to(s, dst, 8);
+        check(copied == 5, "copy_to full fit");
+        check(dst[0] == 7 && dst[4] == 11 && dst[5] == 0, "copy_to contents");
+
+        uint32_t small[2] = {0};
+        copied = mu_span_u32_copy_to(s, small, 2);
+        check(copied == 2 && small[0] == 7 && small[1] == 8, "copy_to clamps to dst");
+    }
+
+    // ---------------- span: byte view ----------------
+    {
+        float f[4] = {1.0f, 2.0f, 3.0f, 4.0f};
+        mu_span bytes = mu_span_from_array(f);
+        check(bytes.count == 16, "byte view counts bytes");
+
+        mu_span_f32 fs;
+        fs.data = (float*)bytes.data;
+        fs.count = bytes.count / sizeof(float);
+        check(fs.count == 4 && fs.data[2] == 3.0f, "typed view from byte view");
+
+        mu_span half = mu_span_slice(bytes, 8, 8);
+        check(half.count == 8, "byte slice");
+        mu_span_f32 hs;
+        hs.data = (float*)half.data;
+        hs.count = half.count / sizeof(float);
+        check(hs.data[0] == 3.0f, "byte slice points at element 2");
+
+        mu_span a = mu_span_make(f, sizeof(f));
+        mu_span b = mu_span_make(f, sizeof(f));
+        mu_span c = mu_span_make(f, sizeof(f) - 1);
+        check(mu_span_equal(a, b), "span_equal same");
+        check(!mu_span_equal(a, c), "span_equal different length");
+    }
+
+    // ---------------- span: view over mu array ----------------
+    {
+        float* arr = nullptr;
+        array_push(arr, 1.5f);
+        array_push(arr, 2.5f);
+        array_push(arr, 3.5f);
+
+        mu_span_f32 s;
+        s.data = arr;
+        s.count = (uint32_t)array_size(arr);
+        check(s.count == 3 && s.data[1] == 2.5f, "span over mu array");
+
+        array_free(arr);
+    }
+
     // baseline creation / set / test / reset / clear / fill / copy
     mu_bitset* bs = mu_bitset_create_with_capacity(130);
     check(bs != nullptr, "create_with_capacity(130)");

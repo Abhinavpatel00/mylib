@@ -26,6 +26,7 @@
 #include "mu/mu_pcg.h"
 #include "mu/mu_perf.h"
 //#include "mu/mu_rand.h"
+#include "mu/mu_span.h"
 #include "mu/mu_sparse_set.h"
 #include "mu/mu_string.h"
 

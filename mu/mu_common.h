@@ -57,7 +57,11 @@
 #define MU_ALIGN(N) __declspec(align(N))
 #define MU_DEBUG_BREAK() __debugbreak()
 #elif defined(__GNUC__) || defined(__clang__)
+#ifdef __cplusplus
+#define MU_RESTRICT __restrict__ /* C++ has no 'restrict' keyword */
+#else
 #define MU_RESTRICT restrict
+#endif
 #define MU_INLINE inline __attribute__((always_inline))
 #define MU_NOINLINE __attribute__((noinline))
 #define MU_ALIGN(N) __attribute__((aligned(N)))
