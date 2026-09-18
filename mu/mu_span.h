@@ -338,4 +338,14 @@ static MU_INLINE uint32_t mu_span_copy_to(mu_span s, void* dst, uint32_t dst_byt
     return n;
 }
 
+/* ByteSpan: minimal const byte view over a single value. */
+typedef struct ByteSpan
+{
+    const void* data;
+    uint32_t    size;
+} ByteSpan;
+
+#define BYTE_SPAN(value) (ByteSpan){ .data = &(value), .size = (uint32_t)sizeof(value) }
+
+
 MU_END_EXTERN_C
