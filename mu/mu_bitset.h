@@ -5,7 +5,7 @@
 
 typedef struct mu_bitset
 {
-    uint64_t* MU_RESTRICT array;         /* pointer to 64-bit word storage */
+    uint64_t*  array;  // mu_strict hona chahiye but lsp complaining       /* pointer to 64-bit word storage */
     size_t                word_count;    /* number words stored */
     size_t                word_capacity; /* allocated capacity in 64-bit words */
 } mu_bitset;
