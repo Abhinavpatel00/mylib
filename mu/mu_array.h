@@ -31,11 +31,11 @@ typedef struct
 #define array_size(a) ((a) ? array_header(a)->size : 0)
 #define array_capacity(a) ((a) ? array_header(a)->capacity : 0)
 #define array_clear(a) ((a) ? (array_header(a)->size = 0) : 0)
-#define array_free(a) ((a) ? free(array_header(a)), (a) = NULL : 0)
+#define array_free(a) ((a) ? MU_FREE(array_header(a)), (a) = NULL : 0)
 
 #define array_full(a) ((a) && array_size(a) >= array_capacity(a))
 
-static void* array_grow(void* arr, size_t elem_size, uint32_t min_capacity)
+MU_INLINE void* array_grow(void* arr, size_t elem_size, uint32_t min_capacity)
 {
     uint32_t new_capacity = 16;
 
@@ -53,11 +53,11 @@ static void* array_grow(void* arr, size_t elem_size, uint32_t min_capacity)
 
     if(arr)
     {
-        new_header = (array_header_t*)realloc(array_header(arr), new_size);
+        new_header = (array_header_t*)MU_REALLOC(array_header(arr), new_size);
     }
     else
     {
-        new_header       = (array_header_t*)malloc(new_size);
+        new_header       = (array_header_t*)MU_MALLOC(new_size);
         new_header->size = 0;
     }
 

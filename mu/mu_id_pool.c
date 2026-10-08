@@ -64,11 +64,11 @@ static void mu_id_pool_insert_range(mu_id_pool* pool, uint32_t index)
     if(pool->count >= pool->capacity)
     {
         pool->capacity = pool->capacity ? pool->capacity * 2 : 1;
-        pool->ranges   = (mu_id_pool_range*)realloc(pool->ranges, pool->capacity * sizeof(mu_id_pool_range));
-        assert(pool->ranges);
+        pool->ranges   = (mu_id_pool_range*)MU_REALLOC(pool->ranges, pool->capacity * sizeof(mu_id_pool_range));
+        MU_ASSERT(pool->ranges);
     }
 
-    memmove(pool->ranges + index + 1, pool->ranges + index, (pool->count - index) * sizeof(mu_id_pool_range));
+    MU_MEMMOVE(pool->ranges + index + 1, pool->ranges + index, (pool->count - index) * sizeof(mu_id_pool_range));
 
     pool->count++;
 }
@@ -77,21 +77,21 @@ static void mu_id_pool_destroy_range(mu_id_pool* pool, uint32_t index)
 {
     pool->count--;
 
-    memmove(pool->ranges + index, pool->ranges + index + 1, (pool->count - index) * sizeof(mu_id_pool_range));
+    MU_MEMMOVE(pool->ranges + index, pool->ranges + index + 1, (pool->count - index) * sizeof(mu_id_pool_range));
 }
 
 /* public API */
 
 void mu_id_pool_init(mu_id_pool* pool, uint32_t pool_size)
 {
-    assert(pool);
-    assert(!pool->ranges);
-    assert(pool_size);
+    MU_ASSERT(pool);
+    MU_ASSERT(!pool->ranges);
+    MU_ASSERT(pool_size);
 
     uint32_t max_id = pool_size - 1;
 
-    pool->ranges = (mu_id_pool_range*)malloc(sizeof(mu_id_pool_range));
-    assert(pool->ranges);
+    pool->ranges = (mu_id_pool_range*)MU_MALLOC(sizeof(mu_id_pool_range));
+    MU_ASSERT(pool->ranges);
 
     pool->ranges[0].first = 0;
     pool->ranges[0].last  = max_id;
@@ -104,12 +104,12 @@ void mu_id_pool_init(mu_id_pool* pool, uint32_t pool_size)
 
 void mu_id_pool_deinit(mu_id_pool* pool)
 {
-    assert(pool);
-    assert(pool->used_ids == 0);
+    MU_ASSERT(pool);
+    MU_ASSERT(pool->used_ids == 0);
 
     if(pool->ranges)
     {
-        free(pool->ranges);
+        MU_FREE(pool->ranges);
         pool->ranges   = NULL;
         pool->count    = 0;
         pool->capacity = 0;
@@ -184,7 +184,7 @@ bool mu_id_pool_destroy_id(mu_id_pool* pool, uint32_t id)
 bool mu_id_pool_destroy_range_id(mu_id_pool* pool, uint32_t id, uint32_t count)
 {
     uint32_t end_id = id + count;
-    assert(end_id <= pool->max_id + 1);
+    MU_ASSERT(end_id <= pool->max_id + 1);
 
     uint32_t i0 = 0;
     uint32_t i1 = pool->count - 1;
@@ -302,13 +302,13 @@ void mu_id_pool_check_ranges(const mu_id_pool* pool)
 {
     for(uint32_t i = 0; i < pool->count; ++i)
     {
-        assert(pool->ranges[i].last <= pool->max_id);
+        MU_ASSERT(pool->ranges[i].last <= pool->max_id);
 
         if(pool->ranges[i].first == pool->ranges[i].last + 1)
             continue;
 
-        assert(pool->ranges[i].first <= pool->ranges[i].last);
-        assert(pool->ranges[i].first <= pool->max_id);
+        MU_ASSERT(pool->ranges[i].first <= pool->ranges[i].last);
+        MU_ASSERT(pool->ranges[i].first <= pool->max_id);
     }
 }
 

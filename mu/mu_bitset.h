@@ -53,17 +53,17 @@ void mu_bitset_set_bit(mu_bitset* bs, size_t bit_index, bool value);
 bool mu_bitset_get_bit(const mu_bitset* bs, size_t bit_index);
 
 /* Query sizes. */
-static MU_INLINE size_t mu_bitset_size_in_bytes(const mu_bitset* bs)
+MU_INLINE size_t mu_bitset_size_in_bytes(const mu_bitset* bs)
 {
     return bs->word_count * sizeof(uint64_t);
 }
 
-static MU_INLINE size_t mu_bitset_size_in_bits(const mu_bitset* bs)
+MU_INLINE size_t mu_bitset_size_in_bits(const mu_bitset* bs)
 {
     return bs->word_count * 64;
 }
 
-static MU_INLINE size_t mu_bitset_size_in_words(const mu_bitset* bs)
+MU_INLINE size_t mu_bitset_size_in_words(const mu_bitset* bs)
 {
     return bs->word_count;
 }
@@ -100,7 +100,7 @@ typedef mu_bitset_iterator mu_bitset_visit_fn;
 void mu_bitset_traverse(const mu_bitset* bs, mu_bitset_visit_fn visitor, void* user);
 void mu_bitset_traverse_range(const mu_bitset* bs, mu_bitset_visit_fn visitor, void* user, size_t begin, size_t count);
 
-static MU_INLINE bool mu_bitset_next_set_bit(const mu_bitset* bs, size_t* i)
+MU_INLINE bool mu_bitset_next_set_bit(const mu_bitset* bs, size_t* i)
 {
     size_t x = *i / 64;
     if(x >= bs->word_count)
@@ -128,7 +128,7 @@ static MU_INLINE bool mu_bitset_next_set_bit(const mu_bitset* bs, size_t* i)
     return false;
 }
 
-static MU_INLINE size_t mu_bitset_next_set_bits(const mu_bitset* bs, size_t* buffer, size_t capacity, size_t* startfrom)
+MU_INLINE size_t mu_bitset_next_set_bits(const mu_bitset* bs, size_t* buffer, size_t capacity, size_t* startfrom)
 {
     if(capacity == 0)
         return 0;
@@ -171,7 +171,7 @@ end:
     return howmany;
 }
 
-static MU_INLINE bool mu_bitset_for_each(const mu_bitset* bs, mu_bitset_iterator iterator, void* ptr)
+MU_INLINE bool mu_bitset_for_each(const mu_bitset* bs, mu_bitset_iterator iterator, void* ptr)
 {
     size_t base = 0;
     for(size_t i = 0; i < bs->word_count; ++i)

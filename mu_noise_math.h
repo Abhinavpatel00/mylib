@@ -81,13 +81,7 @@
 extern "C" {
 #endif
 
-#ifndef MU_NOISE_INLINE
-#define MU_NOISE_INLINE static inline
-#endif
-
-#ifndef MU_NOISE_PI
-#define MU_NOISE_PI 3.14159265358979323846f
-#endif
+#include "mu_macros.h"
 
 /* ------------------------------------------------------------------------- */
 /* Basic structs and enums                                                   */
@@ -132,28 +126,28 @@ typedef float (*mu_noise_fn3)(float x, float y, float z, uint32_t seed);
 /* Scalar/vector helpers                                                     */
 /* ------------------------------------------------------------------------- */
 
-MU_NOISE_INLINE float mu_noise_abs(float x) { return fabsf(x); }
-MU_NOISE_INLINE float mu_noise_floor(float x) { return floorf(x); }
-MU_NOISE_INLINE float mu_noise_sqrt(float x) { return sqrtf(x); }
+MU_INLINE float mu_noise_abs(float x) { return fabsf(x); }
+MU_INLINE float mu_noise_floor(float x) { return floorf(x); }
+MU_INLINE float mu_noise_sqrt(float x) { return sqrtf(x); }
 
-MU_NOISE_INLINE float mu_noise_clamp(float x, float lo, float hi)
+MU_INLINE float mu_noise_clamp(float x, float lo, float hi)
 {
     if (x < lo) return lo;
     if (x > hi) return hi;
     return x;
 }
 
-MU_NOISE_INLINE float mu_noise_lerp(float a, float b, float t)
+MU_INLINE float mu_noise_lerp(float a, float b, float t)
 {
     return a + (b - a) * t;
 }
 
-MU_NOISE_INLINE float mu_noise_fract(float x)
+MU_INLINE float mu_noise_fract(float x)
 {
     return x - floorf(x);
 }
 
-MU_NOISE_INLINE int mu_noise_mod_i(int x, int period)
+MU_INLINE int mu_noise_mod_i(int x, int period)
 {
     if (period <= 0) return x;
     {
@@ -162,7 +156,7 @@ MU_NOISE_INLINE int mu_noise_mod_i(int x, int period)
     }
 }
 
-MU_NOISE_INLINE float mu_noise_wrap_period(float x, float period)
+MU_INLINE float mu_noise_wrap_period(float x, float period)
 {
     if (period <= 0.0f) return x;
     {
@@ -171,13 +165,13 @@ MU_NOISE_INLINE float mu_noise_wrap_period(float x, float period)
     }
 }
 
-MU_NOISE_INLINE float mu_noise_smoothstep3(float t)
+MU_INLINE float mu_noise_smoothstep3(float t)
 {
     /* cubic smoothstep: 3t^2 - 2t^3 */
     return t * t * (3.0f - 2.0f * t);
 }
 
-MU_NOISE_INLINE float mu_noise_smootherstep5(float t)
+MU_INLINE float mu_noise_smootherstep5(float t)
 {
     /*
         quintic smoothstep: 6t^5 - 15t^4 + 10t^3
@@ -190,12 +184,12 @@ MU_NOISE_INLINE float mu_noise_smootherstep5(float t)
     return t * t * t * (t * (t * 6.0f - 15.0f) + 10.0f);
 }
 
-MU_NOISE_INLINE float mu_noise_remap_neg1_pos1_to_0_1(float v)
+MU_INLINE float mu_noise_remap_neg1_pos1_to_0_1(float v)
 {
     return 0.5f * v + 0.5f;
 }
 
-MU_NOISE_INLINE mu_noise_vec2 mu_noise_v2(float x, float y)
+MU_INLINE mu_noise_vec2 mu_noise_v2(float x, float y)
 {
     mu_noise_vec2 r;
     r.x = x;
@@ -203,7 +197,7 @@ MU_NOISE_INLINE mu_noise_vec2 mu_noise_v2(float x, float y)
     return r;
 }
 
-MU_NOISE_INLINE mu_noise_vec3 mu_noise_v3(float x, float y, float z)
+MU_INLINE mu_noise_vec3 mu_noise_v3(float x, float y, float z)
 {
     mu_noise_vec3 r;
     r.x = x;
@@ -212,52 +206,52 @@ MU_NOISE_INLINE mu_noise_vec3 mu_noise_v3(float x, float y, float z)
     return r;
 }
 
-MU_NOISE_INLINE float mu_noise_v2_dot(mu_noise_vec2 a, mu_noise_vec2 b)
+MU_INLINE float mu_noise_v2_dot(mu_noise_vec2 a, mu_noise_vec2 b)
 {
     return a.x * b.x + a.y * b.y;
 }
 
-MU_NOISE_INLINE float mu_noise_v3_dot(mu_noise_vec3 a, mu_noise_vec3 b)
+MU_INLINE float mu_noise_v3_dot(mu_noise_vec3 a, mu_noise_vec3 b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-MU_NOISE_INLINE float mu_noise_v2_len(mu_noise_vec2 a)
+MU_INLINE float mu_noise_v2_len(mu_noise_vec2 a)
 {
     return sqrtf(a.x * a.x + a.y * a.y);
 }
 
-MU_NOISE_INLINE float mu_noise_v3_len(mu_noise_vec3 a)
+MU_INLINE float mu_noise_v3_len(mu_noise_vec3 a)
 {
     return sqrtf(a.x * a.x + a.y * a.y + a.z * a.z);
 }
 
-MU_NOISE_INLINE mu_noise_vec2 mu_noise_v2_add(mu_noise_vec2 a, mu_noise_vec2 b)
+MU_INLINE mu_noise_vec2 mu_noise_v2_add(mu_noise_vec2 a, mu_noise_vec2 b)
 {
     return mu_noise_v2(a.x + b.x, a.y + b.y);
 }
 
-MU_NOISE_INLINE mu_noise_vec2 mu_noise_v2_mul(mu_noise_vec2 a, float s)
+MU_INLINE mu_noise_vec2 mu_noise_v2_mul(mu_noise_vec2 a, float s)
 {
     return mu_noise_v2(a.x * s, a.y * s);
 }
 
-MU_NOISE_INLINE mu_noise_vec3 mu_noise_v3_add(mu_noise_vec3 a, mu_noise_vec3 b)
+MU_INLINE mu_noise_vec3 mu_noise_v3_add(mu_noise_vec3 a, mu_noise_vec3 b)
 {
     return mu_noise_v3(a.x + b.x, a.y + b.y, a.z + b.z);
 }
 
-MU_NOISE_INLINE mu_noise_vec3 mu_noise_v3_sub(mu_noise_vec3 a, mu_noise_vec3 b)
+MU_INLINE mu_noise_vec3 mu_noise_v3_sub(mu_noise_vec3 a, mu_noise_vec3 b)
 {
     return mu_noise_v3(a.x - b.x, a.y - b.y, a.z - b.z);
 }
 
-MU_NOISE_INLINE mu_noise_vec3 mu_noise_v3_mul(mu_noise_vec3 a, float s)
+MU_INLINE mu_noise_vec3 mu_noise_v3_mul(mu_noise_vec3 a, float s)
 {
     return mu_noise_v3(a.x * s, a.y * s, a.z * s);
 }
 
-MU_NOISE_INLINE mu_noise_vec3 mu_noise_v3_cross(mu_noise_vec3 a, mu_noise_vec3 b)
+MU_INLINE mu_noise_vec3 mu_noise_v3_cross(mu_noise_vec3 a, mu_noise_vec3 b)
 {
     return mu_noise_v3(
         a.y * b.z - a.z * b.y,
@@ -270,7 +264,7 @@ MU_NOISE_INLINE mu_noise_vec3 mu_noise_v3_cross(mu_noise_vec3 a, mu_noise_vec3 b
 /* Hashes and randoms                                                        */
 /* ------------------------------------------------------------------------- */
 
-MU_NOISE_INLINE uint32_t mu_noise_hash_u32(uint32_t x)
+MU_INLINE uint32_t mu_noise_hash_u32(uint32_t x)
 {
     /* A small high-quality integer avalanche hash. */
     x ^= x >> 16;
@@ -281,20 +275,20 @@ MU_NOISE_INLINE uint32_t mu_noise_hash_u32(uint32_t x)
     return x;
 }
 
-MU_NOISE_INLINE uint32_t mu_noise_hash_combine(uint32_t h, uint32_t k)
+MU_INLINE uint32_t mu_noise_hash_combine(uint32_t h, uint32_t k)
 {
     h ^= mu_noise_hash_u32(k + 0x9e3779b9U + (h << 6) + (h >> 2));
     return h;
 }
 
-MU_NOISE_INLINE uint32_t mu_noise_hash_1i(int x, uint32_t seed)
+MU_INLINE uint32_t mu_noise_hash_1i(int x, uint32_t seed)
 {
     uint32_t h = mu_noise_hash_u32(seed ^ 0xA1B3C6D9U);
     h = mu_noise_hash_combine(h, (uint32_t)x);
     return mu_noise_hash_u32(h);
 }
 
-MU_NOISE_INLINE uint32_t mu_noise_hash_2i(int x, int y, uint32_t seed)
+MU_INLINE uint32_t mu_noise_hash_2i(int x, int y, uint32_t seed)
 {
     uint32_t h = mu_noise_hash_u32(seed ^ 0xD1B54A35U);
     h = mu_noise_hash_combine(h, (uint32_t)x);
@@ -302,7 +296,7 @@ MU_NOISE_INLINE uint32_t mu_noise_hash_2i(int x, int y, uint32_t seed)
     return mu_noise_hash_u32(h);
 }
 
-MU_NOISE_INLINE uint32_t mu_noise_hash_3i(int x, int y, int z, uint32_t seed)
+MU_INLINE uint32_t mu_noise_hash_3i(int x, int y, int z, uint32_t seed)
 {
     uint32_t h = mu_noise_hash_u32(seed ^ 0x94D049BBU);
     h = mu_noise_hash_combine(h, (uint32_t)x);
@@ -311,17 +305,17 @@ MU_NOISE_INLINE uint32_t mu_noise_hash_3i(int x, int y, int z, uint32_t seed)
     return mu_noise_hash_u32(h);
 }
 
-MU_NOISE_INLINE uint32_t mu_noise_hash_1i_periodic(int x, int period_x, uint32_t seed)
+MU_INLINE uint32_t mu_noise_hash_1i_periodic(int x, int period_x, uint32_t seed)
 {
     return mu_noise_hash_1i(mu_noise_mod_i(x, period_x), seed);
 }
 
-MU_NOISE_INLINE uint32_t mu_noise_hash_2i_periodic(int x, int y, int period_x, int period_y, uint32_t seed)
+MU_INLINE uint32_t mu_noise_hash_2i_periodic(int x, int y, int period_x, int period_y, uint32_t seed)
 {
     return mu_noise_hash_2i(mu_noise_mod_i(x, period_x), mu_noise_mod_i(y, period_y), seed);
 }
 
-MU_NOISE_INLINE uint32_t mu_noise_hash_3i_periodic(int x, int y, int z, int period_x, int period_y, int period_z, uint32_t seed)
+MU_INLINE uint32_t mu_noise_hash_3i_periodic(int x, int y, int z, int period_x, int period_y, int period_z, uint32_t seed)
 {
     return mu_noise_hash_3i(
         mu_noise_mod_i(x, period_x),
@@ -331,13 +325,13 @@ MU_NOISE_INLINE uint32_t mu_noise_hash_3i_periodic(int x, int y, int z, int peri
     );
 }
 
-MU_NOISE_INLINE float mu_noise_hash_to_unit_float(uint32_t h)
+MU_INLINE float mu_noise_hash_to_unit_float(uint32_t h)
 {
     /* 24-bit mantissa-friendly mapping [0, 1). */
     return (float)(h >> 8) * (1.0f / 16777216.0f);
 }
 
-MU_NOISE_INLINE float mu_noise_hash_to_signed_float(uint32_t h)
+MU_INLINE float mu_noise_hash_to_signed_float(uint32_t h)
 {
     return mu_noise_hash_to_unit_float(h) * 2.0f - 1.0f;
 }
@@ -353,20 +347,20 @@ MU_NOISE_INLINE float mu_noise_hash_to_signed_float(uint32_t h)
 
     Sampling at continuous x,y,z usually means taking floor first.
 */
-MU_NOISE_INLINE float mu_noise_white1(float x, uint32_t seed)
+MU_INLINE float mu_noise_white1(float x, uint32_t seed)
 {
     int ix = (int)floorf(x);
     return mu_noise_hash_to_signed_float(mu_noise_hash_1i(ix, seed));
 }
 
-MU_NOISE_INLINE float mu_noise_white2(float x, float y, uint32_t seed)
+MU_INLINE float mu_noise_white2(float x, float y, uint32_t seed)
 {
     int ix = (int)floorf(x);
     int iy = (int)floorf(y);
     return mu_noise_hash_to_signed_float(mu_noise_hash_2i(ix, iy, seed));
 }
 
-MU_NOISE_INLINE float mu_noise_white3(float x, float y, float z, uint32_t seed)
+MU_INLINE float mu_noise_white3(float x, float y, float z, uint32_t seed)
 {
     int ix = (int)floorf(x);
     int iy = (int)floorf(y);
@@ -395,7 +389,7 @@ MU_NOISE_INLINE float mu_noise_white3(float x, float y, float z, uint32_t seed)
     3D:
       same pattern with trilinear blend over 8 corners.
 */
-MU_NOISE_INLINE float mu_noise_value1(float x, uint32_t seed)
+MU_INLINE float mu_noise_value1(float x, uint32_t seed)
 {
     int i0 = (int)floorf(x);
     int i1 = i0 + 1;
@@ -408,7 +402,7 @@ MU_NOISE_INLINE float mu_noise_value1(float x, uint32_t seed)
     return mu_noise_lerp(v0, v1, u);
 }
 
-MU_NOISE_INLINE float mu_noise_value2(float x, float y, uint32_t seed)
+MU_INLINE float mu_noise_value2(float x, float y, uint32_t seed)
 {
     int ix0 = (int)floorf(x);
     int iy0 = (int)floorf(y);
@@ -430,7 +424,7 @@ MU_NOISE_INLINE float mu_noise_value2(float x, float y, uint32_t seed)
     return mu_noise_lerp(a, b, uy);
 }
 
-MU_NOISE_INLINE float mu_noise_value3(float x, float y, float z, uint32_t seed)
+MU_INLINE float mu_noise_value3(float x, float y, float z, uint32_t seed)
 {
     int ix0 = (int)floorf(x);
     int iy0 = (int)floorf(y);
@@ -472,7 +466,7 @@ MU_NOISE_INLINE float mu_noise_value3(float x, float y, float z, uint32_t seed)
     - periods are in lattice cells.
     - period<=0 on any axis falls back to non-periodic hashing on that axis.
 */
-MU_NOISE_INLINE float mu_noise_value1_periodic(float x, int period_x, uint32_t seed)
+MU_INLINE float mu_noise_value1_periodic(float x, int period_x, uint32_t seed)
 {
     if (period_x <= 0) return mu_noise_value1(x, seed);
 
@@ -488,7 +482,7 @@ MU_NOISE_INLINE float mu_noise_value1_periodic(float x, int period_x, uint32_t s
     }
 }
 
-MU_NOISE_INLINE float mu_noise_value2_periodic(float x, float y, int period_x, int period_y, uint32_t seed)
+MU_INLINE float mu_noise_value2_periodic(float x, float y, int period_x, int period_y, uint32_t seed)
 {
     if (period_x <= 0 || period_y <= 0) return mu_noise_value2(x, y, seed);
 
@@ -516,7 +510,7 @@ MU_NOISE_INLINE float mu_noise_value2_periodic(float x, float y, int period_x, i
     }
 }
 
-MU_NOISE_INLINE float mu_noise_value3_periodic(float x, float y, float z, int period_x, int period_y, int period_z, uint32_t seed)
+MU_INLINE float mu_noise_value3_periodic(float x, float y, float z, int period_x, int period_y, int period_z, uint32_t seed)
 {
     if (period_x <= 0 || period_y <= 0 || period_z <= 0) return mu_noise_value3(x, y, z, seed);
 
@@ -571,7 +565,7 @@ MU_NOISE_INLINE float mu_noise_value3_periodic(float x, float y, float z, int pe
       It creates directional variation while preserving continuity.
 */
 
-MU_NOISE_INLINE mu_noise_vec2 mu_noise_grad2_from_hash(uint32_t h)
+MU_INLINE mu_noise_vec2 mu_noise_grad2_from_hash(uint32_t h)
 {
     /* 8 directions around the unit circle (cheap and isotropic enough). */
     switch (h & 7U)
@@ -587,7 +581,7 @@ MU_NOISE_INLINE mu_noise_vec2 mu_noise_grad2_from_hash(uint32_t h)
     }
 }
 
-MU_NOISE_INLINE mu_noise_vec3 mu_noise_grad3_from_hash(uint32_t h)
+MU_INLINE mu_noise_vec3 mu_noise_grad3_from_hash(uint32_t h)
 {
     /* 12 classic Perlin gradients in 3D. */
     switch (h % 12U)
@@ -607,7 +601,7 @@ MU_NOISE_INLINE mu_noise_vec3 mu_noise_grad3_from_hash(uint32_t h)
     }
 }
 
-MU_NOISE_INLINE float mu_noise_perlin1(float x, uint32_t seed)
+MU_INLINE float mu_noise_perlin1(float x, uint32_t seed)
 {
     int i0 = (int)floorf(x);
     int i1 = i0 + 1;
@@ -625,7 +619,7 @@ MU_NOISE_INLINE float mu_noise_perlin1(float x, uint32_t seed)
     return 2.0f * mu_noise_lerp(n0, n1, u);
 }
 
-MU_NOISE_INLINE float mu_noise_perlin2(float x, float y, uint32_t seed)
+MU_INLINE float mu_noise_perlin2(float x, float y, uint32_t seed)
 {
     int ix0 = (int)floorf(x);
     int iy0 = (int)floorf(y);
@@ -655,7 +649,7 @@ MU_NOISE_INLINE float mu_noise_perlin2(float x, float y, uint32_t seed)
     return 1.41421356f * mu_noise_lerp(a, b, uy);
 }
 
-MU_NOISE_INLINE float mu_noise_perlin3(float x, float y, float z, uint32_t seed)
+MU_INLINE float mu_noise_perlin3(float x, float y, float z, uint32_t seed)
 {
     int ix0 = (int)floorf(x);
     int iy0 = (int)floorf(y);
@@ -701,7 +695,7 @@ MU_NOISE_INLINE float mu_noise_perlin3(float x, float y, float z, uint32_t seed)
     return 1.15470054f * mu_noise_lerp(y0, y1, uz);
 }
 
-MU_NOISE_INLINE float mu_noise_perlin1_periodic(float x, int period_x, uint32_t seed)
+MU_INLINE float mu_noise_perlin1_periodic(float x, int period_x, uint32_t seed)
 {
     if (period_x <= 0) return mu_noise_perlin1(x, seed);
 
@@ -719,7 +713,7 @@ MU_NOISE_INLINE float mu_noise_perlin1_periodic(float x, int period_x, uint32_t 
     }
 }
 
-MU_NOISE_INLINE float mu_noise_perlin2_periodic(float x, float y, int period_x, int period_y, uint32_t seed)
+MU_INLINE float mu_noise_perlin2_periodic(float x, float y, int period_x, int period_y, uint32_t seed)
 {
     if (period_x <= 0 || period_y <= 0) return mu_noise_perlin2(x, y, seed);
 
@@ -752,7 +746,7 @@ MU_NOISE_INLINE float mu_noise_perlin2_periodic(float x, float y, int period_x, 
     }
 }
 
-MU_NOISE_INLINE float mu_noise_perlin3_periodic(float x, float y, float z, int period_x, int period_y, int period_z, uint32_t seed)
+MU_INLINE float mu_noise_perlin3_periodic(float x, float y, float z, int period_x, int period_y, int period_z, uint32_t seed)
 {
     if (period_x <= 0 || period_y <= 0 || period_z <= 0) return mu_noise_perlin3(x, y, z, seed);
 
@@ -820,7 +814,7 @@ MU_NOISE_INLINE float mu_noise_perlin3_periodic(float x, float y, float z, int p
         t^4 gives compact support and smooth decay.
 */
 
-MU_NOISE_INLINE float mu_noise_simplex2(float x, float y, uint32_t seed)
+MU_INLINE float mu_noise_simplex2(float x, float y, uint32_t seed)
 {
     const float F2 = 0.36602540378443864676f; /* 0.5*(sqrt(3)-1) */
     const float G2 = 0.21132486540518711775f; /* (3-sqrt(3))/6 */
@@ -876,7 +870,7 @@ MU_NOISE_INLINE float mu_noise_simplex2(float x, float y, uint32_t seed)
     return 70.0f * (n0 + n1 + n2);
 }
 
-MU_NOISE_INLINE float mu_noise_simplex3(float x, float y, float z, uint32_t seed)
+MU_INLINE float mu_noise_simplex3(float x, float y, float z, uint32_t seed)
 {
     const float F3 = 1.0f / 3.0f;
     const float G3 = 1.0f / 6.0f;
@@ -1004,7 +998,7 @@ MU_NOISE_INLINE float mu_noise_simplex3(float x, float y, float z, uint32_t seed
     - They are compatible in spirit/style with OpenSimplex2 families.
     - They keep this header compact and dependency-free.
 */
-MU_NOISE_INLINE float mu_noise_opensimplex2_2d(float x, float y, uint32_t seed)
+MU_INLINE float mu_noise_opensimplex2_2d(float x, float y, uint32_t seed)
 {
     const float r = 0.70710678118654752440f;
     float xr = (x + y) * r;
@@ -1012,14 +1006,14 @@ MU_NOISE_INLINE float mu_noise_opensimplex2_2d(float x, float y, uint32_t seed)
     return mu_noise_simplex2(xr, yr, seed ^ 0x9E3779B9u);
 }
 
-MU_NOISE_INLINE float mu_noise_opensimplex2s_2d(float x, float y, uint32_t seed)
+MU_INLINE float mu_noise_opensimplex2s_2d(float x, float y, uint32_t seed)
 {
     float a = mu_noise_opensimplex2_2d(x, y, seed);
     float b = mu_noise_opensimplex2_2d(x + 31.416f, y - 19.731f, seed ^ 0x85EBCA77u);
     return 0.5f * (a + b);
 }
 
-MU_NOISE_INLINE float mu_noise_opensimplex2_3d(float x, float y, float z, uint32_t seed)
+MU_INLINE float mu_noise_opensimplex2_3d(float x, float y, float z, uint32_t seed)
 {
     const float k1 = 0.70710678118654752440f; /* 1/sqrt(2) */
     const float k2 = 0.40824829046386301637f; /* 1/sqrt(6) */
@@ -1032,7 +1026,7 @@ MU_NOISE_INLINE float mu_noise_opensimplex2_3d(float x, float y, float z, uint32
     return mu_noise_simplex3(xr, yr, zr, seed ^ 0xC2B2AE35u);
 }
 
-MU_NOISE_INLINE float mu_noise_opensimplex2s_3d(float x, float y, float z, uint32_t seed)
+MU_INLINE float mu_noise_opensimplex2s_3d(float x, float y, float z, uint32_t seed)
 {
     float a = mu_noise_opensimplex2_3d(x, y, z, seed);
     float b = mu_noise_opensimplex2_3d(x + 17.0f, y - 23.0f, z + 11.0f, seed ^ 0x27D4EB2Fu);
@@ -1055,7 +1049,7 @@ MU_NOISE_INLINE float mu_noise_opensimplex2s_3d(float x, float y, float z, uint3
 
       xr = wrap(x, px), tx = xr / px, etc.
 */
-MU_NOISE_INLINE float mu_noise_simplex2_periodic(float x, float y, int period_x, int period_y, uint32_t seed)
+MU_INLINE float mu_noise_simplex2_periodic(float x, float y, int period_x, int period_y, uint32_t seed)
 {
     if (period_x <= 0 || period_y <= 0) return mu_noise_simplex2(x, y, seed);
 
@@ -1080,7 +1074,7 @@ MU_NOISE_INLINE float mu_noise_simplex2_periodic(float x, float y, int period_x,
     }
 }
 
-MU_NOISE_INLINE float mu_noise_simplex3_periodic(float x, float y, float z, int period_x, int period_y, int period_z, uint32_t seed)
+MU_INLINE float mu_noise_simplex3_periodic(float x, float y, float z, int period_x, int period_y, int period_z, uint32_t seed)
 {
     if (period_x <= 0 || period_y <= 0 || period_z <= 0) return mu_noise_simplex3(x, y, z, seed);
 
@@ -1134,7 +1128,7 @@ MU_NOISE_INLINE float mu_noise_simplex3_periodic(float x, float y, float z, int 
       - borders: step(F2 - F1)
 */
 
-MU_NOISE_INLINE float mu_noise_distance2(mu_noise_vec2 d, mu_noise_distance_metric metric)
+MU_INLINE float mu_noise_distance2(mu_noise_vec2 d, mu_noise_distance_metric metric)
 {
     if (metric == MU_NOISE_DIST_MANHATTAN)
     {
@@ -1149,7 +1143,7 @@ MU_NOISE_INLINE float mu_noise_distance2(mu_noise_vec2 d, mu_noise_distance_metr
     return mu_noise_v2_len(d);
 }
 
-MU_NOISE_INLINE float mu_noise_distance3(mu_noise_vec3 d, mu_noise_distance_metric metric)
+MU_INLINE float mu_noise_distance3(mu_noise_vec3 d, mu_noise_distance_metric metric)
 {
     if (metric == MU_NOISE_DIST_MANHATTAN)
     {
@@ -1166,7 +1160,7 @@ MU_NOISE_INLINE float mu_noise_distance3(mu_noise_vec3 d, mu_noise_distance_metr
     return mu_noise_v3_len(d);
 }
 
-MU_NOISE_INLINE mu_noise_worley2_result mu_noise_worley2(float x, float y, uint32_t seed, mu_noise_distance_metric metric)
+MU_INLINE mu_noise_worley2_result mu_noise_worley2(float x, float y, uint32_t seed, mu_noise_distance_metric metric)
 {
     int ix = (int)floorf(x);
     int iy = (int)floorf(y);
@@ -1210,7 +1204,7 @@ MU_NOISE_INLINE mu_noise_worley2_result mu_noise_worley2(float x, float y, uint3
     return out;
 }
 
-MU_NOISE_INLINE mu_noise_worley3_result mu_noise_worley3(float x, float y, float z, uint32_t seed, mu_noise_distance_metric metric)
+MU_INLINE mu_noise_worley3_result mu_noise_worley3(float x, float y, float z, uint32_t seed, mu_noise_distance_metric metric)
 {
     int ix = (int)floorf(x);
     int iy = (int)floorf(y);
@@ -1277,7 +1271,7 @@ MU_NOISE_INLINE mu_noise_worley3_result mu_noise_worley3(float x, float y, float
       octaves    = 4..8
 */
 
-MU_NOISE_INLINE float mu_noise_fbm1(mu_noise_fn1 base, float x, uint32_t seed, int octaves, float lacunarity, float gain)
+MU_INLINE float mu_noise_fbm1(mu_noise_fn1 base, float x, uint32_t seed, int octaves, float lacunarity, float gain)
 {
     float sum = 0.0f;
     float amp = 1.0f;
@@ -1295,7 +1289,7 @@ MU_NOISE_INLINE float mu_noise_fbm1(mu_noise_fn1 base, float x, uint32_t seed, i
     return (norm > 0.0f) ? (sum / norm) : 0.0f;
 }
 
-MU_NOISE_INLINE float mu_noise_fbm2(mu_noise_fn2 base, float x, float y, uint32_t seed, int octaves, float lacunarity, float gain)
+MU_INLINE float mu_noise_fbm2(mu_noise_fn2 base, float x, float y, uint32_t seed, int octaves, float lacunarity, float gain)
 {
     float sum = 0.0f;
     float amp = 1.0f;
@@ -1313,7 +1307,7 @@ MU_NOISE_INLINE float mu_noise_fbm2(mu_noise_fn2 base, float x, float y, uint32_
     return (norm > 0.0f) ? (sum / norm) : 0.0f;
 }
 
-MU_NOISE_INLINE float mu_noise_fbm3(mu_noise_fn3 base, float x, float y, float z, uint32_t seed, int octaves, float lacunarity, float gain)
+MU_INLINE float mu_noise_fbm3(mu_noise_fn3 base, float x, float y, float z, uint32_t seed, int octaves, float lacunarity, float gain)
 {
     float sum = 0.0f;
     float amp = 1.0f;
@@ -1337,7 +1331,7 @@ MU_NOISE_INLINE float mu_noise_fbm3(mu_noise_fn3 base, float x, float y, float z
 
       turbulence = Σ amp_i * |noise(freq_i * p)|
 */
-MU_NOISE_INLINE float mu_noise_turbulence2(mu_noise_fn2 base, float x, float y, uint32_t seed, int octaves, float lacunarity, float gain)
+MU_INLINE float mu_noise_turbulence2(mu_noise_fn2 base, float x, float y, uint32_t seed, int octaves, float lacunarity, float gain)
 {
     float sum = 0.0f;
     float amp = 1.0f;
@@ -1356,7 +1350,7 @@ MU_NOISE_INLINE float mu_noise_turbulence2(mu_noise_fn2 base, float x, float y, 
     return (norm > 0.0f) ? (sum / norm) : 0.0f;
 }
 
-MU_NOISE_INLINE float mu_noise_turbulence3(mu_noise_fn3 base, float x, float y, float z, uint32_t seed, int octaves, float lacunarity, float gain)
+MU_INLINE float mu_noise_turbulence3(mu_noise_fn3 base, float x, float y, float z, uint32_t seed, int octaves, float lacunarity, float gain)
 {
     float sum = 0.0f;
     float amp = 1.0f;
@@ -1381,7 +1375,7 @@ MU_NOISE_INLINE float mu_noise_turbulence3(mu_noise_fn3 base, float x, float y, 
 
     It makes rounded "cloud/pillow" structures.
 */
-MU_NOISE_INLINE float mu_noise_billow2(mu_noise_fn2 base, float x, float y, uint32_t seed, int octaves, float lacunarity, float gain)
+MU_INLINE float mu_noise_billow2(mu_noise_fn2 base, float x, float y, uint32_t seed, int octaves, float lacunarity, float gain)
 {
     float sum = 0.0f;
     float amp = 1.0f;
@@ -1401,7 +1395,7 @@ MU_NOISE_INLINE float mu_noise_billow2(mu_noise_fn2 base, float x, float y, uint
     return (norm > 0.0f) ? (sum / norm) : 0.0f;
 }
 
-MU_NOISE_INLINE float mu_noise_billow3(mu_noise_fn3 base, float x, float y, float z, uint32_t seed, int octaves, float lacunarity, float gain)
+MU_INLINE float mu_noise_billow3(mu_noise_fn3 base, float x, float y, float z, uint32_t seed, int octaves, float lacunarity, float gain)
 {
     float sum = 0.0f;
     float amp = 1.0f;
@@ -1432,7 +1426,7 @@ MU_NOISE_INLINE float mu_noise_billow3(mu_noise_fn3 base, float x, float y, floa
 
     Good for sharp mountain ridges.
 */
-MU_NOISE_INLINE float mu_noise_ridged2(mu_noise_fn2 base, float x, float y, uint32_t seed, int octaves, float lacunarity, float gain, float offset)
+MU_INLINE float mu_noise_ridged2(mu_noise_fn2 base, float x, float y, uint32_t seed, int octaves, float lacunarity, float gain, float offset)
 {
     float sum = 0.0f;
     float amp = 0.5f;
@@ -1456,7 +1450,7 @@ MU_NOISE_INLINE float mu_noise_ridged2(mu_noise_fn2 base, float x, float y, uint
     return mu_noise_clamp(sum * 2.0f - 1.0f, -1.0f, 1.0f);
 }
 
-MU_NOISE_INLINE float mu_noise_ridged3(mu_noise_fn3 base, float x, float y, float z, uint32_t seed, int octaves, float lacunarity, float gain, float offset)
+MU_INLINE float mu_noise_ridged3(mu_noise_fn3 base, float x, float y, float z, uint32_t seed, int octaves, float lacunarity, float gain, float offset)
 {
     float sum = 0.0f;
     float amp = 0.5f;
@@ -1492,14 +1486,14 @@ MU_NOISE_INLINE float mu_noise_ridged3(mu_noise_fn3 base, float x, float y, floa
 
     where W is often simplex/perlin and N can be any base noise.
 */
-MU_NOISE_INLINE mu_noise_vec2 mu_noise_domain_warp2(mu_noise_fn2 warp, float x, float y, uint32_t seed, float warp_amp, float warp_freq)
+MU_INLINE mu_noise_vec2 mu_noise_domain_warp2(mu_noise_fn2 warp, float x, float y, uint32_t seed, float warp_amp, float warp_freq)
 {
     float qx = warp(x * warp_freq, y * warp_freq, seed ^ 0xA511E9B3u);
     float qy = warp((x + 19.19f) * warp_freq, (y - 33.47f) * warp_freq, seed ^ 0x63D83595u);
     return mu_noise_v2(x + warp_amp * qx, y + warp_amp * qy);
 }
 
-MU_NOISE_INLINE mu_noise_vec3 mu_noise_domain_warp3(mu_noise_fn3 warp, float x, float y, float z, uint32_t seed, float warp_amp, float warp_freq)
+MU_INLINE mu_noise_vec3 mu_noise_domain_warp3(mu_noise_fn3 warp, float x, float y, float z, uint32_t seed, float warp_amp, float warp_freq)
 {
     float qx = warp(x * warp_freq, y * warp_freq, z * warp_freq, seed ^ 0xA511E9B3u);
     float qy = warp((x + 19.19f) * warp_freq, (y - 33.47f) * warp_freq, (z + 11.73f) * warp_freq, seed ^ 0x63D83595u);
@@ -1507,13 +1501,13 @@ MU_NOISE_INLINE mu_noise_vec3 mu_noise_domain_warp3(mu_noise_fn3 warp, float x, 
     return mu_noise_v3(x + warp_amp * qx, y + warp_amp * qy, z + warp_amp * qz);
 }
 
-MU_NOISE_INLINE float mu_noise_domain_warped2(mu_noise_fn2 base, mu_noise_fn2 warp, float x, float y, uint32_t seed, float warp_amp, float warp_freq)
+MU_INLINE float mu_noise_domain_warped2(mu_noise_fn2 base, mu_noise_fn2 warp, float x, float y, uint32_t seed, float warp_amp, float warp_freq)
 {
     mu_noise_vec2 p = mu_noise_domain_warp2(warp, x, y, seed, warp_amp, warp_freq);
     return base(p.x, p.y, seed);
 }
 
-MU_NOISE_INLINE float mu_noise_domain_warped3(mu_noise_fn3 base, mu_noise_fn3 warp, float x, float y, float z, uint32_t seed, float warp_amp, float warp_freq)
+MU_INLINE float mu_noise_domain_warped3(mu_noise_fn3 base, mu_noise_fn3 warp, float x, float y, float z, uint32_t seed, float warp_amp, float warp_freq)
 {
     mu_noise_vec3 p = mu_noise_domain_warp3(warp, x, y, z, seed, warp_amp, warp_freq);
     return base(p.x, p.y, p.z, seed);
@@ -1533,7 +1527,7 @@ MU_NOISE_INLINE float mu_noise_domain_warped3(mu_noise_fn3 base, mu_noise_fn3 wa
       dPsi/dx ≈ (Psi(x+e,y)-Psi(x-e,y))/(2e)
       dPsi/dy ≈ (Psi(x,y+e)-Psi(x,y-e))/(2e)
 */
-MU_NOISE_INLINE mu_noise_vec2 mu_noise_curl2(mu_noise_fn2 potential, float x, float y, uint32_t seed, float eps)
+MU_INLINE mu_noise_vec2 mu_noise_curl2(mu_noise_fn2 potential, float x, float y, uint32_t seed, float eps)
 {
     float ex = (eps > 0.0f) ? eps : 1.0e-3f;
 
@@ -1559,7 +1553,7 @@ MU_NOISE_INLINE mu_noise_vec2 mu_noise_curl2(mu_noise_fn2 potential, float x, fl
 
     We generate Ax,Ay,Az from the same scalar noise with different seeds.
 */
-MU_NOISE_INLINE mu_noise_vec3 mu_noise_curl3(mu_noise_fn3 scalar, float x, float y, float z, uint32_t seed, float eps)
+MU_INLINE mu_noise_vec3 mu_noise_curl3(mu_noise_fn3 scalar, float x, float y, float z, uint32_t seed, float eps)
 {
     float ex = (eps > 0.0f) ? eps : 1.0e-3f;
 
@@ -1608,21 +1602,21 @@ MU_NOISE_INLINE mu_noise_vec3 mu_noise_curl3(mu_noise_fn3 scalar, float x, float
 /*
     Useful one-liners for common terrain/material patterns.
 */
-MU_NOISE_INLINE float mu_noise_terrain_height(float x, float y, uint32_t seed)
+MU_INLINE float mu_noise_terrain_height(float x, float y, uint32_t seed)
 {
     float n_continent = mu_noise_fbm2(mu_noise_simplex2, x * 0.0009f, y * 0.0009f, seed + 11u, 5, 2.0f, 0.5f);
     float n_detail    = mu_noise_ridged2(mu_noise_perlin2, x * 0.0070f, y * 0.0070f, seed + 29u, 4, 2.0f, 2.0f, 1.0f);
     return 0.75f * n_continent + 0.25f * n_detail;
 }
 
-MU_NOISE_INLINE float mu_noise_marble(float x, float y, uint32_t seed)
+MU_INLINE float mu_noise_marble(float x, float y, uint32_t seed)
 {
     float warp = mu_noise_fbm2(mu_noise_simplex2, x * 1.5f, y * 1.5f, seed + 3u, 4, 2.0f, 0.5f);
     float t = x * 3.14159265f + 2.0f * warp;
     return sinf(t);
 }
 
-MU_NOISE_INLINE float mu_noise_cells_edge(float x, float y, uint32_t seed)
+MU_INLINE float mu_noise_cells_edge(float x, float y, uint32_t seed)
 {
     mu_noise_worley2_result w = mu_noise_worley2(x, y, seed, MU_NOISE_DIST_EUCLIDEAN);
     return w.f2 - w.f1;

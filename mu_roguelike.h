@@ -50,7 +50,7 @@
 	---------------------------------------------------------------------------
 	Usage:
 	  - Include this header.
-	  - Optionally define MU_ROG_ASSERT/MALLOC/FREE to route memory.
+	  - Optionally define MU_ASSERT/MALLOC/FREE to route memory.
 	  - Optionally define MU_ROG_CGLM_HEADER before include if cglm path custom.
 
 	---------------------------------------------------------------------------
@@ -72,29 +72,7 @@ extern "C" {
 /* Config                                                                    */
 /* ------------------------------------------------------------------------- */
 
-#ifndef MU_ROG_INLINE
-#define MU_ROG_INLINE static inline
-#endif
-
-#ifndef MU_ROG_ASSERT
-#define MU_ROG_ASSERT(x) assert(x)
-#endif
-
-#ifndef MU_ROG_MALLOC
-#define MU_ROG_MALLOC(sz) malloc(sz)
-#endif
-
-#ifndef MU_ROG_FREE
-#define MU_ROG_FREE(p) free(p)
-#endif
-
-#ifndef MU_ROG_REALLOC
-#define MU_ROG_REALLOC(p, sz) realloc((p), (sz))
-#endif
-
-#ifndef MU_ROG_PI
-#define MU_ROG_PI 3.14159265358979323846f
-#endif
+#include "mu_macros.h"
 
 /* ------------------------------------------------------------------------- */
 /* cglm detection (optional, used for simple vector math helpers)            */
@@ -162,23 +140,23 @@ typedef int (*mu_rog_line_visit_fn)(int x, int y, void* user);
 /* Scalar / vector helpers                                                   */
 /* ------------------------------------------------------------------------- */
 
-MU_ROG_INLINE int mu_rog_iabs(int v) { return (v < 0) ? -v : v; }
-MU_ROG_INLINE int mu_rog_imax(int a, int b) { return (a > b) ? a : b; }
-MU_ROG_INLINE int mu_rog_imin(int a, int b) { return (a < b) ? a : b; }
-MU_ROG_INLINE float mu_rog_fmax(float a, float b) { return (a > b) ? a : b; }
-MU_ROG_INLINE float mu_rog_fmin(float a, float b) { return (a < b) ? a : b; }
+MU_INLINE int mu_rog_iabs(int v) { return (v < 0) ? -v : v; }
+MU_INLINE int mu_rog_imax(int a, int b) { return (a > b) ? a : b; }
+MU_INLINE int mu_rog_imin(int a, int b) { return (a < b) ? a : b; }
+MU_INLINE float mu_rog_fmax(float a, float b) { return (a > b) ? a : b; }
+MU_INLINE float mu_rog_fmin(float a, float b) { return (a < b) ? a : b; }
 
-MU_ROG_INLINE int mu_rog_in_bounds_i(int x, int y, int w, int h)
+MU_INLINE int mu_rog_in_bounds_i(int x, int y, int w, int h)
 {
 	return (x >= 0 && y >= 0 && x < w && y < h);
 }
 
-MU_ROG_INLINE int mu_rog_grid_index(int x, int y, int w)
+MU_INLINE int mu_rog_grid_index(int x, int y, int w)
 {
 	return y * w + x;
 }
 
-MU_ROG_INLINE float mu_rog_euclidean2f(float x0, float y0, float x1, float y1)
+MU_INLINE float mu_rog_euclidean2f(float x0, float y0, float x1, float y1)
 {
 #if MU_ROG_HAS_CGLM
 	vec2 a = {x0, y0};
@@ -191,17 +169,17 @@ MU_ROG_INLINE float mu_rog_euclidean2f(float x0, float y0, float x1, float y1)
 #endif
 }
 
-MU_ROG_INLINE int mu_rog_chebyshev(int dx, int dy)
+MU_INLINE int mu_rog_chebyshev(int dx, int dy)
 {
 	return mu_rog_imax(mu_rog_iabs(dx), mu_rog_iabs(dy));
 }
 
-MU_ROG_INLINE int mu_rog_manhattan(int dx, int dy)
+MU_INLINE int mu_rog_manhattan(int dx, int dy)
 {
 	return mu_rog_iabs(dx) + mu_rog_iabs(dy);
 }
 
-MU_ROG_INLINE float mu_rog_octile_heuristic(int dx, int dy)
+MU_INLINE float mu_rog_octile_heuristic(int dx, int dy)
 {
 	/*
 	   Octile metric for 8-direction movement:
@@ -226,12 +204,12 @@ typedef struct mu_rog_rng {
 	uint64_t s1;
 } mu_rog_rng;
 
-MU_ROG_INLINE uint64_t mu_rog_rotl64(uint64_t x, int k)
+MU_INLINE uint64_t mu_rog_rotl64(uint64_t x, int k)
 {
 	return (x << k) | (x >> (64 - k));
 }
 
-MU_ROG_INLINE uint64_t mu_rog_splitmix64_next(uint64_t* state)
+MU_INLINE uint64_t mu_rog_splitmix64_next(uint64_t* state)
 {
 	uint64_t z = (*state += 0x9e3779b97f4a7c15ULL);
 	z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9ULL;
@@ -239,7 +217,7 @@ MU_ROG_INLINE uint64_t mu_rog_splitmix64_next(uint64_t* state)
 	return z ^ (z >> 31);
 }
 
-MU_ROG_INLINE void mu_rog_rng_seed(mu_rog_rng* rng, uint64_t seed)
+MU_INLINE void mu_rog_rng_seed(mu_rog_rng* rng, uint64_t seed)
 {
 	uint64_t sm = seed;
 	rng->s0 = mu_rog_splitmix64_next(&sm);
@@ -250,7 +228,7 @@ MU_ROG_INLINE void mu_rog_rng_seed(mu_rog_rng* rng, uint64_t seed)
 	}
 }
 
-MU_ROG_INLINE uint64_t mu_rog_rng_u64(mu_rog_rng* rng)
+MU_INLINE uint64_t mu_rog_rng_u64(mu_rog_rng* rng)
 {
 	/* xoroshiro128+ */
 	uint64_t s0 = rng->s0;
@@ -263,20 +241,20 @@ MU_ROG_INLINE uint64_t mu_rog_rng_u64(mu_rog_rng* rng)
 	return result;
 }
 
-MU_ROG_INLINE uint32_t mu_rog_rng_u32(mu_rog_rng* rng)
+MU_INLINE uint32_t mu_rog_rng_u32(mu_rog_rng* rng)
 {
 	return (uint32_t)(mu_rog_rng_u64(rng) >> 32);
 }
 
-MU_ROG_INLINE float mu_rog_rng_f01(mu_rog_rng* rng)
+MU_INLINE float mu_rog_rng_f01(mu_rog_rng* rng)
 {
 	/* 24-bit precision float in [0, 1). */
 	return (float)(mu_rog_rng_u32(rng) >> 8) * (1.0f / 16777216.0f);
 }
 
-MU_ROG_INLINE int mu_rog_rng_range_i(mu_rog_rng* rng, int lo_inclusive, int hi_inclusive)
+MU_INLINE int mu_rog_rng_range_i(mu_rog_rng* rng, int lo_inclusive, int hi_inclusive)
 {
-	MU_ROG_ASSERT(hi_inclusive >= lo_inclusive);
+	MU_ASSERT(hi_inclusive >= lo_inclusive);
 	{
 		uint32_t span = (uint32_t)(hi_inclusive - lo_inclusive + 1);
 		uint32_t r = mu_rog_rng_u32(rng);
@@ -284,12 +262,12 @@ MU_ROG_INLINE int mu_rog_rng_range_i(mu_rog_rng* rng, int lo_inclusive, int hi_i
 	}
 }
 
-MU_ROG_INLINE float mu_rog_rng_range_f(mu_rog_rng* rng, float lo, float hi)
+MU_INLINE float mu_rog_rng_range_f(mu_rog_rng* rng, float lo, float hi)
 {
 	return lo + (hi - lo) * mu_rog_rng_f01(rng);
 }
 
-MU_ROG_INLINE void mu_rog_shuffle_i32(mu_rog_rng* rng, int32_t* items, int count)
+MU_INLINE void mu_rog_shuffle_i32(mu_rog_rng* rng, int32_t* items, int count)
 {
 	int i;
 	for (i = count - 1; i > 0; --i) {
@@ -301,7 +279,7 @@ MU_ROG_INLINE void mu_rog_shuffle_i32(mu_rog_rng* rng, int32_t* items, int count
 }
 
 /* Dice parser: "3d6+2", "1d20", "2d8-1" */
-MU_ROG_INLINE int mu_rog_roll_dice_notation(mu_rog_rng* rng, const char* text)
+MU_INLINE int mu_rog_roll_dice_notation(mu_rog_rng* rng, const char* text)
 {
 	int n = 0;
 	int sides = 0;
@@ -354,7 +332,7 @@ typedef struct mu_rog_weighted_entry {
 	float weight;
 } mu_rog_weighted_entry;
 
-MU_ROG_INLINE int mu_rog_weighted_pick(mu_rog_rng* rng, const mu_rog_weighted_entry* entries, int count)
+MU_INLINE int mu_rog_weighted_pick(mu_rog_rng* rng, const mu_rog_weighted_entry* entries, int count)
 {
 	float total = 0.0f;
 	int i;
@@ -380,24 +358,24 @@ MU_ROG_INLINE int mu_rog_weighted_pick(mu_rog_rng* rng, const mu_rog_weighted_en
 /* Grid helpers and carving                                                  */
 /* ------------------------------------------------------------------------- */
 
-MU_ROG_INLINE void mu_rog_grid_u8_fill(mu_rog_grid_u8 g, uint8_t value)
+MU_INLINE void mu_rog_grid_u8_fill(mu_rog_grid_u8 g, uint8_t value)
 {
-	memset(g.data, value, (size_t)g.w * (size_t)g.h * sizeof(uint8_t));
+	MU_MEMSET(g.data, value, (size_t)g.w * (size_t)g.h * sizeof(uint8_t));
 }
 
-MU_ROG_INLINE uint8_t mu_rog_grid_u8_get(mu_rog_grid_u8 g, int x, int y)
+MU_INLINE uint8_t mu_rog_grid_u8_get(mu_rog_grid_u8 g, int x, int y)
 {
 	if (!mu_rog_in_bounds_i(x, y, g.w, g.h)) return 0;
 	return g.data[mu_rog_grid_index(x, y, g.w)];
 }
 
-MU_ROG_INLINE void mu_rog_grid_u8_set(mu_rog_grid_u8 g, int x, int y, uint8_t v)
+MU_INLINE void mu_rog_grid_u8_set(mu_rog_grid_u8 g, int x, int y, uint8_t v)
 {
 	if (!mu_rog_in_bounds_i(x, y, g.w, g.h)) return;
 	g.data[mu_rog_grid_index(x, y, g.w)] = v;
 }
 
-MU_ROG_INLINE int mu_rog_rect_intersects(mu_rog_rect a, mu_rog_rect b, int pad)
+MU_INLINE int mu_rog_rect_intersects(mu_rog_rect a, mu_rog_rect b, int pad)
 {
 	return !(a.x + a.w + pad <= b.x ||
 			 b.x + b.w + pad <= a.x ||
@@ -405,7 +383,7 @@ MU_ROG_INLINE int mu_rog_rect_intersects(mu_rog_rect a, mu_rog_rect b, int pad)
 			 b.y + b.h + pad <= a.y);
 }
 
-MU_ROG_INLINE mu_rog_ivec2 mu_rog_rect_center(mu_rog_rect r)
+MU_INLINE mu_rog_ivec2 mu_rog_rect_center(mu_rog_rect r)
 {
 	mu_rog_ivec2 c;
 	c.x = r.x + r.w / 2;
@@ -413,7 +391,7 @@ MU_ROG_INLINE mu_rog_ivec2 mu_rog_rect_center(mu_rog_rect r)
 	return c;
 }
 
-MU_ROG_INLINE void mu_rog_carve_rect(mu_rog_grid_u8 g, mu_rog_rect r, uint8_t floor_tile)
+MU_INLINE void mu_rog_carve_rect(mu_rog_grid_u8 g, mu_rog_rect r, uint8_t floor_tile)
 {
 	int y, x;
 	for (y = r.y; y < r.y + r.h; ++y) {
@@ -423,7 +401,7 @@ MU_ROG_INLINE void mu_rog_carve_rect(mu_rog_grid_u8 g, mu_rog_rect r, uint8_t fl
 	}
 }
 
-MU_ROG_INLINE void mu_rog_carve_h_tunnel(mu_rog_grid_u8 g, int x0, int x1, int y, uint8_t floor_tile)
+MU_INLINE void mu_rog_carve_h_tunnel(mu_rog_grid_u8 g, int x0, int x1, int y, uint8_t floor_tile)
 {
 	int x;
 	if (x1 < x0) {
@@ -436,7 +414,7 @@ MU_ROG_INLINE void mu_rog_carve_h_tunnel(mu_rog_grid_u8 g, int x0, int x1, int y
 	}
 }
 
-MU_ROG_INLINE void mu_rog_carve_v_tunnel(mu_rog_grid_u8 g, int y0, int y1, int x, uint8_t floor_tile)
+MU_INLINE void mu_rog_carve_v_tunnel(mu_rog_grid_u8 g, int y0, int y1, int x, uint8_t floor_tile)
 {
 	int y;
 	if (y1 < y0) {
@@ -449,7 +427,7 @@ MU_ROG_INLINE void mu_rog_carve_v_tunnel(mu_rog_grid_u8 g, int y0, int y1, int x
 	}
 }
 
-MU_ROG_INLINE void mu_rog_carve_l_corridor(mu_rog_grid_u8 g,
+MU_INLINE void mu_rog_carve_l_corridor(mu_rog_grid_u8 g,
 											mu_rog_ivec2 a,
 											mu_rog_ivec2 b,
 											uint8_t floor_tile,
@@ -496,7 +474,7 @@ typedef struct mu_rog_roomgen_params {
 	  3) Keep only non-overlapping rooms.
 	  4) Connect accepted room centers in insertion order.
 */
-MU_ROG_INLINE int mu_rog_generate_rooms_and_corridors(mu_rog_rng* rng,
+MU_INLINE int mu_rog_generate_rooms_and_corridors(mu_rog_rng* rng,
 													   mu_rog_grid_u8 map,
 													   const mu_rog_roomgen_params* p,
 													   mu_rog_rect* out_rooms,
@@ -572,7 +550,7 @@ typedef struct mu_rog_cave_params {
 
    This smooths random noise into cave-like blobs.
 */
-MU_ROG_INLINE int mu_rog_count_wall_neighbors8(mu_rog_grid_u8 map, int x, int y, uint8_t wall_tile)
+MU_INLINE int mu_rog_count_wall_neighbors8(mu_rog_grid_u8 map, int x, int y, uint8_t wall_tile)
 {
 	int dy, dx;
 	int n = 0;
@@ -591,7 +569,7 @@ MU_ROG_INLINE int mu_rog_count_wall_neighbors8(mu_rog_grid_u8 map, int x, int y,
 	return n;
 }
 
-MU_ROG_INLINE void mu_rog_generate_cave_random_fill(mu_rog_rng* rng,
+MU_INLINE void mu_rog_generate_cave_random_fill(mu_rog_rng* rng,
 													 mu_rog_grid_u8 map,
 													 uint8_t wall_tile,
 													 uint8_t floor_tile,
@@ -610,7 +588,7 @@ MU_ROG_INLINE void mu_rog_generate_cave_random_fill(mu_rog_rng* rng,
 	}
 }
 
-MU_ROG_INLINE void mu_rog_cave_step(mu_rog_grid_u8 map,
+MU_INLINE void mu_rog_cave_step(mu_rog_grid_u8 map,
 									mu_rog_grid_u8 scratch,
 									uint8_t wall_tile,
 									uint8_t floor_tile,
@@ -618,7 +596,7 @@ MU_ROG_INLINE void mu_rog_cave_step(mu_rog_grid_u8 map,
 									int death_limit)
 {
 	int y, x;
-	MU_ROG_ASSERT(scratch.w == map.w && scratch.h == map.h);
+	MU_ASSERT(scratch.w == map.w && scratch.h == map.h);
 
 	for (y = 0; y < map.h; ++y) {
 		for (x = 0; x < map.w; ++x) {
@@ -634,10 +612,10 @@ MU_ROG_INLINE void mu_rog_cave_step(mu_rog_grid_u8 map,
 		}
 	}
 
-	memcpy(map.data, scratch.data, (size_t)map.w * (size_t)map.h * sizeof(uint8_t));
+	MU_MEMCPY(map.data, scratch.data, (size_t)map.w * (size_t)map.h * sizeof(uint8_t));
 }
 
-MU_ROG_INLINE void mu_rog_generate_cave(mu_rog_rng* rng,
+MU_INLINE void mu_rog_generate_cave(mu_rog_rng* rng,
 										mu_rog_grid_u8 map,
 										mu_rog_grid_u8 scratch,
 										const mu_rog_cave_params* p)
@@ -660,7 +638,7 @@ typedef struct mu_rog_component_result {
 	int largest_component_size;
 } mu_rog_component_result;
 
-MU_ROG_INLINE mu_rog_component_result mu_rog_label_components4(mu_rog_grid_u8 map,
+MU_INLINE mu_rog_component_result mu_rog_label_components4(mu_rog_grid_u8 map,
 																uint8_t passable_tile,
 																int* labels,
 																int* queue)
@@ -670,7 +648,7 @@ MU_ROG_INLINE mu_rog_component_result mu_rog_label_components4(mu_rog_grid_u8 ma
 	int largest_size = 0;
 	int y, x;
 
-	memset(labels, 0, (size_t)map.w * (size_t)map.h * sizeof(int));
+	MU_MEMSET(labels, 0, (size_t)map.w * (size_t)map.h * sizeof(int));
 
 	for (y = 0; y < map.h; ++y) {
 		for (x = 0; x < map.w; ++x) {
@@ -723,7 +701,7 @@ MU_ROG_INLINE mu_rog_component_result mu_rog_label_components4(mu_rog_grid_u8 ma
 	}
 }
 
-MU_ROG_INLINE void mu_rog_keep_largest_component(mu_rog_grid_u8 map,
+MU_INLINE void mu_rog_keep_largest_component(mu_rog_grid_u8 map,
 												  uint8_t passable_tile,
 												  uint8_t blocked_tile,
 												  int* labels,
@@ -752,7 +730,7 @@ MU_ROG_INLINE void mu_rog_keep_largest_component(mu_rog_grid_u8 map,
 
    Visits integer cells approximating the continuous segment.
 */
-MU_ROG_INLINE int mu_rog_line_bresenham(int x0,
+MU_INLINE int mu_rog_line_bresenham(int x0,
 										int y0,
 										int x1,
 										int y1,
@@ -792,7 +770,7 @@ typedef struct mu_rog_los_ctx {
 	int skip_first;
 } mu_rog_los_ctx;
 
-MU_ROG_INLINE int mu_rog_los_visit_cb(int x, int y, void* user)
+MU_INLINE int mu_rog_los_visit_cb(int x, int y, void* user)
 {
 	mu_rog_los_ctx* c = (mu_rog_los_ctx*)user;
 	if (c->skip_first) {
@@ -806,7 +784,7 @@ MU_ROG_INLINE int mu_rog_los_visit_cb(int x, int y, void* user)
 	return 1;
 }
 
-MU_ROG_INLINE int mu_rog_has_line_of_sight(int x0,
+MU_INLINE int mu_rog_has_line_of_sight(int x0,
 											int y0,
 											int x1,
 											int y1,
@@ -838,7 +816,7 @@ typedef struct mu_rog_fov_ctx {
 	int stop_after_block;
 } mu_rog_fov_ctx;
 
-MU_ROG_INLINE int mu_rog_fov_visit(int x, int y, void* user)
+MU_INLINE int mu_rog_fov_visit(int x, int y, void* user)
 {
 	mu_rog_fov_ctx* c = (mu_rog_fov_ctx*)user;
 	if (!mu_rog_in_bounds_i(x, y, c->w, c->h)) return 0;
@@ -864,7 +842,7 @@ MU_ROG_INLINE int mu_rog_fov_visit(int x, int y, void* user)
 
    This is simple and robust for many tile games.
 */
-MU_ROG_INLINE void mu_rog_fov_raycast(int w,
+MU_INLINE void mu_rog_fov_raycast(int w,
 									  int h,
 									  int ox,
 									  int oy,
@@ -875,7 +853,7 @@ MU_ROG_INLINE void mu_rog_fov_raycast(int w,
 {
 	int x, y;
 	mu_rog_fov_ctx c;
-	memset(out_visible, 0, (size_t)w * (size_t)h * sizeof(uint8_t));
+	MU_MEMSET(out_visible, 0, (size_t)w * (size_t)h * sizeof(uint8_t));
 	if (!mu_rog_in_bounds_i(ox, oy, w, h)) return;
 
 	c.w = w;
@@ -904,7 +882,7 @@ MU_ROG_INLINE void mu_rog_fov_raycast(int w,
 /* BFS and Dijkstra maps                                                     */
 /* ------------------------------------------------------------------------- */
 
-MU_ROG_INLINE void mu_rog_bfs_distance4(int w,
+MU_INLINE void mu_rog_bfs_distance4(int w,
 										int h,
 										const mu_rog_ivec2* starts,
 										int start_count,
@@ -953,7 +931,7 @@ MU_ROG_INLINE void mu_rog_bfs_distance4(int w,
 	}
 }
 
-MU_ROG_INLINE void mu_rog_dijkstra_map8(int w,
+MU_INLINE void mu_rog_dijkstra_map8(int w,
 										int h,
 										const mu_rog_ivec2* goals,
 										int goal_count,
@@ -1026,7 +1004,7 @@ typedef struct mu_rog_astar_heap_entry {
 	float f;
 } mu_rog_astar_heap_entry;
 
-MU_ROG_INLINE void mu_rog_astar_heap_push(mu_rog_astar_heap_entry* heap,
+MU_INLINE void mu_rog_astar_heap_push(mu_rog_astar_heap_entry* heap,
 										  int* heap_count,
 										  mu_rog_astar_heap_entry e)
 {
@@ -1044,7 +1022,7 @@ MU_ROG_INLINE void mu_rog_astar_heap_push(mu_rog_astar_heap_entry* heap,
 	}
 }
 
-MU_ROG_INLINE mu_rog_astar_heap_entry mu_rog_astar_heap_pop(mu_rog_astar_heap_entry* heap,
+MU_INLINE mu_rog_astar_heap_entry mu_rog_astar_heap_pop(mu_rog_astar_heap_entry* heap,
 															 int* heap_count)
 {
 	mu_rog_astar_heap_entry out = heap[0];
@@ -1076,7 +1054,7 @@ MU_ROG_INLINE mu_rog_astar_heap_entry mu_rog_astar_heap_pop(mu_rog_astar_heap_en
    Reconstruct path from goal by following came_from links.
    Writes path from start->goal in out_path, returns count.
 */
-MU_ROG_INLINE int mu_rog_astar_reconstruct(const mu_rog_astar_node* nodes,
+MU_INLINE int mu_rog_astar_reconstruct(const mu_rog_astar_node* nodes,
 										   int start_idx,
 										   int goal_idx,
 										   int w,
@@ -1116,7 +1094,7 @@ MU_ROG_INLINE int mu_rog_astar_reconstruct(const mu_rog_astar_node* nodes,
 	 allow_diag=0 -> 4-neighbors
 	 allow_diag=1 -> 8-neighbors
 */
-MU_ROG_INLINE int mu_rog_astar_find_path(int w,
+MU_INLINE int mu_rog_astar_find_path(int w,
 										 int h,
 										 mu_rog_ivec2 start,
 										 mu_rog_ivec2 goal,
@@ -1143,11 +1121,11 @@ MU_ROG_INLINE int mu_rog_astar_find_path(int w,
 	start_idx = mu_rog_grid_index(start.x, start.y, w);
 	goal_idx = mu_rog_grid_index(goal.x, goal.y, w);
 
-	nodes = (mu_rog_astar_node*)MU_ROG_MALLOC((size_t)n * sizeof(mu_rog_astar_node));
-	heap = (mu_rog_astar_heap_entry*)MU_ROG_MALLOC((size_t)n * sizeof(mu_rog_astar_heap_entry));
+	nodes = (mu_rog_astar_node*)MU_MALLOC((size_t)n * sizeof(mu_rog_astar_node));
+	heap = (mu_rog_astar_heap_entry*)MU_MALLOC((size_t)n * sizeof(mu_rog_astar_heap_entry));
 	if (!nodes || !heap) {
-		MU_ROG_FREE(nodes);
-		MU_ROG_FREE(heap);
+		MU_FREE(nodes);
+		MU_FREE(heap);
 		return 0;
 	}
 
@@ -1238,8 +1216,8 @@ MU_ROG_INLINE int mu_rog_astar_find_path(int w,
 		if (found) {
 			out = mu_rog_astar_reconstruct(nodes, start_idx, goal_idx, w, out_path, out_path_cap);
 		}
-		MU_ROG_FREE(nodes);
-		MU_ROG_FREE(heap);
+		MU_FREE(nodes);
+		MU_FREE(heap);
 		return out;
 	}
 }
@@ -1261,31 +1239,31 @@ typedef struct mu_rog_scheduler {
 	uint32_t serial_counter;
 } mu_rog_scheduler;
 
-MU_ROG_INLINE int mu_rog_sched_less(mu_rog_sched_event a, mu_rog_sched_event b)
+MU_INLINE int mu_rog_sched_less(mu_rog_sched_event a, mu_rog_sched_event b)
 {
 	if (a.tick != b.tick) return a.tick < b.tick;
 	return a.serial < b.serial;
 }
 
-MU_ROG_INLINE void mu_rog_scheduler_init(mu_rog_scheduler* s)
+MU_INLINE void mu_rog_scheduler_init(mu_rog_scheduler* s)
 {
-	memset(s, 0, sizeof(*s));
+	MU_MEMSET(s, 0, sizeof(*s));
 }
 
-MU_ROG_INLINE void mu_rog_scheduler_free(mu_rog_scheduler* s)
+MU_INLINE void mu_rog_scheduler_free(mu_rog_scheduler* s)
 {
-	MU_ROG_FREE(s->heap);
-	memset(s, 0, sizeof(*s));
+	MU_FREE(s->heap);
+	MU_MEMSET(s, 0, sizeof(*s));
 }
 
-MU_ROG_INLINE int mu_rog_scheduler_reserve(mu_rog_scheduler* s, int cap)
+MU_INLINE int mu_rog_scheduler_reserve(mu_rog_scheduler* s, int cap)
 {
 	if (cap <= s->cap) return 1;
 	{
 		int new_cap = (s->cap > 0) ? s->cap : 32;
 		mu_rog_sched_event* p;
 		while (new_cap < cap) new_cap *= 2;
-		p = (mu_rog_sched_event*)MU_ROG_REALLOC(s->heap, (size_t)new_cap * sizeof(mu_rog_sched_event));
+		p = (mu_rog_sched_event*)MU_REALLOC(s->heap, (size_t)new_cap * sizeof(mu_rog_sched_event));
 		if (!p) return 0;
 		s->heap = p;
 		s->cap = new_cap;
@@ -1293,7 +1271,7 @@ MU_ROG_INLINE int mu_rog_scheduler_reserve(mu_rog_scheduler* s, int cap)
 	}
 }
 
-MU_ROG_INLINE int mu_rog_scheduler_push(mu_rog_scheduler* s, uint32_t actor_id, uint64_t tick)
+MU_INLINE int mu_rog_scheduler_push(mu_rog_scheduler* s, uint32_t actor_id, uint64_t tick)
 {
 	int i;
 	mu_rog_sched_event e;
@@ -1318,14 +1296,14 @@ MU_ROG_INLINE int mu_rog_scheduler_push(mu_rog_scheduler* s, uint32_t actor_id, 
 	return 1;
 }
 
-MU_ROG_INLINE int mu_rog_scheduler_peek(const mu_rog_scheduler* s, mu_rog_sched_event* out)
+MU_INLINE int mu_rog_scheduler_peek(const mu_rog_scheduler* s, mu_rog_sched_event* out)
 {
 	if (s->count <= 0) return 0;
 	if (out) *out = s->heap[0];
 	return 1;
 }
 
-MU_ROG_INLINE int mu_rog_scheduler_pop(mu_rog_scheduler* s, mu_rog_sched_event* out)
+MU_INLINE int mu_rog_scheduler_pop(mu_rog_scheduler* s, mu_rog_sched_event* out)
 {
 	int n;
 	int i;

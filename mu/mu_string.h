@@ -156,7 +156,7 @@ typedef struct mu_string_arena
     uint32_t  count;   /* cached string count                    */
 } mu_string_arena;
 
-static inline void mu_string_arena_init(mu_string_arena* a)
+MU_INLINE void mu_string_arena_init(mu_string_arena* a)
 {
     a->data     = NULL;
     a->size     = 0u;
@@ -165,7 +165,7 @@ static inline void mu_string_arena_init(mu_string_arena* a)
     a->count    = 0u;
 }
 
-static inline void mu_string_arena_free(mu_string_arena* a)
+MU_INLINE void mu_string_arena_free(mu_string_arena* a)
 {
     array_free(a->data);
     array_free(a->offsets);
@@ -177,7 +177,7 @@ static inline void mu_string_arena_free(mu_string_arena* a)
     a->count    = 0u;
 }
 
-static inline void mu_string_arena_clear(mu_string_arena* a)
+MU_INLINE void mu_string_arena_clear(mu_string_arena* a)
 {
     a->size  = 0u;
     a->count = 0u;
@@ -187,7 +187,7 @@ static inline void mu_string_arena_clear(mu_string_arena* a)
         a->data[0] = '\0';
 }
 
-static inline bool mu_string_arena_push(mu_string_arena* a, const char* s, uint32_t* out_index)
+MU_INLINE bool mu_string_arena_push(mu_string_arena* a, const char* s, uint32_t* out_index)
 {
     MU_ASSERT(a);
     MU_ASSERT(s);
@@ -202,7 +202,7 @@ static inline bool mu_string_arena_push(mu_string_arena* a, const char* s, uint3
     if(!a->data)
         return false;
 
-    memcpy(a->data + a->size, s, len);
+    MU_MEMCPY(a->data + a->size, s, len);
     a->size += (uint32_t)len;
     a->capacity = (uint32_t)array_capacity(a->data);
 
@@ -218,7 +218,7 @@ static inline bool mu_string_arena_push(mu_string_arena* a, const char* s, uint3
     return true;
 }
 
-static inline const char* mu_string_arena_get(const mu_string_arena* a, uint32_t index)
+MU_INLINE const char* mu_string_arena_get(const mu_string_arena* a, uint32_t index)
 {
     MU_ASSERT(a);
 
@@ -228,12 +228,12 @@ static inline const char* mu_string_arena_get(const mu_string_arena* a, uint32_t
     return a->data + a->offsets[index];
 }
 
-static inline uint32_t mu_string_arena_count(const mu_string_arena* a)
+MU_INLINE uint32_t mu_string_arena_count(const mu_string_arena* a)
 {
     return a ? a->count : 0u;
 }
 
-static inline uint32_t mu_string_arena_bytes(const mu_string_arena* a)
+MU_INLINE uint32_t mu_string_arena_bytes(const mu_string_arena* a)
 {
     return a ? a->size : 0u;
 }
@@ -248,13 +248,13 @@ typedef struct mu_pool_link
     uint32_t next;
 } mu_pool_link;
 
-static inline void mu_pool_link_detach(mu_pool_link* links, uint32_t node)
+MU_INLINE void mu_pool_link_detach(mu_pool_link* links, uint32_t node)
 {
     links[node].prev = node;
     links[node].next = node;
 }
 
-static inline bool mu_pool_link_is_detached(const mu_pool_link* links, uint32_t node)
+MU_INLINE bool mu_pool_link_is_detached(const mu_pool_link* links, uint32_t node)
 {
     return links[node].prev == node && links[node].next == node;
 }
@@ -263,18 +263,18 @@ static inline bool mu_pool_link_is_detached(const mu_pool_link* links, uint32_t 
    Indexed intrusive list
    ========================================================================== */
 
-static inline void mu_index_list_init(mu_pool_link* links, uint32_t head)
+MU_INLINE void mu_index_list_init(mu_pool_link* links, uint32_t head)
 {
     links[head].next = head;
     links[head].prev = head;
 }
 
-static inline bool mu_index_list_empty(const mu_pool_link* links, uint32_t head)
+MU_INLINE bool mu_index_list_empty(const mu_pool_link* links, uint32_t head)
 {
     return links[head].next == head;
 }
 
-static inline void mu_index_list_insert_after(mu_pool_link* links, uint32_t at, uint32_t node)
+MU_INLINE void mu_index_list_insert_after(mu_pool_link* links, uint32_t at, uint32_t node)
 {
     MU_ASSERT(mu_pool_link_is_detached(links, node));
 
@@ -285,7 +285,7 @@ static inline void mu_index_list_insert_after(mu_pool_link* links, uint32_t at, 
     links[at].next             = node;
 }
 
-static inline void mu_index_list_insert_before(mu_pool_link* links, uint32_t at, uint32_t node)
+MU_INLINE void mu_index_list_insert_before(mu_pool_link* links, uint32_t at, uint32_t node)
 {
     MU_ASSERT(mu_pool_link_is_detached(links, node));
 
@@ -296,7 +296,7 @@ static inline void mu_index_list_insert_before(mu_pool_link* links, uint32_t at,
     links[at].prev             = node;
 }
 
-static inline void mu_index_list_remove(mu_pool_link* links, uint32_t node)
+MU_INLINE void mu_index_list_remove(mu_pool_link* links, uint32_t node)
 {
     MU_ASSERT(!mu_pool_link_is_detached(links, node));
 
@@ -310,23 +310,23 @@ static inline void mu_index_list_remove(mu_pool_link* links, uint32_t node)
    Indexed freelist (stack)
    ========================================================================== */
 
-static inline void mu_freelist_init(mu_pool_link* links, uint32_t head)
+MU_INLINE void mu_freelist_init(mu_pool_link* links, uint32_t head)
 {
     links[head].next = head;
 }
 
-static inline bool mu_freelist_empty(const mu_pool_link* links, uint32_t head)
+MU_INLINE bool mu_freelist_empty(const mu_pool_link* links, uint32_t head)
 {
     return links[head].next == head;
 }
 
-static inline void mu_freelist_push(mu_pool_link* links, uint32_t head, uint32_t node)
+MU_INLINE void mu_freelist_push(mu_pool_link* links, uint32_t head, uint32_t node)
 {
     links[node].next = links[head].next;
     links[head].next = node;
 }
 
-static inline uint32_t mu_freelist_pop(mu_pool_link* links, uint32_t head)
+MU_INLINE uint32_t mu_freelist_pop(mu_pool_link* links, uint32_t head)
 {
     const uint32_t first = links[head].next;
     if(first == head)

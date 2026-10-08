@@ -1,6 +1,8 @@
 
+#pragma once
 
-#pragma  once 
+#include "mu_common.h"
+
 #include <stdlib.h>
 #include <math.h>
 
@@ -155,7 +157,7 @@ typedef struct {
     double spare;
 } gaussian_state_t;
 
-double random_gaussian_state(gaussian_state_t *state, double mean, double stddev)
+MU_INLINE double random_gaussian_state(gaussian_state_t *state, double mean, double stddev)
 {
     if (state->hasSpare)
     {
@@ -171,8 +173,8 @@ double random_gaussian_state(gaussian_state_t *state, double mean, double stddev
 
     u2 = (double)rand() / (double)RAND_MAX;
 
-    double r = sqrt(-2.0 * log(u1));
-    double theta = 2.0 * M_PI * u2;
+    double r     = sqrt(-2.0 * log(u1));
+    double theta = 2.0 * MU_PI * u2;
 
     double z0 = r * cos(theta);
     double z1 = r * sin(theta);

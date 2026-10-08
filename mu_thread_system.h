@@ -69,25 +69,7 @@ extern "C" {
 /* Config                                                                    */
 /* ------------------------------------------------------------------------- */
 
-#ifndef MU_TS_INLINE
-#define MU_TS_INLINE static inline
-#endif
-
-#ifndef MU_TS_ASSERT
-#define MU_TS_ASSERT(x) assert(x)
-#endif
-
-#ifndef MU_TS_MALLOC
-#define MU_TS_MALLOC(sz) malloc(sz)
-#endif
-
-#ifndef MU_TS_FREE
-#define MU_TS_FREE(p) free(p)
-#endif
-
-#ifndef MU_TS_REALLOC
-#define MU_TS_REALLOC(p, sz) realloc((p), (sz))
-#endif
+#include "mu_macros.h"
 
 /* ------------------------------------------------------------------------- */
 /* Atomics (relaxed primitives + acquire/release wrappers)                    */
@@ -99,123 +81,123 @@ typedef volatile uintptr_t mu_ts_atomicptr_t;
 
 #if defined(_WIN32)
 
-MU_TS_INLINE void mu_ts_memorybarrier_acquire(void)
+MU_INLINE void mu_ts_memorybarrier_acquire(void)
 {
     _ReadWriteBarrier();
 }
-MU_TS_INLINE void mu_ts_memorybarrier_release(void)
+MU_INLINE void mu_ts_memorybarrier_release(void)
 {
     _ReadWriteBarrier();
 }
 
-MU_TS_INLINE uint32_t mu_ts_atomic32_load_relaxed(mu_ts_atomic32_t* p)
+MU_INLINE uint32_t mu_ts_atomic32_load_relaxed(mu_ts_atomic32_t* p)
 {
     return *p;
 }
-MU_TS_INLINE uint32_t mu_ts_atomic32_store_relaxed(mu_ts_atomic32_t* p, uint32_t v)
+MU_INLINE uint32_t mu_ts_atomic32_store_relaxed(mu_ts_atomic32_t* p, uint32_t v)
 {
     return (uint32_t)InterlockedExchange((volatile LONG*)p, (LONG)v);
 }
-MU_TS_INLINE uint32_t mu_ts_atomic32_add_relaxed(mu_ts_atomic32_t* p, int32_t v)
+MU_INLINE uint32_t mu_ts_atomic32_add_relaxed(mu_ts_atomic32_t* p, int32_t v)
 {
     return (uint32_t)InterlockedExchangeAdd((volatile LONG*)p, (LONG)v);
 }
-MU_TS_INLINE uint32_t mu_ts_atomic32_cas_relaxed(mu_ts_atomic32_t* p, uint32_t cmp, uint32_t v)
+MU_INLINE uint32_t mu_ts_atomic32_cas_relaxed(mu_ts_atomic32_t* p, uint32_t cmp, uint32_t v)
 {
     return (uint32_t)InterlockedCompareExchange((volatile LONG*)p, (LONG)v, (LONG)cmp);
 }
 
-MU_TS_INLINE uint64_t mu_ts_atomic64_load_relaxed(mu_ts_atomic64_t* p)
+MU_INLINE uint64_t mu_ts_atomic64_load_relaxed(mu_ts_atomic64_t* p)
 {
     return *p;
 }
-MU_TS_INLINE uint64_t mu_ts_atomic64_store_relaxed(mu_ts_atomic64_t* p, uint64_t v)
+MU_INLINE uint64_t mu_ts_atomic64_store_relaxed(mu_ts_atomic64_t* p, uint64_t v)
 {
     return (uint64_t)InterlockedExchange64((volatile LONG64*)p, (LONG64)v);
 }
-MU_TS_INLINE uint64_t mu_ts_atomic64_add_relaxed(mu_ts_atomic64_t* p, int64_t v)
+MU_INLINE uint64_t mu_ts_atomic64_add_relaxed(mu_ts_atomic64_t* p, int64_t v)
 {
     return (uint64_t)InterlockedExchangeAdd64((volatile LONG64*)p, (LONG64)v);
 }
-MU_TS_INLINE uint64_t mu_ts_atomic64_cas_relaxed(mu_ts_atomic64_t* p, uint64_t cmp, uint64_t v)
+MU_INLINE uint64_t mu_ts_atomic64_cas_relaxed(mu_ts_atomic64_t* p, uint64_t cmp, uint64_t v)
 {
     return (uint64_t)InterlockedCompareExchange64((volatile LONG64*)p, (LONG64)v, (LONG64)cmp);
 }
 
 #else
 
-MU_TS_INLINE void mu_ts_memorybarrier_acquire(void)
+MU_INLINE void mu_ts_memorybarrier_acquire(void)
 {
     __asm__ __volatile__("" : : : "memory");
 }
-MU_TS_INLINE void mu_ts_memorybarrier_release(void)
+MU_INLINE void mu_ts_memorybarrier_release(void)
 {
     __asm__ __volatile__("" : : : "memory");
 }
 
-MU_TS_INLINE uint32_t mu_ts_atomic32_load_relaxed(mu_ts_atomic32_t* p)
+MU_INLINE uint32_t mu_ts_atomic32_load_relaxed(mu_ts_atomic32_t* p)
 {
     return *p;
 }
-MU_TS_INLINE uint32_t mu_ts_atomic32_store_relaxed(mu_ts_atomic32_t* p, uint32_t v)
+MU_INLINE uint32_t mu_ts_atomic32_store_relaxed(mu_ts_atomic32_t* p, uint32_t v)
 {
     return (uint32_t)__sync_lock_test_and_set((volatile int32_t*)p, (int32_t)v);
 }
-MU_TS_INLINE uint32_t mu_ts_atomic32_add_relaxed(mu_ts_atomic32_t* p, int32_t v)
+MU_INLINE uint32_t mu_ts_atomic32_add_relaxed(mu_ts_atomic32_t* p, int32_t v)
 {
     return (uint32_t)__sync_fetch_and_add((volatile int32_t*)p, v);
 }
-MU_TS_INLINE uint32_t mu_ts_atomic32_cas_relaxed(mu_ts_atomic32_t* p, uint32_t cmp, uint32_t v)
+MU_INLINE uint32_t mu_ts_atomic32_cas_relaxed(mu_ts_atomic32_t* p, uint32_t cmp, uint32_t v)
 {
     return (uint32_t)__sync_val_compare_and_swap((volatile int32_t*)p, (int32_t)cmp, (int32_t)v);
 }
 
-MU_TS_INLINE uint64_t mu_ts_atomic64_load_relaxed(mu_ts_atomic64_t* p)
+MU_INLINE uint64_t mu_ts_atomic64_load_relaxed(mu_ts_atomic64_t* p)
 {
     return *p;
 }
-MU_TS_INLINE uint64_t mu_ts_atomic64_store_relaxed(mu_ts_atomic64_t* p, uint64_t v)
+MU_INLINE uint64_t mu_ts_atomic64_store_relaxed(mu_ts_atomic64_t* p, uint64_t v)
 {
     return (uint64_t)__sync_lock_test_and_set((volatile int64_t*)p, (int64_t)v);
 }
-MU_TS_INLINE uint64_t mu_ts_atomic64_add_relaxed(mu_ts_atomic64_t* p, int64_t v)
+MU_INLINE uint64_t mu_ts_atomic64_add_relaxed(mu_ts_atomic64_t* p, int64_t v)
 {
     return (uint64_t)__sync_fetch_and_add((volatile int64_t*)p, v);
 }
-MU_TS_INLINE uint64_t mu_ts_atomic64_cas_relaxed(mu_ts_atomic64_t* p, uint64_t cmp, uint64_t v)
+MU_INLINE uint64_t mu_ts_atomic64_cas_relaxed(mu_ts_atomic64_t* p, uint64_t cmp, uint64_t v)
 {
     return (uint64_t)__sync_val_compare_and_swap((volatile int64_t*)p, (int64_t)cmp, (int64_t)v);
 }
 
 #endif
 
-MU_TS_INLINE uint32_t mu_ts_atomic32_load_acquire(mu_ts_atomic32_t* p)
+MU_INLINE uint32_t mu_ts_atomic32_load_acquire(mu_ts_atomic32_t* p)
 {
     uint32_t v = mu_ts_atomic32_load_relaxed(p);
     mu_ts_memorybarrier_acquire();
     return v;
 }
 
-MU_TS_INLINE uint32_t mu_ts_atomic32_store_release(mu_ts_atomic32_t* p, uint32_t v)
+MU_INLINE uint32_t mu_ts_atomic32_store_release(mu_ts_atomic32_t* p, uint32_t v)
 {
     mu_ts_memorybarrier_release();
     return mu_ts_atomic32_store_relaxed(p, v);
 }
 
-MU_TS_INLINE uint64_t mu_ts_atomic64_load_acquire(mu_ts_atomic64_t* p)
+MU_INLINE uint64_t mu_ts_atomic64_load_acquire(mu_ts_atomic64_t* p)
 {
     uint64_t v = mu_ts_atomic64_load_relaxed(p);
     mu_ts_memorybarrier_acquire();
     return v;
 }
 
-MU_TS_INLINE uint64_t mu_ts_atomic64_store_release(mu_ts_atomic64_t* p, uint64_t v)
+MU_INLINE uint64_t mu_ts_atomic64_store_release(mu_ts_atomic64_t* p, uint64_t v)
 {
     mu_ts_memorybarrier_release();
     return mu_ts_atomic64_store_relaxed(p, v);
 }
 
-MU_TS_INLINE uint32_t mu_ts_atomic32_max_relaxed(mu_ts_atomic32_t* dst, uint32_t val)
+MU_INLINE uint32_t mu_ts_atomic32_max_relaxed(mu_ts_atomic32_t* dst, uint32_t val)
 {
     uint32_t prev = val;
     do
@@ -225,7 +207,7 @@ MU_TS_INLINE uint32_t mu_ts_atomic32_max_relaxed(mu_ts_atomic32_t* dst, uint32_t
     return prev;
 }
 
-MU_TS_INLINE uint64_t mu_ts_atomic64_max_relaxed(mu_ts_atomic64_t* dst, uint64_t val)
+MU_INLINE uint64_t mu_ts_atomic64_max_relaxed(mu_ts_atomic64_t* dst, uint64_t val)
 {
     uint64_t prev = val;
     do
@@ -247,48 +229,48 @@ typedef CONDITION_VARIABLE mu_ts_cond;
 
 typedef DWORD(WINAPI* mu_ts_thread_entry)(LPVOID);
 
-MU_TS_INLINE bool mu_ts_mutex_init(mu_ts_mutex* m)
+MU_INLINE bool mu_ts_mutex_init(mu_ts_mutex* m)
 {
     InitializeCriticalSection(m);
     return true;
 }
-MU_TS_INLINE void mu_ts_mutex_exit(mu_ts_mutex* m)
+MU_INLINE void mu_ts_mutex_exit(mu_ts_mutex* m)
 {
     DeleteCriticalSection(m);
 }
-MU_TS_INLINE void mu_ts_mutex_lock(mu_ts_mutex* m)
+MU_INLINE void mu_ts_mutex_lock(mu_ts_mutex* m)
 {
     EnterCriticalSection(m);
 }
-MU_TS_INLINE void mu_ts_mutex_unlock(mu_ts_mutex* m)
+MU_INLINE void mu_ts_mutex_unlock(mu_ts_mutex* m)
 {
     LeaveCriticalSection(m);
 }
 
-MU_TS_INLINE bool mu_ts_cond_init(mu_ts_cond* c)
+MU_INLINE bool mu_ts_cond_init(mu_ts_cond* c)
 {
     InitializeConditionVariable(c);
     return true;
 }
-MU_TS_INLINE void mu_ts_cond_exit(mu_ts_cond* c)
+MU_INLINE void mu_ts_cond_exit(mu_ts_cond* c)
 {
     (void)c;
 }
-MU_TS_INLINE void mu_ts_cond_wake_one(mu_ts_cond* c)
+MU_INLINE void mu_ts_cond_wake_one(mu_ts_cond* c)
 {
     WakeConditionVariable(c);
 }
-MU_TS_INLINE void mu_ts_cond_wake_all(mu_ts_cond* c)
+MU_INLINE void mu_ts_cond_wake_all(mu_ts_cond* c)
 {
     WakeAllConditionVariable(c);
 }
-MU_TS_INLINE bool mu_ts_cond_wait(mu_ts_cond* c, mu_ts_mutex* m, uint32_t timeout_ms)
+MU_INLINE bool mu_ts_cond_wait(mu_ts_cond* c, mu_ts_mutex* m, uint32_t timeout_ms)
 {
     DWORD t = (timeout_ms == UINT32_MAX) ? INFINITE : timeout_ms;
     return SleepConditionVariableCS(c, m, t) != 0;
 }
 
-MU_TS_INLINE bool mu_ts_thread_start(mu_ts_thread_handle* out, mu_ts_thread_entry fn, void* user)
+MU_INLINE bool mu_ts_thread_start(mu_ts_thread_handle* out, mu_ts_thread_entry fn, void* user)
 {
     HANDLE h = CreateThread(NULL, 0, fn, user, 0, NULL);
     if(!h)
@@ -296,16 +278,16 @@ MU_TS_INLINE bool mu_ts_thread_start(mu_ts_thread_handle* out, mu_ts_thread_entr
     *out = h;
     return true;
 }
-MU_TS_INLINE void mu_ts_thread_join(mu_ts_thread_handle h)
+MU_INLINE void mu_ts_thread_join(mu_ts_thread_handle h)
 {
     WaitForSingleObject(h, INFINITE);
     CloseHandle(h);
 }
-MU_TS_INLINE void mu_ts_thread_detach(mu_ts_thread_handle h)
+MU_INLINE void mu_ts_thread_detach(mu_ts_thread_handle h)
 {
     CloseHandle(h);
 }
-MU_TS_INLINE uint64_t mu_ts_cpu_count(void)
+MU_INLINE uint64_t mu_ts_cpu_count(void)
 {
     SYSTEM_INFO info;
     GetSystemInfo(&info);
@@ -320,41 +302,41 @@ typedef pthread_cond_t  mu_ts_cond;
 
 typedef void* (*mu_ts_thread_entry)(void*);
 
-MU_TS_INLINE bool mu_ts_mutex_init(mu_ts_mutex* m)
+MU_INLINE bool mu_ts_mutex_init(mu_ts_mutex* m)
 {
     return pthread_mutex_init(m, NULL) == 0;
 }
-MU_TS_INLINE void mu_ts_mutex_exit(mu_ts_mutex* m)
+MU_INLINE void mu_ts_mutex_exit(mu_ts_mutex* m)
 {
     pthread_mutex_destroy(m);
 }
-MU_TS_INLINE void mu_ts_mutex_lock(mu_ts_mutex* m)
+MU_INLINE void mu_ts_mutex_lock(mu_ts_mutex* m)
 {
     pthread_mutex_lock(m);
 }
-MU_TS_INLINE void mu_ts_mutex_unlock(mu_ts_mutex* m)
+MU_INLINE void mu_ts_mutex_unlock(mu_ts_mutex* m)
 {
     pthread_mutex_unlock(m);
 }
 
-MU_TS_INLINE bool mu_ts_cond_init(mu_ts_cond* c)
+MU_INLINE bool mu_ts_cond_init(mu_ts_cond* c)
 {
     return pthread_cond_init(c, NULL) == 0;
 }
-MU_TS_INLINE void mu_ts_cond_exit(mu_ts_cond* c)
+MU_INLINE void mu_ts_cond_exit(mu_ts_cond* c)
 {
     pthread_cond_destroy(c);
 }
-MU_TS_INLINE void mu_ts_cond_wake_one(mu_ts_cond* c)
+MU_INLINE void mu_ts_cond_wake_one(mu_ts_cond* c)
 {
     pthread_cond_signal(c);
 }
-MU_TS_INLINE void mu_ts_cond_wake_all(mu_ts_cond* c)
+MU_INLINE void mu_ts_cond_wake_all(mu_ts_cond* c)
 {
     pthread_cond_broadcast(c);
 }
 
-MU_TS_INLINE bool mu_ts_cond_wait(mu_ts_cond* c, mu_ts_mutex* m, uint32_t timeout_ms)
+MU_INLINE bool mu_ts_cond_wait(mu_ts_cond* c, mu_ts_mutex* m, uint32_t timeout_ms)
 {
     if(timeout_ms == UINT32_MAX)
     {
@@ -382,19 +364,19 @@ MU_TS_INLINE bool mu_ts_cond_wait(mu_ts_cond* c, mu_ts_mutex* m, uint32_t timeou
     return pthread_cond_timedwait(c, m, &ts) == 0;
 }
 
-MU_TS_INLINE bool mu_ts_thread_start(mu_ts_thread_handle* out, mu_ts_thread_entry fn, void* user)
+MU_INLINE bool mu_ts_thread_start(mu_ts_thread_handle* out, mu_ts_thread_entry fn, void* user)
 {
     return pthread_create(out, NULL, fn, user) == 0;
 }
-MU_TS_INLINE void mu_ts_thread_join(mu_ts_thread_handle h)
+MU_INLINE void mu_ts_thread_join(mu_ts_thread_handle h)
 {
     pthread_join(h, NULL);
 }
-MU_TS_INLINE void mu_ts_thread_detach(mu_ts_thread_handle h)
+MU_INLINE void mu_ts_thread_detach(mu_ts_thread_handle h)
 {
     pthread_detach(h);
 }
-MU_TS_INLINE uint64_t mu_ts_cpu_count(void)
+MU_INLINE uint64_t mu_ts_cpu_count(void)
 {
     long n = sysconf(_SC_NPROCESSORS_ONLN);
     if(n <= 0)
@@ -486,7 +468,7 @@ typedef struct mu_ts_system
     bool stop;
 } mu_ts_system;
 
-MU_TS_INLINE bool mu_ts__ensure_task_capacity(mu_ts_system* t, uint64_t need)
+MU_INLINE bool mu_ts__ensure_task_capacity(mu_ts_system* t, uint64_t need)
 {
     const uint64_t kChunk = 128;
     if(need <= t->tasks_cap)
@@ -495,7 +477,7 @@ MU_TS_INLINE bool mu_ts__ensure_task_capacity(mu_ts_system* t, uint64_t need)
     uint64_t new_cap = (need + (kChunk - 1)) / kChunk;
     new_cap *= kChunk;
 
-    mu_ts_task* p = (mu_ts_task*)MU_TS_REALLOC(t->tasks, (size_t)(new_cap * sizeof(mu_ts_task)));
+    mu_ts_task* p = (mu_ts_task*)MU_REALLOC(t->tasks, (size_t)(new_cap * sizeof(mu_ts_task)));
     if(!p)
         return false;
 
@@ -504,7 +486,7 @@ MU_TS_INLINE bool mu_ts__ensure_task_capacity(mu_ts_system* t, uint64_t need)
     return true;
 }
 
-MU_TS_INLINE void mu_ts__compact_queue(mu_ts_system* t)
+MU_INLINE void mu_ts__compact_queue(mu_ts_system* t)
 {
     uint64_t scheduled = t->tasks_queued - t->tasks_taken;
 
@@ -520,7 +502,7 @@ MU_TS_INLINE void mu_ts__compact_queue(mu_ts_system* t)
 
     if(t->tasks_cap > 256 && scheduled <= 128)
     {
-        mu_ts_task* p = (mu_ts_task*)MU_TS_REALLOC(t->tasks, 128 * sizeof(mu_ts_task));
+        mu_ts_task* p = (mu_ts_task*)MU_REALLOC(t->tasks, 128 * sizeof(mu_ts_task));
         if(p)
         {
             t->tasks     = p;
@@ -529,7 +511,7 @@ MU_TS_INLINE void mu_ts__compact_queue(mu_ts_system* t)
     }
 }
 
-MU_TS_INLINE mu_ts_task mu_ts__get_task(mu_ts_system* t, uint64_t tid, bool blocking)
+MU_INLINE mu_ts_task mu_ts__get_task(mu_ts_system* t, uint64_t tid, bool blocking)
 {
     mu_ts_task task;
     task.fn   = NULL;
@@ -626,7 +608,7 @@ static void* mu_ts__worker_entry(void* arg)
 #endif
 }
 
-MU_TS_INLINE bool mu_ts_init(mu_ts_handle* out, const mu_ts_init_desc* in_desc)
+MU_INLINE bool mu_ts_init(mu_ts_handle* out, const mu_ts_init_desc* in_desc)
 {
     mu_ts_init_desc        local_desc = MU_TS_INIT_DESC_DEFAULT;
     const mu_ts_init_desc* desc       = in_desc ? in_desc : &local_desc;
@@ -648,19 +630,19 @@ MU_TS_INLINE bool mu_ts_init(mu_ts_handle* out, const mu_ts_init_desc* in_desc)
     if(count == 0)
         return false;
 
-    mu_ts_system* t = (mu_ts_system*)MU_TS_MALLOC(sizeof(mu_ts_system));
+    mu_ts_system* t = (mu_ts_system*)MU_MALLOC(sizeof(mu_ts_system));
     if(!t)
         return false;
     memset(t, 0, sizeof(*t));
 
-    t->threads = (mu_ts_thread_handle*)MU_TS_MALLOC((size_t)(count * sizeof(mu_ts_thread_handle)));
-    t->boot    = (mu_ts_worker_bootstrap*)MU_TS_MALLOC((size_t)(count * sizeof(mu_ts_worker_bootstrap)));
+    t->threads = (mu_ts_thread_handle*)MU_MALLOC((size_t)(count * sizeof(mu_ts_thread_handle)));
+    t->boot    = (mu_ts_worker_bootstrap*)MU_MALLOC((size_t)(count * sizeof(mu_ts_worker_bootstrap)));
 
     if(!t->threads || !t->boot)
     {
-        MU_TS_FREE(t->threads);
-        MU_TS_FREE(t->boot);
-        MU_TS_FREE(t);
+        MU_FREE(t->threads);
+        MU_FREE(t->boot);
+        MU_FREE(t);
         return false;
     }
 
@@ -684,9 +666,9 @@ MU_TS_INLINE bool mu_ts_init(mu_ts_handle* out, const mu_ts_init_desc* in_desc)
             mu_ts_cond_exit(&t->condition_tasks);
         if(mutex_ok)
             mu_ts_mutex_exit(&t->mutex);
-        MU_TS_FREE(t->threads);
-        MU_TS_FREE(t->boot);
-        MU_TS_FREE(t);
+        MU_FREE(t->threads);
+        MU_FREE(t->boot);
+        MU_FREE(t);
         return false;
     }
 
@@ -695,9 +677,9 @@ MU_TS_INLINE bool mu_ts_init(mu_ts_handle* out, const mu_ts_init_desc* in_desc)
         mu_ts_cond_exit(&t->condition_tasks);
         mu_ts_cond_exit(&t->condition_idle);
         mu_ts_mutex_exit(&t->mutex);
-        MU_TS_FREE(t->threads);
-        MU_TS_FREE(t->boot);
-        MU_TS_FREE(t);
+        MU_FREE(t->threads);
+        MU_FREE(t->boot);
+        MU_FREE(t);
         return false;
     }
 
@@ -727,10 +709,10 @@ MU_TS_INLINE bool mu_ts_init(mu_ts_handle* out, const mu_ts_init_desc* in_desc)
             mu_ts_cond_exit(&t->condition_tasks);
             mu_ts_cond_exit(&t->condition_idle);
             mu_ts_mutex_exit(&t->mutex);
-            MU_TS_FREE(t->tasks);
-            MU_TS_FREE(t->threads);
-            MU_TS_FREE(t->boot);
-            MU_TS_FREE(t);
+            MU_FREE(t->tasks);
+            MU_FREE(t->threads);
+            MU_FREE(t->boot);
+            MU_FREE(t);
             return false;
         }
     }
@@ -739,7 +721,7 @@ MU_TS_INLINE bool mu_ts_init(mu_ts_handle* out, const mu_ts_init_desc* in_desc)
     return true;
 }
 
-MU_TS_INLINE void mu_ts_exit(mu_ts_handle* h, const mu_ts_exit_desc* in_desc)
+MU_INLINE void mu_ts_exit(mu_ts_handle* h, const mu_ts_exit_desc* in_desc)
 {
     mu_ts_exit_desc        local_desc = MU_TS_EXIT_DESC_DEFAULT;
     const mu_ts_exit_desc* desc       = in_desc ? in_desc : &local_desc;
@@ -769,13 +751,13 @@ MU_TS_INLINE void mu_ts_exit(mu_ts_handle* h, const mu_ts_exit_desc* in_desc)
     mu_ts_cond_exit(&t->condition_idle);
     mu_ts_mutex_exit(&t->mutex);
 
-    MU_TS_FREE(t->tasks);
-    MU_TS_FREE(t->threads);
-    MU_TS_FREE(t->boot);
-    MU_TS_FREE(t);
+    MU_FREE(t->tasks);
+    MU_FREE(t->threads);
+    MU_FREE(t->boot);
+    MU_FREE(t);
 }
 
-MU_TS_INLINE void mu_ts_add_tasks(mu_ts_handle h, mu_ts_task_fn fn, uint64_t count, uint64_t user_size, void* user_array)
+MU_INLINE void mu_ts_add_tasks(mu_ts_handle h, mu_ts_task_fn fn, uint64_t count, uint64_t user_size, void* user_array)
 {
     if(!fn || count == 0)
         return;
@@ -819,12 +801,12 @@ MU_TS_INLINE void mu_ts_add_tasks(mu_ts_handle h, mu_ts_task_fn fn, uint64_t cou
     mu_ts_mutex_unlock(&t->mutex);
 }
 
-MU_TS_INLINE void mu_ts_add_task(mu_ts_handle h, mu_ts_task_fn fn, void* user)
+MU_INLINE void mu_ts_add_task(mu_ts_handle h, mu_ts_task_fn fn, void* user)
 {
     mu_ts_add_tasks(h, fn, 1, 0, user);
 }
 
-MU_TS_INLINE bool mu_ts_assist(mu_ts_handle h)
+MU_INLINE bool mu_ts_assist(mu_ts_handle h)
 {
     if(!h)
         return false;
@@ -842,7 +824,7 @@ MU_TS_INLINE bool mu_ts_assist(mu_ts_handle h)
     return true;
 }
 
-MU_TS_INLINE bool mu_ts_wait_idle_timeout(mu_ts_handle h, uint32_t timeout_ms)
+MU_INLINE bool mu_ts_wait_idle_timeout(mu_ts_handle h, uint32_t timeout_ms)
 {
     if(!h)
         return true;
@@ -882,17 +864,17 @@ MU_TS_INLINE bool mu_ts_wait_idle_timeout(mu_ts_handle h, uint32_t timeout_ms)
     return idle;
 }
 
-MU_TS_INLINE bool mu_ts_is_idle(mu_ts_handle h)
+MU_INLINE bool mu_ts_is_idle(mu_ts_handle h)
 {
     return mu_ts_wait_idle_timeout(h, 0);
 }
 
-MU_TS_INLINE void mu_ts_wait_idle(mu_ts_handle h)
+MU_INLINE void mu_ts_wait_idle(mu_ts_handle h)
 {
     (void)mu_ts_wait_idle_timeout(h, UINT32_MAX);
 }
 
-MU_TS_INLINE void mu_ts_get_info(mu_ts_handle h, mu_ts_info* out_info)
+MU_INLINE void mu_ts_get_info(mu_ts_handle h, mu_ts_info* out_info)
 {
     if(!out_info)
         return;

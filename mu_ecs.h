@@ -27,29 +27,10 @@ extern "C" {
    Config
    ============================= */
 
-#ifndef MU_ECS_ASSERT
-#define MU_ECS_ASSERT(x) assert(x)
-#endif
+#include "mu_macros.h"
 
-#ifndef MU_ECS_MALLOC
-#define MU_ECS_MALLOC(sz) malloc(sz)
-#endif
-
-#ifndef MU_ECS_FREE
-#define MU_ECS_FREE(p) free(p)
-#endif
-
-#ifndef MU_ECS_REALLOC
-#define MU_ECS_REALLOC(p, sz) realloc((p), (sz))
-#endif
-
-#ifndef MU_ECS_MEMSET
-#define MU_ECS_MEMSET(p, v, sz) memset((p), (v), (sz))
-#endif
-
-#ifndef MU_ECS_MEMCPY
-#define MU_ECS_MEMCPY(dst, src, sz) memcpy((dst), (src), (sz))
-#endif
+/* forward declarations */
+typedef struct mu_ecs_world mu_ecs_world;
 
 #ifndef MU_ECS_ENTITY_INDEX_BITS
 #define MU_ECS_ENTITY_INDEX_BITS 22u
@@ -82,15 +63,15 @@ typedef struct mu_ecs_entity {
     uint32_t id;
 } mu_ecs_entity;
 
-static inline uint32_t mu_ecs_entity_index(mu_ecs_entity e) {
+MU_INLINE uint32_t mu_ecs_entity_index(mu_ecs_entity e) {
     return e.id & MU_ECS_ENTITY_INDEX_MASK;
 }
 
-static inline uint32_t mu_ecs_entity_generation(mu_ecs_entity e) {
+MU_INLINE uint32_t mu_ecs_entity_generation(mu_ecs_entity e) {
     return (e.id >> MU_ECS_ENTITY_INDEX_BITS) & MU_ECS_ENTITY_GENERATION_MASK;
 }
 
-static inline mu_ecs_entity mu_ecs_entity_make(uint32_t index, uint32_t generation) {
+MU_INLINE mu_ecs_entity mu_ecs_entity_make(uint32_t index, uint32_t generation) {
     mu_ecs_entity e;
     e.id = (generation << MU_ECS_ENTITY_INDEX_BITS) | (index & MU_ECS_ENTITY_INDEX_MASK);
     return e;
@@ -122,18 +103,18 @@ typedef struct mu_ecs_entity_manager {
     uint32_t min_free;
 } mu_ecs_entity_manager;
 
-static inline void mu_ecs_entity_manager_init(mu_ecs_entity_manager* em, uint32_t min_free) {
-    MU_ECS_MEMSET(em, 0, sizeof(*em));
+MU_INLINE void mu_ecs_entity_manager_init(mu_ecs_entity_manager* em, uint32_t min_free) {
+    MU_MEMSET(em, 0, sizeof(*em));
     em->min_free = min_free;
 }
 
-static inline void mu_ecs_entity_manager_free(mu_ecs_entity_manager* em) {
-    MU_ECS_FREE(em->generation);
-    MU_ECS_FREE(em->free_queue);
-    MU_ECS_MEMSET(em, 0, sizeof(*em));
+MU_INLINE void mu_ecs_entity_manager_free(mu_ecs_entity_manager* em) {
+    MU_FREE(em->generation);
+    MU_FREE(em->free_queue);
+    MU_MEMSET(em, 0, sizeof(*em));
 }
 
-static inline void mu_ecs_entity_manager_reserve(mu_ecs_entity_manager* em, uint32_t cap) {
+MU_INLINE void mu_ecs_entity_manager_reserve(mu_ecs_entity_manager* em, uint32_t cap) {
     if (cap <= em->generation_capacity) {
         return;
     }
@@ -141,13 +122,13 @@ static inline void mu_ecs_entity_manager_reserve(mu_ecs_entity_manager* em, uint
     while (new_cap < cap) {
         new_cap *= 2u;
     }
-    em->generation = (uint8_t*)MU_ECS_REALLOC(em->generation, new_cap * sizeof(uint8_t));
-    MU_ECS_MEMSET(em->generation + em->generation_capacity, 0,
+    em->generation = (uint8_t*)MU_REALLOC(em->generation, new_cap * sizeof(uint8_t));
+    MU_MEMSET(em->generation + em->generation_capacity, 0,
                   (new_cap - em->generation_capacity) * sizeof(uint8_t));
     em->generation_capacity = new_cap;
 }
 
-static inline void mu_ecs_entity_manager_free_queue_reserve(mu_ecs_entity_manager* em, uint32_t cap) {
+MU_INLINE void mu_ecs_entity_manager_free_queue_reserve(mu_ecs_entity_manager* em, uint32_t cap) {
     if (cap <= em->free_capacity) {
         return;
     }
@@ -155,19 +136,19 @@ static inline void mu_ecs_entity_manager_free_queue_reserve(mu_ecs_entity_manage
     while (new_cap < cap) {
         new_cap *= 2u;
     }
-    uint32_t* new_q = (uint32_t*)MU_ECS_MALLOC(new_cap * sizeof(uint32_t));
+    uint32_t* new_q = (uint32_t*)MU_MALLOC(new_cap * sizeof(uint32_t));
     for (uint32_t i = 0; i < em->free_count; ++i) {
         uint32_t idx = (em->free_head + i) % em->free_capacity;
         new_q[i] = em->free_queue[idx];
     }
-    MU_ECS_FREE(em->free_queue);
+    MU_FREE(em->free_queue);
     em->free_queue = new_q;
     em->free_head = 0;
     em->free_tail = em->free_count;
     em->free_capacity = new_cap;
 }
 
-static inline mu_ecs_entity mu_ecs_entity_create(mu_ecs_entity_manager* em) {
+MU_INLINE mu_ecs_entity mu_ecs_entity_create(mu_ecs_entity_manager* em) {
     uint32_t idx;
     if (em->free_count > em->min_free) {
         idx = em->free_queue[em->free_head];
@@ -176,18 +157,18 @@ static inline mu_ecs_entity mu_ecs_entity_create(mu_ecs_entity_manager* em) {
     } else {
         mu_ecs_entity_manager_reserve(em, em->generation_count + 1u);
         idx = em->generation_count++;
-        MU_ECS_ASSERT(idx < (1u << MU_ECS_ENTITY_INDEX_BITS));
+        MU_ASSERT(idx < (1u << MU_ECS_ENTITY_INDEX_BITS));
     }
     return mu_ecs_entity_make(idx, em->generation[idx]);
 }
 
-static inline void mu_ecs_entity_create_batch(mu_ecs_entity_manager* em, mu_ecs_entity* out, uint32_t count) {
+MU_INLINE void mu_ecs_entity_create_batch(mu_ecs_entity_manager* em, mu_ecs_entity* out, uint32_t count) {
     for (uint32_t i = 0; i < count; ++i) {
         out[i] = mu_ecs_entity_create(em);
     }
 }
 
-static inline int mu_ecs_entity_alive(const mu_ecs_entity_manager* em, mu_ecs_entity e) {
+MU_INLINE int mu_ecs_entity_alive(const mu_ecs_entity_manager* em, mu_ecs_entity e) {
     uint32_t idx = mu_ecs_entity_index(e);
     if (idx >= em->generation_count) {
         return 0;
@@ -195,7 +176,7 @@ static inline int mu_ecs_entity_alive(const mu_ecs_entity_manager* em, mu_ecs_en
     return em->generation[idx] == (uint8_t)mu_ecs_entity_generation(e);
 }
 
-static inline void mu_ecs_entity_destroy(mu_ecs_entity_manager* em, mu_ecs_entity e) {
+MU_INLINE void mu_ecs_entity_destroy(mu_ecs_entity_manager* em, mu_ecs_entity e) {
     uint32_t idx = mu_ecs_entity_index(e);
     if (idx >= em->generation_count) {
         return;
@@ -234,19 +215,19 @@ typedef struct mu_ecs_pool {
     uint32_t sparse_capacity;
 } mu_ecs_pool;
 
-static inline void mu_ecs_pool_init(mu_ecs_pool* p, uint32_t elem_size) {
-    MU_ECS_MEMSET(p, 0, sizeof(*p));
+MU_INLINE void mu_ecs_pool_init(mu_ecs_pool* p, uint32_t elem_size) {
+    MU_MEMSET(p, 0, sizeof(*p));
     p->elem_size = elem_size;
 }
 
-static inline void mu_ecs_pool_free(mu_ecs_pool* p) {
-    MU_ECS_FREE(p->entities);
-    MU_ECS_FREE(p->data);
-    MU_ECS_FREE(p->sparse);
-    MU_ECS_MEMSET(p, 0, sizeof(*p));
+MU_INLINE void mu_ecs_pool_free(mu_ecs_pool* p) {
+    MU_FREE(p->entities);
+    MU_FREE(p->data);
+    MU_FREE(p->sparse);
+    MU_MEMSET(p, 0, sizeof(*p));
 }
 
-static inline void mu_ecs_pool_reserve(mu_ecs_pool* p, uint32_t cap) {
+MU_INLINE void mu_ecs_pool_reserve(mu_ecs_pool* p, uint32_t cap) {
     if (cap <= p->capacity) {
         return;
     }
@@ -254,12 +235,12 @@ static inline void mu_ecs_pool_reserve(mu_ecs_pool* p, uint32_t cap) {
     while (new_cap < cap) {
         new_cap *= 2u;
     }
-    p->entities = (mu_ecs_entity*)MU_ECS_REALLOC(p->entities, new_cap * sizeof(mu_ecs_entity));
-    p->data = (uint8_t*)MU_ECS_REALLOC(p->data, new_cap * (size_t)p->elem_size);
+    p->entities = (mu_ecs_entity*)MU_REALLOC(p->entities, new_cap * sizeof(mu_ecs_entity));
+    p->data = (uint8_t*)MU_REALLOC(p->data, new_cap * (size_t)p->elem_size);
     p->capacity = new_cap;
 }
 
-static inline void mu_ecs_pool_sparse_reserve(mu_ecs_pool* p, uint32_t cap) {
+MU_INLINE void mu_ecs_pool_sparse_reserve(mu_ecs_pool* p, uint32_t cap) {
     if (cap <= p->sparse_capacity) {
         return;
     }
@@ -267,14 +248,14 @@ static inline void mu_ecs_pool_sparse_reserve(mu_ecs_pool* p, uint32_t cap) {
     while (new_cap < cap) {
         new_cap *= 2u;
     }
-    p->sparse = (uint32_t*)MU_ECS_REALLOC(p->sparse, new_cap * sizeof(uint32_t));
+    p->sparse = (uint32_t*)MU_REALLOC(p->sparse, new_cap * sizeof(uint32_t));
     for (uint32_t i = p->sparse_capacity; i < new_cap; ++i) {
         p->sparse[i] = UINT32_MAX;
     }
     p->sparse_capacity = new_cap;
 }
 
-static inline int mu_ecs_pool_has(const mu_ecs_pool* p, mu_ecs_entity e) {
+MU_INLINE int mu_ecs_pool_has(const mu_ecs_pool* p, mu_ecs_entity e) {
     uint32_t idx = mu_ecs_entity_index(e);
     if (idx >= p->sparse_capacity) {
         return 0;
@@ -286,7 +267,7 @@ static inline int mu_ecs_pool_has(const mu_ecs_pool* p, mu_ecs_entity e) {
     return p->entities[dense].id == e.id;
 }
 
-static inline void* mu_ecs_pool_get(const mu_ecs_pool* p, mu_ecs_entity e) {
+MU_INLINE void* mu_ecs_pool_get(const mu_ecs_pool* p, mu_ecs_entity e) {
     if (!mu_ecs_pool_has(p, e)) {
         return NULL;
     }
@@ -294,7 +275,7 @@ static inline void* mu_ecs_pool_get(const mu_ecs_pool* p, mu_ecs_entity e) {
     return p->data + (size_t)dense * p->elem_size;
 }
 
-static inline void* mu_ecs_pool_add(mu_ecs_pool* p, mu_ecs_entity e) {
+MU_INLINE void* mu_ecs_pool_add(mu_ecs_pool* p, mu_ecs_entity e) {
     uint32_t idx = mu_ecs_entity_index(e);
     mu_ecs_pool_sparse_reserve(p, idx + 1u);
 
@@ -310,11 +291,11 @@ static inline void* mu_ecs_pool_add(mu_ecs_pool* p, mu_ecs_entity e) {
     p->sparse[idx] = dense;
 
     void* slot = p->data + (size_t)dense * p->elem_size;
-    MU_ECS_MEMSET(slot, 0, p->elem_size);
+    MU_MEMSET(slot, 0, p->elem_size);
     return slot;
 }
 
-static inline void mu_ecs_pool_remove(mu_ecs_pool* p, mu_ecs_entity e) {
+MU_INLINE void mu_ecs_pool_remove(mu_ecs_pool* p, mu_ecs_entity e) {
     if (!mu_ecs_pool_has(p, e)) {
         return;
     }
@@ -323,7 +304,7 @@ static inline void mu_ecs_pool_remove(mu_ecs_pool* p, mu_ecs_entity e) {
 
     if (dense != last) {
         p->entities[dense] = p->entities[last];
-        MU_ECS_MEMCPY(p->data + (size_t)dense * p->elem_size,
+        MU_MEMCPY(p->data + (size_t)dense * p->elem_size,
                       p->data + (size_t)last * p->elem_size,
                       p->elem_size);
 
@@ -357,7 +338,7 @@ typedef struct mu_ecs_instance {
 
 #define MU_ECS_INSTANCE_INVALID (mu_ecs_instance){-1}
 
-static inline int mu_ecs_instance_valid(mu_ecs_instance h) {
+MU_INLINE int mu_ecs_instance_valid(mu_ecs_instance h) {
     return h.i >= 0;
 }
 
@@ -382,18 +363,18 @@ typedef struct mu_ecs_transform_store {
     uint32_t stack_capacity;
 } mu_ecs_transform_store;
 
-static inline void mu_ecs_transform_init(mu_ecs_transform_store* t) {
-    MU_ECS_MEMSET(t, 0, sizeof(*t));
+MU_INLINE void mu_ecs_transform_init(mu_ecs_transform_store* t) {
+    MU_MEMSET(t, 0, sizeof(*t));
 }
 
-static inline void mu_ecs_transform_free(mu_ecs_transform_store* t) {
-    MU_ECS_FREE(t->buffer);
-    MU_ECS_FREE(t->sparse);
-    MU_ECS_FREE(t->stack);
-    MU_ECS_MEMSET(t, 0, sizeof(*t));
+MU_INLINE void mu_ecs_transform_free(mu_ecs_transform_store* t) {
+    MU_FREE(t->buffer);
+    MU_FREE(t->sparse);
+    MU_FREE(t->stack);
+    MU_MEMSET(t, 0, sizeof(*t));
 }
 
-static inline void mu_ecs_transform_sparse_reserve(mu_ecs_transform_store* t, uint32_t cap) {
+MU_INLINE void mu_ecs_transform_sparse_reserve(mu_ecs_transform_store* t, uint32_t cap) {
     if (cap <= t->sparse_capacity) {
         return;
     }
@@ -401,14 +382,14 @@ static inline void mu_ecs_transform_sparse_reserve(mu_ecs_transform_store* t, ui
     while (new_cap < cap) {
         new_cap *= 2u;
     }
-    t->sparse = (uint32_t*)MU_ECS_REALLOC(t->sparse, new_cap * sizeof(uint32_t));
+    t->sparse = (uint32_t*)MU_REALLOC(t->sparse, new_cap * sizeof(uint32_t));
     for (uint32_t i = t->sparse_capacity; i < new_cap; ++i) {
         t->sparse[i] = UINT32_MAX;
     }
     t->sparse_capacity = new_cap;
 }
 
-static inline void mu_ecs_transform_stack_reserve(mu_ecs_transform_store* t, uint32_t cap) {
+MU_INLINE void mu_ecs_transform_stack_reserve(mu_ecs_transform_store* t, uint32_t cap) {
     if (cap <= t->stack_capacity) {
         return;
     }
@@ -416,11 +397,11 @@ static inline void mu_ecs_transform_stack_reserve(mu_ecs_transform_store* t, uin
     while (new_cap < cap) {
         new_cap *= 2u;
     }
-    t->stack = (int32_t*)MU_ECS_REALLOC(t->stack, new_cap * sizeof(int32_t));
+    t->stack = (int32_t*)MU_REALLOC(t->stack, new_cap * sizeof(int32_t));
     t->stack_capacity = new_cap;
 }
 
-static inline void mu_ecs_transform_reserve(mu_ecs_transform_store* t, uint32_t cap) {
+MU_INLINE void mu_ecs_transform_reserve(mu_ecs_transform_store* t, uint32_t cap) {
     if (cap <= t->capacity) {
         return;
     }
@@ -438,7 +419,7 @@ static inline void mu_ecs_transform_reserve(mu_ecs_transform_store* t, uint32_t 
     bytes += new_cap * sizeof(int32_t);
     bytes += new_cap * sizeof(int32_t);
 
-    void* new_buf = MU_ECS_MALLOC(bytes);
+    void* new_buf = MU_MALLOC(bytes);
     uint8_t* p = (uint8_t*)new_buf;
 
     mu_ecs_entity* new_entity = (mu_ecs_entity*)p; p += new_cap * sizeof(mu_ecs_entity);
@@ -450,16 +431,16 @@ static inline void mu_ecs_transform_reserve(mu_ecs_transform_store* t, uint32_t 
     int32_t* new_prev = (int32_t*)p; p += new_cap * sizeof(int32_t);
 
     if (t->size) {
-        MU_ECS_MEMCPY(new_entity, t->entity, t->size * sizeof(mu_ecs_entity));
-        MU_ECS_MEMCPY(new_local, t->local, t->size * 16u * sizeof(float));
-        MU_ECS_MEMCPY(new_world, t->world, t->size * 16u * sizeof(float));
-        MU_ECS_MEMCPY(new_parent, t->parent, t->size * sizeof(int32_t));
-        MU_ECS_MEMCPY(new_first, t->first_child, t->size * sizeof(int32_t));
-        MU_ECS_MEMCPY(new_next, t->next_sibling, t->size * sizeof(int32_t));
-        MU_ECS_MEMCPY(new_prev, t->prev_sibling, t->size * sizeof(int32_t));
+        MU_MEMCPY(new_entity, t->entity, t->size * sizeof(mu_ecs_entity));
+        MU_MEMCPY(new_local, t->local, t->size * 16u * sizeof(float));
+        MU_MEMCPY(new_world, t->world, t->size * 16u * sizeof(float));
+        MU_MEMCPY(new_parent, t->parent, t->size * sizeof(int32_t));
+        MU_MEMCPY(new_first, t->first_child, t->size * sizeof(int32_t));
+        MU_MEMCPY(new_next, t->next_sibling, t->size * sizeof(int32_t));
+        MU_MEMCPY(new_prev, t->prev_sibling, t->size * sizeof(int32_t));
     }
 
-    MU_ECS_FREE(t->buffer);
+    MU_FREE(t->buffer);
     t->buffer = new_buf;
     t->entity = new_entity;
     t->local = new_local;
@@ -471,15 +452,15 @@ static inline void mu_ecs_transform_reserve(mu_ecs_transform_store* t, uint32_t 
     t->capacity = new_cap;
 }
 
-static inline void mu_ecs_transform_identity(float* m16) {
-    MU_ECS_MEMSET(m16, 0, 16u * sizeof(float));
+MU_INLINE void mu_ecs_transform_identity(float* m16) {
+    MU_MEMSET(m16, 0, 16u * sizeof(float));
     m16[0] = 1.0f;
     m16[5] = 1.0f;
     m16[10] = 1.0f;
     m16[15] = 1.0f;
 }
 
-static inline void mu_ecs_transform_mul(float* out, const float* a, const float* b) {
+MU_INLINE void mu_ecs_transform_mul(float* out, const float* a, const float* b) {
     /* Column-major 4x4 multiply: out = a * b */
     for (int c = 0; c < 4; ++c) {
         for (int r = 0; r < 4; ++r) {
@@ -492,7 +473,7 @@ static inline void mu_ecs_transform_mul(float* out, const float* a, const float*
     }
 }
 
-static inline mu_ecs_instance mu_ecs_transform_find(const mu_ecs_transform_store* t, mu_ecs_entity e) {
+MU_INLINE mu_ecs_instance mu_ecs_transform_find(const mu_ecs_transform_store* t, mu_ecs_entity e) {
     uint32_t idx = mu_ecs_entity_index(e);
     if (idx >= t->sparse_capacity) {
         return MU_ECS_INSTANCE_INVALID;
@@ -507,7 +488,7 @@ static inline mu_ecs_instance mu_ecs_transform_find(const mu_ecs_transform_store
     return (mu_ecs_instance){(int32_t)dense};
 }
 
-static inline void mu_ecs_transform_link_child(mu_ecs_transform_store* t, int32_t parent, int32_t child) {
+MU_INLINE void mu_ecs_transform_link_child(mu_ecs_transform_store* t, int32_t parent, int32_t child) {
     t->parent[child] = parent;
     t->prev_sibling[child] = -1;
     t->next_sibling[child] = t->first_child[parent];
@@ -517,7 +498,7 @@ static inline void mu_ecs_transform_link_child(mu_ecs_transform_store* t, int32_
     t->first_child[parent] = child;
 }
 
-static inline void mu_ecs_transform_unlink(mu_ecs_transform_store* t, int32_t node) {
+MU_INLINE void mu_ecs_transform_unlink(mu_ecs_transform_store* t, int32_t node) {
     int32_t p = t->parent[node];
     int32_t prev = t->prev_sibling[node];
     int32_t next = t->next_sibling[node];
@@ -539,7 +520,7 @@ static inline void mu_ecs_transform_unlink(mu_ecs_transform_store* t, int32_t no
     t->next_sibling[node] = -1;
 }
 
-static inline void mu_ecs_transform_propagate(mu_ecs_transform_store* t, int32_t root) {
+MU_INLINE void mu_ecs_transform_propagate(mu_ecs_transform_store* t, int32_t root) {
     /*
     Immediate update: write local then recompute world for root and all descendants.
     We do a manual DFS with a tiny stack to avoid recursion depth surprises.
@@ -558,7 +539,7 @@ static inline void mu_ecs_transform_propagate(mu_ecs_transform_store* t, int32_t
                                  t->world + (size_t)p * 16u,
                                  t->local + (size_t)i * 16u);
         } else {
-            MU_ECS_MEMCPY(t->world + (size_t)i * 16u,
+            MU_MEMCPY(t->world + (size_t)i * 16u,
                           t->local + (size_t)i * 16u,
                           16u * sizeof(float));
         }
@@ -569,7 +550,7 @@ static inline void mu_ecs_transform_propagate(mu_ecs_transform_store* t, int32_t
     }
 }
 
-static inline mu_ecs_instance mu_ecs_transform_add(mu_ecs_transform_store* t, mu_ecs_entity e) {
+MU_INLINE mu_ecs_instance mu_ecs_transform_add(mu_ecs_transform_store* t, mu_ecs_entity e) {
     uint32_t idx = mu_ecs_entity_index(e);
     mu_ecs_transform_sparse_reserve(t, idx + 1u);
 
@@ -594,17 +575,17 @@ static inline mu_ecs_instance mu_ecs_transform_add(mu_ecs_transform_store* t, mu
     return (mu_ecs_instance){(int32_t)dense};
 }
 
-static inline void mu_ecs_transform_set_local(mu_ecs_transform_store* t, mu_ecs_instance h, const float* m16) {
-    MU_ECS_MEMCPY(t->local + (size_t)h.i * 16u, m16, 16u * sizeof(float));
+MU_INLINE void mu_ecs_transform_set_local(mu_ecs_transform_store* t, mu_ecs_instance h, const float* m16) {
+    MU_MEMCPY(t->local + (size_t)h.i * 16u, m16, 16u * sizeof(float));
     mu_ecs_transform_propagate(t, h.i);
 }
 
-static inline void mu_ecs_transform_set_local_raw(mu_ecs_transform_store* t, mu_ecs_instance h, const float* m16) {
+MU_INLINE void mu_ecs_transform_set_local_raw(mu_ecs_transform_store* t, mu_ecs_instance h, const float* m16) {
     /* Copy only, no propagation. Useful for batch spawn then one propagate per root. */
-    MU_ECS_MEMCPY(t->local + (size_t)h.i * 16u, m16, 16u * sizeof(float));
+    MU_MEMCPY(t->local + (size_t)h.i * 16u, m16, 16u * sizeof(float));
 }
 
-static inline void mu_ecs_transform_set_parent(mu_ecs_transform_store* t, mu_ecs_instance child, mu_ecs_instance parent) {
+MU_INLINE void mu_ecs_transform_set_parent(mu_ecs_transform_store* t, mu_ecs_instance child, mu_ecs_instance parent) {
     if (child.i == parent.i) {
         return;
     }
@@ -619,7 +600,7 @@ static inline void mu_ecs_transform_set_parent(mu_ecs_transform_store* t, mu_ecs
     }
 }
 
-static inline void mu_ecs_transform_orphan_children(mu_ecs_transform_store* t, int32_t node) {
+MU_INLINE void mu_ecs_transform_orphan_children(mu_ecs_transform_store* t, int32_t node) {
     for (int32_t c = t->first_child[node]; c >= 0; c = t->next_sibling[c]) {
         t->parent[c] = -1;
         t->prev_sibling[c] = -1;
@@ -627,7 +608,7 @@ static inline void mu_ecs_transform_orphan_children(mu_ecs_transform_store* t, i
     t->first_child[node] = -1;
 }
 
-static inline void mu_ecs_transform_fix_moved_links(mu_ecs_transform_store* t, int32_t moved, int32_t dst) {
+MU_INLINE void mu_ecs_transform_fix_moved_links(mu_ecs_transform_store* t, int32_t moved, int32_t dst) {
     int32_t p = t->parent[dst];
     int32_t prev = t->prev_sibling[dst];
     int32_t next = t->next_sibling[dst];
@@ -647,7 +628,7 @@ static inline void mu_ecs_transform_fix_moved_links(mu_ecs_transform_store* t, i
     }
 }
 
-static inline void mu_ecs_transform_remove_at(mu_ecs_transform_store* t, int32_t idx) {
+MU_INLINE void mu_ecs_transform_remove_at(mu_ecs_transform_store* t, int32_t idx) {
     int32_t last = (int32_t)t->size - 1;
 
     mu_ecs_transform_unlink(t, idx);
@@ -658,8 +639,8 @@ static inline void mu_ecs_transform_remove_at(mu_ecs_transform_store* t, int32_t
 
     if (idx != last) {
         t->entity[idx] = t->entity[last];
-        MU_ECS_MEMCPY(t->local + (size_t)idx * 16u, t->local + (size_t)last * 16u, 16u * sizeof(float));
-        MU_ECS_MEMCPY(t->world + (size_t)idx * 16u, t->world + (size_t)last * 16u, 16u * sizeof(float));
+        MU_MEMCPY(t->local + (size_t)idx * 16u, t->local + (size_t)last * 16u, 16u * sizeof(float));
+        MU_MEMCPY(t->world + (size_t)idx * 16u, t->world + (size_t)last * 16u, 16u * sizeof(float));
         t->parent[idx] = t->parent[last];
         t->first_child[idx] = t->first_child[last];
         t->next_sibling[idx] = t->next_sibling[last];
@@ -672,7 +653,7 @@ static inline void mu_ecs_transform_remove_at(mu_ecs_transform_store* t, int32_t
     --t->size;
 }
 
-static inline void mu_ecs_transform_remove(mu_ecs_transform_store* t, mu_ecs_entity e) {
+MU_INLINE void mu_ecs_transform_remove(mu_ecs_transform_store* t, mu_ecs_entity e) {
     mu_ecs_instance h = mu_ecs_transform_find(t, e);
     if (!mu_ecs_instance_valid(h)) {
         return;
@@ -693,6 +674,12 @@ comp B :  [B0 B1 B2 B3 ...]
 This avoids per-entity structs and mirrors the docs: cache-friendly and easy to stream.
 */
 
+/* The world struct must be complete before the spawn/prefab helpers below. */
+struct mu_ecs_world {
+    mu_ecs_entity_manager entities;
+    mu_ecs_transform_store transforms;
+};
+
 typedef struct mu_ecs_spawn_block {
     uint32_t kind;          /* Caller-defined component id for prefab matching. */
     mu_ecs_pool* pool;      /* Destination component pool. */
@@ -711,9 +698,9 @@ typedef struct mu_ecs_spawn_group {
     uint32_t block_count;
 } mu_ecs_spawn_group;
 
-static inline void mu_ecs_spawn_group_apply(mu_ecs_world* w, const mu_ecs_spawn_group* g, mu_ecs_entity* out_entities) {
-    MU_ECS_ASSERT(w && g);
-    MU_ECS_ASSERT(g->entities || out_entities);
+MU_INLINE void mu_ecs_spawn_group_apply(mu_ecs_world* w, const mu_ecs_spawn_group* g, mu_ecs_entity* out_entities) {
+    MU_ASSERT(w && g);
+    MU_ASSERT(g->entities || out_entities);
 
     mu_ecs_entity* entities = (mu_ecs_entity*)(g->entities ? g->entities : out_entities);
 
@@ -723,7 +710,7 @@ static inline void mu_ecs_spawn_group_apply(mu_ecs_world* w, const mu_ecs_spawn_
 
     for (uint32_t b = 0; b < g->block_count; ++b) {
         const mu_ecs_spawn_block* block = &g->blocks[b];
-        MU_ECS_ASSERT(block->pool);
+        MU_ASSERT(block->pool);
 
         uint32_t stride = block->stride ? block->stride : block->pool->elem_size;
         const uint8_t* src = (const uint8_t*)block->data;
@@ -731,14 +718,14 @@ static inline void mu_ecs_spawn_group_apply(mu_ecs_world* w, const mu_ecs_spawn_
         for (uint32_t i = 0; i < g->count; ++i) {
             void* dst = mu_ecs_pool_add(block->pool, entities[i]);
             if (src) {
-                MU_ECS_MEMCPY(dst, src + (size_t)i * stride, block->pool->elem_size);
+                MU_MEMCPY(dst, src + (size_t)i * stride, block->pool->elem_size);
             }
         }
     }
 
     if (g->local_matrices || g->parent_index) {
-        mu_ecs_instance* inst = (mu_ecs_instance*)MU_ECS_MALLOC(g->count * sizeof(mu_ecs_instance));
-        MU_ECS_ASSERT(inst);
+        mu_ecs_instance* inst = (mu_ecs_instance*)MU_MALLOC(g->count * sizeof(mu_ecs_instance));
+        MU_ASSERT(inst);
 
         for (uint32_t i = 0; i < g->count; ++i) {
             inst[i] = mu_ecs_transform_add(&w->transforms, entities[i]);
@@ -762,7 +749,7 @@ static inline void mu_ecs_spawn_group_apply(mu_ecs_world* w, const mu_ecs_spawn_
             }
         }
 
-        MU_ECS_FREE(inst);
+        MU_FREE(inst);
     }
 }
 
@@ -815,7 +802,7 @@ typedef struct mu_ecs_prefab {
     uint32_t block_count;
 } mu_ecs_prefab;
 
-static inline int mu_ecs_prefab_mask_has(const uint64_t* mask,
+MU_INLINE int mu_ecs_prefab_mask_has(const uint64_t* mask,
                                          uint32_t mask_words,
                                          uint32_t entity_index,
                                          uint32_t kind) {
@@ -830,7 +817,7 @@ static inline int mu_ecs_prefab_mask_has(const uint64_t* mask,
     return (int)((bits >> (kind & 63u)) & 1u);
 }
 
-static inline int mu_ecs_inline_mask_has(const mu_ecs_inline_mask* mask, uint32_t kind) {
+MU_INLINE int mu_ecs_inline_mask_has(const mu_ecs_inline_mask* mask, uint32_t kind) {
 #if MU_ECS_INLINE_MASK_WORDS == 0
     (void)mask;
     (void)kind;
@@ -847,7 +834,7 @@ static inline int mu_ecs_inline_mask_has(const mu_ecs_inline_mask* mask, uint32_
 #endif
 }
 
-static inline int mu_ecs_inline_mask_array_has(const mu_ecs_inline_mask* masks,
+MU_INLINE int mu_ecs_inline_mask_array_has(const mu_ecs_inline_mask* masks,
                                                uint32_t entity_index,
                                                uint32_t kind) {
 #if MU_ECS_INLINE_MASK_WORDS == 0
@@ -863,7 +850,7 @@ static inline int mu_ecs_inline_mask_array_has(const mu_ecs_inline_mask* masks,
 #endif
 }
 
-static inline int mu_ecs_prefab_mask_has_any(const uint64_t* mask,
+MU_INLINE int mu_ecs_prefab_mask_has_any(const uint64_t* mask,
                                              const mu_ecs_inline_mask* inline_mask,
                                              uint32_t mask_words,
                                              uint32_t entity_index,
@@ -875,7 +862,7 @@ static inline int mu_ecs_prefab_mask_has_any(const uint64_t* mask,
     return mu_ecs_prefab_mask_has(mask, mask_words, entity_index, kind);
 }
 
-static inline const mu_ecs_prefab_component_block* mu_ecs_prefab_find_block(const mu_ecs_prefab* p, uint32_t kind) {
+MU_INLINE const mu_ecs_prefab_component_block* mu_ecs_prefab_find_block(const mu_ecs_prefab* p, uint32_t kind) {
     if (!p) {
         return NULL;
     }
@@ -887,7 +874,7 @@ static inline const mu_ecs_prefab_component_block* mu_ecs_prefab_find_block(cons
     return NULL;
 }
 
-static inline const void* mu_ecs_prefab_pick_data(const mu_ecs_prefab_component_block* base,
+MU_INLINE const void* mu_ecs_prefab_pick_data(const mu_ecs_prefab_component_block* base,
                                                   const mu_ecs_prefab_component_block* over,
                                                   uint32_t index,
                                                   uint32_t* out_stride) {
@@ -911,13 +898,13 @@ static inline const void* mu_ecs_prefab_pick_data(const mu_ecs_prefab_component_
     return NULL;
 }
 
-static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
+MU_INLINE void mu_ecs_prefab_spawn(mu_ecs_world* w,
                                        const mu_ecs_prefab* base,
                                        const mu_ecs_prefab* over,
                                        mu_ecs_entity* out_entities) {
-    MU_ECS_ASSERT(w && base && out_entities);
+    MU_ASSERT(w && base && out_entities);
     if (over && over->count) {
-        MU_ECS_ASSERT(over->count == base->count);
+        MU_ASSERT(over->count == base->count);
     }
 
     uint32_t count = base->count;
@@ -927,7 +914,7 @@ static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
         const mu_ecs_prefab_component_block* base_block = &base->blocks[b];
         const mu_ecs_prefab_component_block* over_block = mu_ecs_prefab_find_block(over, base_block->kind);
 
-        MU_ECS_ASSERT(base_block->pool);
+        MU_ASSERT(base_block->pool);
         for (uint32_t i = 0; i < count; ++i) {
             if (over && mu_ecs_prefab_mask_has_any(over->remove_mask,
                                                    over->remove_mask_inline,
@@ -940,7 +927,7 @@ static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
             const void* src = mu_ecs_prefab_pick_data(base_block, over_block, i, &stride);
             void* dst = mu_ecs_pool_add(base_block->pool, out_entities[i]);
             if (src) {
-                MU_ECS_MEMCPY(dst, src, base_block->pool->elem_size);
+                MU_MEMCPY(dst, src, base_block->pool->elem_size);
             }
         }
     }
@@ -951,7 +938,7 @@ static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
             if (mu_ecs_prefab_find_block(base, over_block->kind)) {
                 continue;
             }
-            MU_ECS_ASSERT(over_block->pool);
+            MU_ASSERT(over_block->pool);
             for (uint32_t i = 0; i < count; ++i) {
                 if (mu_ecs_prefab_mask_has_any(over->remove_mask,
                                                over->remove_mask_inline,
@@ -972,15 +959,15 @@ static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
                 const void* src = (const uint8_t*)over_block->data + (size_t)i * stride;
                 void* dst = mu_ecs_pool_add(over_block->pool, out_entities[i]);
                 if (over_block->data && (!over_block->override_mask || over_block->override_mask[i])) {
-                    MU_ECS_MEMCPY(dst, src, over_block->pool->elem_size);
+                    MU_MEMCPY(dst, src, over_block->pool->elem_size);
                 }
             }
         }
     }
 
     if (base->local_matrices || base->parent_index || (over && (over->local_matrices || over->parent_index))) {
-        mu_ecs_instance* inst = (mu_ecs_instance*)MU_ECS_MALLOC(count * sizeof(mu_ecs_instance));
-        MU_ECS_ASSERT(inst);
+        mu_ecs_instance* inst = (mu_ecs_instance*)MU_MALLOC(count * sizeof(mu_ecs_instance));
+        MU_ASSERT(inst);
 
         for (uint32_t i = 0; i < count; ++i) {
             inst[i] = mu_ecs_transform_add(&w->transforms, out_entities[i]);
@@ -1017,7 +1004,7 @@ static inline void mu_ecs_prefab_spawn(mu_ecs_world* w,
             }
         }
 
-        MU_ECS_FREE(inst);
+        MU_FREE(inst);
     }
 }
 
@@ -1037,17 +1024,17 @@ typedef struct mu_ecs_resource_registry {
     uint32_t prefab_capacity;
 } mu_ecs_resource_registry;
 
-static inline void mu_ecs_resource_registry_init(mu_ecs_resource_registry* r) {
-    MU_ECS_MEMSET(r, 0, sizeof(*r));
+MU_INLINE void mu_ecs_resource_registry_init(mu_ecs_resource_registry* r) {
+    MU_MEMSET(r, 0, sizeof(*r));
 }
 
-static inline void mu_ecs_resource_registry_free(mu_ecs_resource_registry* r) {
-    MU_ECS_FREE(r->pools);
-    MU_ECS_FREE(r->prefabs);
-    MU_ECS_MEMSET(r, 0, sizeof(*r));
+MU_INLINE void mu_ecs_resource_registry_free(mu_ecs_resource_registry* r) {
+    MU_FREE(r->pools);
+    MU_FREE(r->prefabs);
+    MU_MEMSET(r, 0, sizeof(*r));
 }
 
-static inline void mu_ecs_resource_registry_pool_reserve(mu_ecs_resource_registry* r, uint32_t cap) {
+MU_INLINE void mu_ecs_resource_registry_pool_reserve(mu_ecs_resource_registry* r, uint32_t cap) {
     if (cap <= r->pool_capacity) {
         return;
     }
@@ -1055,14 +1042,14 @@ static inline void mu_ecs_resource_registry_pool_reserve(mu_ecs_resource_registr
     while (new_cap < cap) {
         new_cap *= 2u;
     }
-    r->pools = (mu_ecs_pool**)MU_ECS_REALLOC(r->pools, new_cap * sizeof(mu_ecs_pool*));
+    r->pools = (mu_ecs_pool**)MU_REALLOC(r->pools, new_cap * sizeof(mu_ecs_pool*));
     for (uint32_t i = r->pool_capacity; i < new_cap; ++i) {
         r->pools[i] = NULL;
     }
     r->pool_capacity = new_cap;
 }
 
-static inline void mu_ecs_resource_registry_prefab_reserve(mu_ecs_resource_registry* r, uint32_t cap) {
+MU_INLINE void mu_ecs_resource_registry_prefab_reserve(mu_ecs_resource_registry* r, uint32_t cap) {
     if (cap <= r->prefab_capacity) {
         return;
     }
@@ -1070,38 +1057,38 @@ static inline void mu_ecs_resource_registry_prefab_reserve(mu_ecs_resource_regis
     while (new_cap < cap) {
         new_cap *= 2u;
     }
-    r->prefabs = (const mu_ecs_prefab**)MU_ECS_REALLOC(r->prefabs, new_cap * sizeof(mu_ecs_prefab*));
+    r->prefabs = (const mu_ecs_prefab**)MU_REALLOC(r->prefabs, new_cap * sizeof(mu_ecs_prefab*));
     for (uint32_t i = r->prefab_capacity; i < new_cap; ++i) {
         r->prefabs[i] = NULL;
     }
     r->prefab_capacity = new_cap;
 }
 
-static inline void mu_ecs_resource_registry_set_pool(mu_ecs_resource_registry* r, uint32_t kind, mu_ecs_pool* pool) {
+MU_INLINE void mu_ecs_resource_registry_set_pool(mu_ecs_resource_registry* r, uint32_t kind, mu_ecs_pool* pool) {
     mu_ecs_resource_registry_pool_reserve(r, kind + 1u);
     r->pools[kind] = pool;
 }
 
-static inline mu_ecs_pool* mu_ecs_resource_registry_get_pool(const mu_ecs_resource_registry* r, uint32_t kind) {
+MU_INLINE mu_ecs_pool* mu_ecs_resource_registry_get_pool(const mu_ecs_resource_registry* r, uint32_t kind) {
     if (!r || kind >= r->pool_capacity) {
         return NULL;
     }
     return r->pools[kind];
 }
 
-static inline void mu_ecs_resource_registry_set_prefab(mu_ecs_resource_registry* r, uint32_t id, const mu_ecs_prefab* prefab) {
+MU_INLINE void mu_ecs_resource_registry_set_prefab(mu_ecs_resource_registry* r, uint32_t id, const mu_ecs_prefab* prefab) {
     mu_ecs_resource_registry_prefab_reserve(r, id + 1u);
     r->prefabs[id] = prefab;
 }
 
-static inline const mu_ecs_prefab* mu_ecs_resource_registry_get_prefab(const mu_ecs_resource_registry* r, uint32_t id) {
+MU_INLINE const mu_ecs_prefab* mu_ecs_resource_registry_get_prefab(const mu_ecs_resource_registry* r, uint32_t id) {
     if (!r || id >= r->prefab_capacity) {
         return NULL;
     }
     return r->prefabs[id];
 }
 
-static inline void mu_ecs_prefab_blocks_bind_pools(mu_ecs_prefab_component_block* blocks,
+MU_INLINE void mu_ecs_prefab_blocks_bind_pools(mu_ecs_prefab_component_block* blocks,
                                                    uint32_t block_count,
                                                    const mu_ecs_resource_registry* r) {
     if (!blocks || !r) {
@@ -1122,17 +1109,12 @@ A world groups entity manager + component stores.
 Expand this with your own components and systems.
 */
 
-typedef struct mu_ecs_world {
-    mu_ecs_entity_manager entities;
-    mu_ecs_transform_store transforms;
-} mu_ecs_world;
-
-static inline void mu_ecs_world_init(mu_ecs_world* w, uint32_t min_free) {
+MU_INLINE void mu_ecs_world_init(mu_ecs_world* w, uint32_t min_free) {
     mu_ecs_entity_manager_init(&w->entities, min_free);
     mu_ecs_transform_init(&w->transforms);
 }
 
-static inline void mu_ecs_world_free(mu_ecs_world* w) {
+MU_INLINE void mu_ecs_world_free(mu_ecs_world* w) {
     mu_ecs_transform_free(&w->transforms);
     mu_ecs_entity_manager_free(&w->entities);
 }

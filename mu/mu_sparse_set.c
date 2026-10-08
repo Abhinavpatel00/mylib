@@ -31,8 +31,8 @@ void mu_sparse_set_init(mu_sparse_set* set, uint32_t capacity)
         but zeroing removes debugger noise and makes the universe
         marginally less cursed.
     */
-    memset(set->dense, 0, capacity * sizeof(uint32_t));
-    memset(set->sparse, 0, capacity * sizeof(uint32_t));
+    MU_MEMSET(set->dense, 0, capacity * sizeof(uint32_t));
+    MU_MEMSET(set->sparse, 0, capacity * sizeof(uint32_t));
 }
 
 void mu_sparse_set_destroy(mu_sparse_set* set)

@@ -64,19 +64,19 @@ static uint32_t mu_multi_index_map_get(const mu_multi_index* index, uint64_t key
 
 static bool mu_multi_index_map_resize(mu_multi_index* index, uint32_t new_capacity)
 {
-    uint64_t* new_keys   = (uint64_t*)malloc(sizeof(uint64_t) * new_capacity);
-    uint32_t* new_values = (uint32_t*)malloc(sizeof(uint32_t) * new_capacity);
-    uint8_t*  new_states = (uint8_t*)malloc(sizeof(uint8_t) * new_capacity);
+    uint64_t* new_keys   = (uint64_t*)MU_MALLOC(sizeof(uint64_t) * new_capacity);
+    uint32_t* new_values = (uint32_t*)MU_MALLOC(sizeof(uint32_t) * new_capacity);
+    uint8_t*  new_states = (uint8_t*)MU_MALLOC(sizeof(uint8_t) * new_capacity);
 
     if(!new_keys || !new_values || !new_states)
     {
-        free(new_keys);
-        free(new_values);
-        free(new_states);
+        MU_FREE(new_keys);
+        MU_FREE(new_values);
+        MU_FREE(new_states);
         return false;
     }
 
-    memset(new_states, MU_MULTI_INDEX_MAP_EMPTY, new_capacity * sizeof(uint8_t));
+    MU_MEMSET(new_states, MU_MULTI_INDEX_MAP_EMPTY, new_capacity * sizeof(uint8_t));
 
     uint64_t* old_keys    = index->map_keys;
     uint32_t* old_values  = index->map_values;
@@ -101,9 +101,9 @@ static bool mu_multi_index_map_resize(mu_multi_index* index, uint32_t new_capaci
         }
     }
 
-    free(old_keys);
-    free(old_values);
-    free(old_states);
+    MU_FREE(old_keys);
+    MU_FREE(old_values);
+    MU_FREE(old_states);
     return true;
 }
 
@@ -164,7 +164,7 @@ static bool mu_multi_index_grow_nodes(mu_multi_index* index, uint32_t min_capaci
         new_capacity *= 2;
 
     mu_multi_index_node* new_nodes =
-        (mu_multi_index_node*)realloc(index->nodes, sizeof(mu_multi_index_node) * new_capacity);
+        (mu_multi_index_node*)MU_REALLOC(index->nodes, sizeof(mu_multi_index_node) * new_capacity);
     if(!new_nodes)
         return false;
 
@@ -175,13 +175,13 @@ static bool mu_multi_index_grow_nodes(mu_multi_index* index, uint32_t min_capaci
 
 void mu_multi_index_init(mu_multi_index* index, uint32_t initial_node_capacity, uint32_t initial_map_capacity)
 {
-    memset(index, 0, sizeof(*index));
+    MU_MEMSET(index, 0, sizeof(*index));
     index->free_head = MU_MULTI_INDEX_NONE;
 
     if(initial_node_capacity)
     {
         uint32_t cap = mu_multi_index_next_pow2_u32(initial_node_capacity);
-        index->nodes = (mu_multi_index_node*)malloc(sizeof(mu_multi_index_node) * cap);
+        index->nodes = (mu_multi_index_node*)MU_MALLOC(sizeof(mu_multi_index_node) * cap);
         if(index->nodes)
             index->node_capacity = cap;
     }
@@ -195,11 +195,11 @@ void mu_multi_index_init(mu_multi_index* index, uint32_t initial_node_capacity, 
 
 void mu_multi_index_deinit(mu_multi_index* index)
 {
-    free(index->nodes);
-    free(index->map_keys);
-    free(index->map_values);
-    free(index->map_states);
-    memset(index, 0, sizeof(*index));
+    MU_FREE(index->nodes);
+    MU_FREE(index->map_keys);
+    MU_FREE(index->map_values);
+    MU_FREE(index->map_states);
+    MU_MEMSET(index, 0, sizeof(*index));
     index->free_head = MU_MULTI_INDEX_NONE;
 }
 

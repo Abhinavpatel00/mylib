@@ -94,7 +94,7 @@ bool mu_sparse_set_insert(mu_sparse_set* set, uint32_t value);
 bool mu_sparse_set_remove(mu_sparse_set* set, uint32_t value);
 
 /* iteration */
-static MU_INLINE uint32_t mu_sparse_set_at(const mu_sparse_set* set, uint32_t index)
+MU_INLINE uint32_t mu_sparse_set_at(const mu_sparse_set* set, uint32_t index)
 {
     return set->dense[index];
 }

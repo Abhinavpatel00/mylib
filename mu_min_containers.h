@@ -10,33 +10,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#ifndef MUC_API
-#if defined(MUC_STATIC)
-#define MUC_API static
-#else
-#define MUC_API extern
-#endif
-#endif
+#include "mu_macros.h"
 
-#ifdef __cplusplus
-#define MUC_BEGIN_EXTERN_C extern "C" {
-#define MUC_END_EXTERN_C }
-#else
-#define MUC_BEGIN_EXTERN_C
-#define MUC_END_EXTERN_C
-#endif
-
-#ifndef MUC_MALLOC
-#define MUC_MALLOC(size) malloc(size)
-#endif
-#ifndef MUC_REALLOC
-#define MUC_REALLOC(ptr, size) realloc(ptr, size)
-#endif
-#ifndef MUC_FREE
-#define MUC_FREE(ptr) free(ptr)
-#endif
-
-MUC_BEGIN_EXTERN_C
+MU_BEGIN_EXTERN_C
 
 // Stretchy buffer
 
@@ -46,7 +22,7 @@ typedef struct mu_array_header
     size_t capacity;
 } mu_array_header;
 
-static inline mu_array_header *mu_array_header_(void *a)
+MU_INLINE mu_array_header *mu_array_header_(void *a)
 {
     return (mu_array_header *)((uint8_t *)a - sizeof(mu_array_header));
 }
@@ -55,7 +31,7 @@ static inline mu_array_header *mu_array_header_(void *a)
 #define mu_array_capacity(a) ((a) ? mu_array_header_(a)->capacity : 0)
 #define mu_array_empty(a) (mu_array_size(a) == 0)
 
-static inline size_t mu_array_next_capacity(size_t current, size_t min_capacity)
+MU_INLINE size_t mu_array_next_capacity(size_t current, size_t min_capacity)
 {
     size_t cap = (current == 0) ? 8u : current;
     while (cap < min_capacity)
@@ -63,7 +39,7 @@ static inline size_t mu_array_next_capacity(size_t current, size_t min_capacity)
     return cap;
 }
 
-static inline void *mu_array_grow(void *a, size_t elem_size, size_t min_capacity)
+MU_INLINE void *mu_array_grow(void *a, size_t elem_size, size_t min_capacity)
 {
     size_t new_capacity = mu_array_next_capacity(mu_array_capacity(a), min_capacity);
     size_t new_size = sizeof(mu_array_header) + new_capacity * elem_size;
@@ -71,12 +47,12 @@ static inline void *mu_array_grow(void *a, size_t elem_size, size_t min_capacity
     if (a)
     {
         mu_array_header *h = mu_array_header_(a);
-        h = (mu_array_header *)MUC_REALLOC(h, new_size);
+        h = (mu_array_header *)MU_REALLOC(h, new_size);
         h->capacity = new_capacity;
         return (void *)(h + 1);
     }
 
-    mu_array_header *h = (mu_array_header *)MUC_MALLOC(new_size);
+    mu_array_header *h = (mu_array_header *)MU_MALLOC(new_size);
     if (!h)
         return NULL;
     h->size = 0;
@@ -84,14 +60,14 @@ static inline void *mu_array_grow(void *a, size_t elem_size, size_t min_capacity
     return (void *)(h + 1);
 }
 
-static inline void *mu_array_reserve(void *a, size_t elem_size, size_t min_capacity)
+MU_INLINE void *mu_array_reserve(void *a, size_t elem_size, size_t min_capacity)
 {
     if (mu_array_capacity(a) < min_capacity)
         return mu_array_grow(a, elem_size, min_capacity);
     return a;
 }
 
-static inline void *mu_array_resize(void *a, size_t elem_size, size_t new_size)
+MU_INLINE void *mu_array_resize(void *a, size_t elem_size, size_t new_size)
 {
     if (new_size > mu_array_capacity(a))
         a = mu_array_grow(a, elem_size, new_size);
@@ -100,10 +76,10 @@ static inline void *mu_array_resize(void *a, size_t elem_size, size_t new_size)
     return a;
 }
 
-static inline void mu_array_free(void *a)
+MU_INLINE void mu_array_free(void *a)
 {
     if (a)
-        MUC_FREE(mu_array_header_(a));
+        MU_FREE(mu_array_header_(a));
 }
 
 #define mu_array_ensure(a, n) ((a) = mu_array_reserve((a), sizeof(*(a)), (n)))
@@ -129,7 +105,7 @@ static inline void mu_array_free(void *a)
 
 // Dynamic string append buffer (char stretchy buffer)
 
-static inline void mu_array_vprintf(char **a, const char *fmt, va_list args)
+MU_INLINE void mu_array_vprintf(char **a, const char *fmt, va_list args)
 {
     va_list args2;
     va_copy(args2, args);
@@ -149,7 +125,7 @@ static inline void mu_array_vprintf(char **a, const char *fmt, va_list args)
     *a = (char *)mu_array_resize(*a, sizeof(char), an + (size_t)n);
 }
 
-static inline void mu_array_printf(char **a, const char *fmt, ...)
+MU_INLINE void mu_array_printf(char **a, const char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
@@ -171,7 +147,7 @@ typedef struct mu_hash64
     size_t tombstones;
 } mu_hash64;
 
-static inline uint64_t mu_hash64_mix(uint64_t x)
+MU_INLINE uint64_t mu_hash64_mix(uint64_t x)
 {
     x ^= x >> 33;
     x *= 0xff51afd7ed558ccdULL;
@@ -181,7 +157,7 @@ static inline uint64_t mu_hash64_mix(uint64_t x)
     return x;
 }
 
-static inline size_t mu_hash64_next_pow2(size_t v)
+MU_INLINE size_t mu_hash64_next_pow2(size_t v)
 {
     size_t r = 1u;
     while (r < v)
@@ -189,15 +165,15 @@ static inline size_t mu_hash64_next_pow2(size_t v)
     return r;
 }
 
-static inline bool mu_hash64_init(mu_hash64 *h, size_t capacity)
+MU_INLINE bool mu_hash64_init(mu_hash64 *h, size_t capacity)
 {
     size_t cap = mu_hash64_next_pow2(capacity < 8u ? 8u : capacity);
-    h->keys = (uint64_t *)MUC_MALLOC(sizeof(uint64_t) * cap);
-    h->values = (uint64_t *)MUC_MALLOC(sizeof(uint64_t) * cap);
+    h->keys = (uint64_t *)MU_MALLOC(sizeof(uint64_t) * cap);
+    h->values = (uint64_t *)MU_MALLOC(sizeof(uint64_t) * cap);
     if (!h->keys || !h->values)
     {
-        MUC_FREE(h->keys);
-        MUC_FREE(h->values);
+        MU_FREE(h->keys);
+        MU_FREE(h->values);
         h->keys = NULL;
         h->values = NULL;
         h->capacity = 0u;
@@ -213,12 +189,12 @@ static inline bool mu_hash64_init(mu_hash64 *h, size_t capacity)
     return true;
 }
 
-static inline void mu_hash64_free(mu_hash64 *h)
+MU_INLINE void mu_hash64_free(mu_hash64 *h)
 {
     if (!h)
         return;
-    MUC_FREE(h->keys);
-    MUC_FREE(h->values);
+    MU_FREE(h->keys);
+    MU_FREE(h->values);
     h->keys = NULL;
     h->values = NULL;
     h->capacity = 0u;
@@ -226,7 +202,7 @@ static inline void mu_hash64_free(mu_hash64 *h)
     h->tombstones = 0u;
 }
 
-static inline void mu_hash64_clear(mu_hash64 *h)
+MU_INLINE void mu_hash64_clear(mu_hash64 *h)
 {
     if (!h || !h->keys)
         return;
@@ -236,7 +212,7 @@ static inline void mu_hash64_clear(mu_hash64 *h)
     h->tombstones = 0u;
 }
 
-static inline bool mu_hash64_rehash(mu_hash64 *h, size_t new_capacity)
+MU_INLINE bool mu_hash64_rehash(mu_hash64 *h, size_t new_capacity)
 {
     mu_hash64 nh;
     if (!mu_hash64_init(&nh, new_capacity))
@@ -262,7 +238,7 @@ static inline bool mu_hash64_rehash(mu_hash64 *h, size_t new_capacity)
     return true;
 }
 
-static inline bool mu_hash64_maybe_grow(mu_hash64 *h)
+MU_INLINE bool mu_hash64_maybe_grow(mu_hash64 *h)
 {
     if (!h || h->capacity == 0u)
         return false;
@@ -272,7 +248,7 @@ static inline bool mu_hash64_maybe_grow(mu_hash64 *h)
     return mu_hash64_rehash(h, h->capacity * 2u);
 }
 
-static inline bool mu_hash64_set(mu_hash64 *h, uint64_t key, uint64_t value)
+MU_INLINE bool mu_hash64_set(mu_hash64 *h, uint64_t key, uint64_t value)
 {
     if (key == MU_HASH_EMPTY || key == MU_HASH_TOMBSTONE)
         return false;
@@ -312,7 +288,7 @@ static inline bool mu_hash64_set(mu_hash64 *h, uint64_t key, uint64_t value)
     return true;
 }
 
-static inline bool mu_hash64_get(const mu_hash64 *h, uint64_t key, uint64_t *out_value)
+MU_INLINE bool mu_hash64_get(const mu_hash64 *h, uint64_t key, uint64_t *out_value)
 {
     if (!h || !h->keys || key == MU_HASH_EMPTY || key == MU_HASH_TOMBSTONE)
         return false;
@@ -332,7 +308,7 @@ static inline bool mu_hash64_get(const mu_hash64 *h, uint64_t key, uint64_t *out
     return false;
 }
 
-static inline uint64_t mu_hash64_get_or(const mu_hash64 *h, uint64_t key, uint64_t fallback)
+MU_INLINE uint64_t mu_hash64_get_or(const mu_hash64 *h, uint64_t key, uint64_t fallback)
 {
     uint64_t v = fallback;
     if (mu_hash64_get(h, key, &v))
@@ -340,7 +316,7 @@ static inline uint64_t mu_hash64_get_or(const mu_hash64 *h, uint64_t key, uint64
     return fallback;
 }
 
-static inline bool mu_hash64_remove(mu_hash64 *h, uint64_t key)
+MU_INLINE bool mu_hash64_remove(mu_hash64 *h, uint64_t key)
 {
     if (!h || !h->keys || key == MU_HASH_EMPTY || key == MU_HASH_TOMBSTONE)
         return false;
@@ -370,13 +346,13 @@ typedef struct mu_hash64_static
     size_t capacity;
 } mu_hash64_static;
 
-static inline void mu_hash64_static_clear(mu_hash64_static *h)
+MU_INLINE void mu_hash64_static_clear(mu_hash64_static *h)
 {
     for (size_t i = 0; i < h->capacity; ++i)
         h->keys[i] = MU_HASH_EMPTY;
 }
 
-static inline bool mu_hash64_static_set(mu_hash64_static *h, uint64_t key, uint64_t value)
+MU_INLINE bool mu_hash64_static_set(mu_hash64_static *h, uint64_t key, uint64_t value)
 {
     if (key == MU_HASH_EMPTY || key == MU_HASH_TOMBSTONE)
         return false;
@@ -388,7 +364,7 @@ static inline bool mu_hash64_static_set(mu_hash64_static *h, uint64_t key, uint6
     return true;
 }
 
-static inline bool mu_hash64_static_get(const mu_hash64_static *h, uint64_t key, uint64_t *out_value)
+MU_INLINE bool mu_hash64_static_get(const mu_hash64_static *h, uint64_t key, uint64_t *out_value)
 {
     if (key == MU_HASH_EMPTY || key == MU_HASH_TOMBSTONE)
         return false;
@@ -404,7 +380,7 @@ static inline bool mu_hash64_static_get(const mu_hash64_static *h, uint64_t key,
     return false;
 }
 
-static inline uint64_t mu_hash64_static_get_or(const mu_hash64_static *h, uint64_t key, uint64_t fallback)
+MU_INLINE uint64_t mu_hash64_static_get_or(const mu_hash64_static *h, uint64_t key, uint64_t fallback)
 {
     uint64_t v = fallback;
     if (mu_hash64_static_get(h, key, &v))
@@ -421,14 +397,14 @@ typedef struct mu_string_block
     uint32_t *offsets;
 } mu_string_block;
 
-static inline void mu_string_block_init(mu_string_block *b)
+MU_INLINE void mu_string_block_init(mu_string_block *b)
 {
     b->block = NULL;
     b->used = 0u;
     b->offsets = NULL;
 }
 
-static inline void mu_string_block_free(mu_string_block *b)
+MU_INLINE void mu_string_block_free(mu_string_block *b)
 {
     mu_array_free(b->block);
     mu_array_free(b->offsets);
@@ -437,7 +413,7 @@ static inline void mu_string_block_free(mu_string_block *b)
     b->used = 0u;
 }
 
-static inline bool mu_string_block_push(mu_string_block *b, const char *s, uint32_t *out_index)
+MU_INLINE bool mu_string_block_push(mu_string_block *b, const char *s, uint32_t *out_index)
 {
     size_t n = strlen(s) + 1u;
     if (b->used + n > UINT32_MAX)
@@ -457,7 +433,7 @@ static inline bool mu_string_block_push(mu_string_block *b, const char *s, uint3
     return true;
 }
 
-static inline const char *mu_string_block_get(const mu_string_block *b, uint32_t index)
+MU_INLINE const char *mu_string_block_get(const mu_string_block *b, uint32_t index)
 {
     if (!b->block || index >= mu_array_size(b->offsets))
         return NULL;
@@ -472,18 +448,18 @@ typedef struct mu_index_link
     uint32_t next;
 } mu_index_link;
 
-static inline void mu_index_list_init(mu_index_link *links, uint32_t head)
+MU_INLINE void mu_index_list_init(mu_index_link *links, uint32_t head)
 {
     links[head].next = head;
     links[head].prev = head;
 }
 
-static inline bool mu_index_list_empty(const mu_index_link *links, uint32_t head)
+MU_INLINE bool mu_index_list_empty(const mu_index_link *links, uint32_t head)
 {
     return links[head].next == head;
 }
 
-static inline void mu_index_list_insert_after(mu_index_link *links, uint32_t head, uint32_t node)
+MU_INLINE void mu_index_list_insert_after(mu_index_link *links, uint32_t head, uint32_t node)
 {
     links[node].next = links[head].next;
     links[node].prev = head;
@@ -491,7 +467,7 @@ static inline void mu_index_list_insert_after(mu_index_link *links, uint32_t hea
     links[head].next = node;
 }
 
-static inline void mu_index_list_remove(mu_index_link *links, uint32_t node)
+MU_INLINE void mu_index_list_remove(mu_index_link *links, uint32_t node)
 {
     links[links[node].next].prev = links[node].prev;
     links[links[node].prev].next = links[node].next;
@@ -501,23 +477,23 @@ static inline void mu_index_list_remove(mu_index_link *links, uint32_t node)
 
 // Freelist helpers (using mu_index_link::next)
 
-static inline void mu_index_freelist_init(mu_index_link *links, uint32_t head)
+MU_INLINE void mu_index_freelist_init(mu_index_link *links, uint32_t head)
 {
     links[head].next = head;
 }
 
-static inline bool mu_index_freelist_empty(const mu_index_link *links, uint32_t head)
+MU_INLINE bool mu_index_freelist_empty(const mu_index_link *links, uint32_t head)
 {
     return links[head].next == head;
 }
 
-static inline void mu_index_freelist_push(mu_index_link *links, uint32_t head, uint32_t node)
+MU_INLINE void mu_index_freelist_push(mu_index_link *links, uint32_t head, uint32_t node)
 {
     links[node].next = links[head].next;
     links[head].next = node;
 }
 
-static inline uint32_t mu_index_freelist_pop(mu_index_link *links, uint32_t head)
+MU_INLINE uint32_t mu_index_freelist_pop(mu_index_link *links, uint32_t head)
 {
     uint32_t first = links[head].next;
     if (first == head)
@@ -527,6 +503,6 @@ static inline uint32_t mu_index_freelist_pop(mu_index_link *links, uint32_t head
     return first;
 }
 
-MUC_END_EXTERN_C
+MU_END_EXTERN_C
 
 #endif // MU_MIN_CONTAINERS_H

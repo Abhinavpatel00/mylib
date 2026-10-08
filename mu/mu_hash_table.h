@@ -3,14 +3,6 @@
 
 #include "mu_common.h"
 
-#ifndef mu_malloc
-#define mu_malloc(size) malloc(size)
-#endif
-
-#ifndef mu_free
-#define mu_free(ptr) free(ptr)
-#endif
-
 typedef struct
 {
     uint32_t  capacity;
@@ -24,7 +16,7 @@ typedef struct
 // ------------------------------------------------------------
 // Simple mix (not crypto, just decent)
 // ------------------------------------------------------------
-static uint64_t hash_u64(uint64_t x)
+MU_INLINE uint64_t hash_u64(uint64_t x)
 {
     x ^= x >> 33;
     x *= 0xff51afd7ed558ccdULL;
@@ -35,19 +27,19 @@ static uint64_t hash_u64(uint64_t x)
 }
 
 // ------------------------------------------------------------
-static void hash_init(hash_t* h, uint32_t cap)
+MU_INLINE void hash_init(hash_t* h, uint32_t cap)
 {
     h->capacity = cap;
     h->count    = 0;
-    h->keys     = (uint64_t*)calloc(cap, sizeof(uint64_t));
-    h->values   = (uint64_t*)calloc(cap, sizeof(uint64_t));
+    h->keys     = (uint64_t*)MU_CALLOC(cap, sizeof(uint64_t));
+    h->values   = (uint64_t*)MU_CALLOC(cap, sizeof(uint64_t));
 }
 
 // ------------------------------------------------------------
-static void hash_free(hash_t* h)
+MU_INLINE void hash_free(hash_t* h)
 {
-    free(h->keys);
-    free(h->values);
+    MU_FREE(h->keys);
+    MU_FREE(h->values);
 }
 
 // ------------------------------------------------------------
@@ -59,7 +51,7 @@ static void hash_free(hash_t* h)
 // Worst case: O(n)
 // Average: O(1)
 // ------------------------------------------------------------
-static uint32_t hash_find_slot(hash_t* h, uint64_t key)
+MU_INLINE uint32_t hash_find_slot(hash_t* h, uint64_t key)
 {
     uint32_t i = hash_u64(key) % h->capacity;
 
@@ -72,7 +64,7 @@ static uint32_t hash_find_slot(hash_t* h, uint64_t key)
 }
 
 // ------------------------------------------------------------
-static void hash_put(hash_t* h, uint64_t key, uint64_t value)
+MU_INLINE void hash_put(hash_t* h, uint64_t key, uint64_t value)
 {
     uint32_t i = hash_find_slot(h, key);
 
@@ -86,7 +78,7 @@ static void hash_put(hash_t* h, uint64_t key, uint64_t value)
 }
 
 // ------------------------------------------------------------
-static uint64_t hash_get(hash_t* h, uint64_t key, uint64_t def)
+MU_INLINE uint64_t hash_get(hash_t* h, uint64_t key, uint64_t def)
 {
     uint32_t i = hash_find_slot(h, key);
 
@@ -155,7 +147,7 @@ typedef struct mu_hash32_static_t
 
     You allocate memory → we just hook into it
 */
-static inline void mu_hash32_static_init(mu_hash32_static_t* h, uint64_t* keys, uint32_t* values, uint32_t n)
+MU_INLINE void mu_hash32_static_init(mu_hash32_static_t* h, uint64_t* keys, uint32_t* values, uint32_t n)
 {
     h->keys   = keys;
     h->values = values;
@@ -164,7 +156,7 @@ static inline void mu_hash32_static_init(mu_hash32_static_t* h, uint64_t* keys, 
     /*
         Immediately clear → mark all as unused
     */
-    memset(h->keys, 0xFF, sizeof(uint64_t) * n);
+    MU_MEMSET(h->keys, 0xFF, sizeof(uint64_t) * n);
 }
 
 
@@ -177,9 +169,9 @@ static inline void mu_hash32_static_init(mu_hash32_static_t* h, uint64_t* keys, 
     after:
         [--][--][--]
 */
-static inline void mu_hash32_static_clear(mu_hash32_static_t* h)
+MU_INLINE void mu_hash32_static_clear(mu_hash32_static_t* h)
 {
-    memset(h->keys, 0xFF, sizeof(uint64_t) * h->n);
+    MU_MEMSET(h->keys, 0xFF, sizeof(uint64_t) * h->n);
 }
 
 
@@ -201,7 +193,7 @@ static inline void mu_hash32_static_clear(mu_hash32_static_t* h)
             → 1 busy
             → 2 empty → place
 */
-static inline void mu_hash32_static_set(mu_hash32_static_t* h, uint64_t key, uint32_t value)
+MU_INLINE void mu_hash32_static_set(mu_hash32_static_t* h, uint64_t key, uint32_t value)
 {
     uint32_t i = key % h->n;
 
@@ -229,7 +221,7 @@ static inline void mu_hash32_static_set(mu_hash32_static_t* h, uint64_t key, uin
         0 if not found
         (so don't store 0 as a meaningful value unless you're into pain)
 */
-static inline uint32_t mu_hash32_static_get(const mu_hash32_static_t* h, uint64_t key)
+MU_INLINE uint32_t mu_hash32_static_get(const mu_hash32_static_t* h, uint64_t key)
 {
     uint32_t i = key % h->n;
 
@@ -329,7 +321,7 @@ typedef struct mu_hash32_t
     Not magical.
     Just enough to stop your keys clustering like idiots.
 */
-static inline uint64_t mu_hash64_mix(uint64_t x)
+MU_INLINE uint64_t mu_hash64_mix(uint64_t x)
 {
     x ^= x >> 33;
     x *= 0xff51afd7ed558ccdULL;
@@ -357,7 +349,7 @@ static inline uint64_t mu_hash64_mix(uint64_t x)
         if occupied:
             probe right until match or empty
 */
-static inline uint32_t mu_hash32_find_slot(const mu_hash32_t* h, uint64_t key)
+MU_INLINE uint32_t mu_hash32_find_slot(const mu_hash32_t* h, uint64_t key)
 {
     uint32_t i = (uint32_t)(mu_hash64_mix(key) % h->n);
 
@@ -380,25 +372,25 @@ static inline uint32_t mu_hash32_find_slot(const mu_hash32_t* h, uint64_t key)
         values = [??][??][??][??]
         count  = 0
 */
-static inline bool mu_hash32_init(mu_hash32_t* h, uint32_t capacity)
+MU_INLINE bool mu_hash32_init(mu_hash32_t* h, uint32_t capacity)
 {
     MU_ASSERT(h);
     MU_ASSERT(capacity > 0);
 
-    h->keys   = (uint64_t*)mu_malloc(sizeof(uint64_t) * capacity);
-    h->values = (uint32_t*)mu_malloc(sizeof(uint32_t) * capacity);
+    h->keys   = (uint64_t*)MU_MALLOC(sizeof(uint64_t) * capacity);
+    h->values = (uint32_t*)MU_MALLOC(sizeof(uint32_t) * capacity);
     h->n      = capacity;
     h->count  = 0;
 
     if(!h->keys || !h->values)
     {
-        mu_free(h->keys);
-        mu_free(h->values);
-        memset(h, 0, sizeof(*h));
+        MU_FREE(h->keys);
+        MU_FREE(h->values);
+        MU_MEMSET(h, 0, sizeof(*h));
         return false;
     }
 
-    memset(h->keys, 0xFF, sizeof(uint64_t) * capacity);
+    MU_MEMSET(h->keys, 0xFF, sizeof(uint64_t) * capacity);
     return true;
 }
 
@@ -408,14 +400,14 @@ static inline bool mu_hash32_init(mu_hash32_t* h, uint32_t capacity)
     Caller still owns the struct.
     We just gut it cleanly.
 */
-static inline void mu_hash32_destroy(mu_hash32_t* h)
+MU_INLINE void mu_hash32_destroy(mu_hash32_t* h)
 {
     MU_ASSERT(h);
 
-    mu_free(h->keys);
-    mu_free(h->values);
+    MU_FREE(h->keys);
+    MU_FREE(h->values);
 
-    memset(h, 0, sizeof(*h));
+    MU_MEMSET(h, 0, sizeof(*h));
 }
 
 /*
@@ -427,12 +419,12 @@ static inline void mu_hash32_destroy(mu_hash32_t* h)
     After:
         [--][--][--][--]
 */
-static inline void mu_hash32_clear(mu_hash32_t* h)
+MU_INLINE void mu_hash32_clear(mu_hash32_t* h)
 {
     MU_ASSERT(h);
     MU_ASSERT(h->keys);
 
-    memset(h->keys, 0xFF, sizeof(uint64_t) * h->n);
+    MU_MEMSET(h->keys, 0xFF, sizeof(uint64_t) * h->n);
     h->count = 0;
 }
 
@@ -440,17 +432,17 @@ static inline void mu_hash32_clear(mu_hash32_t* h)
    Queries
    ============================================================================ */
 
-static inline bool mu_hash32_empty(const mu_hash32_t* h)
+MU_INLINE bool mu_hash32_empty(const mu_hash32_t* h)
 {
     return h->count == 0;
 }
 
-static inline uint32_t mu_hash32_count(const mu_hash32_t* h)
+MU_INLINE uint32_t mu_hash32_count(const mu_hash32_t* h)
 {
     return h->count;
 }
 
-static inline uint32_t mu_hash32_capacity(const mu_hash32_t* h)
+MU_INLINE uint32_t mu_hash32_capacity(const mu_hash32_t* h)
 {
     return h->n;
 }
@@ -471,7 +463,7 @@ static inline uint32_t mu_hash32_capacity(const mu_hash32_t* h)
     No resize.
     If full, that's your bug.
 */
-static inline void mu_hash32_set(mu_hash32_t* h, uint64_t key, uint32_t value)
+MU_INLINE void mu_hash32_set(mu_hash32_t* h, uint64_t key, uint32_t value)
 {
     MU_ASSERT(h);
     MU_ASSERT(key != MU_HASH_UNUSED);
@@ -495,7 +487,7 @@ static inline void mu_hash32_set(mu_hash32_t* h, uint64_t key, uint32_t value)
 
     This avoids the "0 means maybe missing maybe valid" nonsense.
 */
-static inline bool mu_hash32_get(const mu_hash32_t* h, uint64_t key, uint32_t* out_value)
+MU_INLINE bool mu_hash32_get(const mu_hash32_t* h, uint64_t key, uint32_t* out_value)
 {
     MU_ASSERT(h);
     MU_ASSERT(out_value);
@@ -509,7 +501,7 @@ static inline bool mu_hash32_get(const mu_hash32_t* h, uint64_t key, uint32_t* o
     return true;
 }
 
-static inline bool mu_hash32_contains(const mu_hash32_t* h, uint64_t key)
+MU_INLINE bool mu_hash32_contains(const mu_hash32_t* h, uint64_t key)
 {
     uint32_t ignored;
     return mu_hash32_get(h, key, &ignored);
@@ -555,7 +547,7 @@ static inline bool mu_hash32_contains(const mu_hash32_t* h, uint64_t key)
     After:
         [K2][K3][--][--]
 */
-static inline void mu_hash32_remove(mu_hash32_t* h, uint64_t key)
+MU_INLINE void mu_hash32_remove(mu_hash32_t* h, uint64_t key)
 {
     MU_ASSERT(h);
 

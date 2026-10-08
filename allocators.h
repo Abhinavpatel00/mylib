@@ -4,6 +4,7 @@
 // C99 single-header allocator collection inspired by allocation-adventures docs.
 // Define MU_ALLOCATORS_IMPLEMENTATION in one C/C++ file to enable function bodies.
 
+#include "mu_macros.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
@@ -14,19 +15,19 @@ extern "C" {
 
 /* ----------- Utilities ----------- */
 
-static inline uint32_t mu_align_up_u32(uint32_t x, uint32_t a) {
+MU_INLINE uint32_t mu_align_up_u32(uint32_t x, uint32_t a) {
 	return (x + (a - 1u)) & ~(a - 1u);
 }
 
-static inline uintptr_t mu_align_up_ptr(uintptr_t x, uintptr_t a) {
+MU_INLINE uintptr_t mu_align_up_ptr(uintptr_t x, uintptr_t a) {
 	return (x + (a - 1u)) & ~(a - 1u);
 }
 
-static inline uint32_t mu_is_pow2_u32(uint32_t x) {
+MU_INLINE uint32_t mu_is_pow2_u32(uint32_t x) {
 	return x && ((x & (x - 1u)) == 0u);
 }
 
-static inline uint32_t mu_next_pow2_u32(uint32_t x) {
+MU_INLINE uint32_t mu_next_pow2_u32(uint32_t x) {
 	if (x <= 1u) return 1u;
 	--x;
 	x |= x >> 1u;
@@ -148,7 +149,7 @@ void mu_pool_free(mu_pool* p, void* ptr) {
 
 /* ----------- Buddy Allocator ----------- */
 
-static inline uint32_t mu_buddy_num_levels(uint32_t total_size, uint32_t leaf_size) {
+MU_INLINE uint32_t mu_buddy_num_levels(uint32_t total_size, uint32_t leaf_size) {
 	uint32_t levels = 0u;
 	while (total_size >= leaf_size) {
 		total_size >>= 1u;
@@ -157,41 +158,41 @@ static inline uint32_t mu_buddy_num_levels(uint32_t total_size, uint32_t leaf_si
 	return levels;
 }
 
-static inline uint32_t mu_buddy_num_blocks(uint32_t num_levels) {
+MU_INLINE uint32_t mu_buddy_num_blocks(uint32_t num_levels) {
 	return (1u << num_levels) - 1u;
 }
 
-static inline uint32_t mu_buddy_num_internal(uint32_t num_levels) {
+MU_INLINE uint32_t mu_buddy_num_internal(uint32_t num_levels) {
 	return (1u << (num_levels - 1u)) - 1u;
 }
 
-static inline uint32_t mu_bitset_bytes(uint32_t bits) {
+MU_INLINE uint32_t mu_bitset_bytes(uint32_t bits) {
 	return (bits + 7u) / 8u;
 }
 
-static inline uint32_t mu_bit_get(const uint8_t* bits, uint32_t idx) {
+MU_INLINE uint32_t mu_bit_get(const uint8_t* bits, uint32_t idx) {
 	return (bits[idx >> 3u] >> (idx & 7u)) & 1u;
 }
 
-static inline void mu_bit_set(uint8_t* bits, uint32_t idx, uint32_t v) {
+MU_INLINE void mu_bit_set(uint8_t* bits, uint32_t idx, uint32_t v) {
 	uint32_t byte = idx >> 3u;
 	uint8_t mask = (uint8_t)(1u << (idx & 7u));
 	if (v) bits[byte] |= mask; else bits[byte] &= (uint8_t)~mask;
 }
 
-static inline void mu_bit_flip(uint8_t* bits, uint32_t idx) {
+MU_INLINE void mu_bit_flip(uint8_t* bits, uint32_t idx) {
 	bits[idx >> 3u] ^= (uint8_t)(1u << (idx & 7u));
 }
 
-static inline uint32_t mu_level_block_size(const mu_buddy* b, uint32_t level) {
+MU_INLINE uint32_t mu_level_block_size(const mu_buddy* b, uint32_t level) {
 	return b->total_size >> level;
 }
 
-static inline uint32_t mu_level_first_index(uint32_t level) {
+MU_INLINE uint32_t mu_level_first_index(uint32_t level) {
 	return (1u << level) - 1u;
 }
 
-static inline uint32_t mu_level_of_size(const mu_buddy* b, uint32_t size) {
+MU_INLINE uint32_t mu_level_of_size(const mu_buddy* b, uint32_t size) {
 	uint32_t level = 0u;
 	uint32_t block = b->total_size;
 	while (level + 1u < b->num_levels && (block >> 1u) >= size) {
@@ -201,38 +202,38 @@ static inline uint32_t mu_level_of_size(const mu_buddy* b, uint32_t size) {
 	return level;
 }
 
-static inline uint32_t mu_block_index(const mu_buddy* b, uint32_t level, uint32_t index_in_level) {
+MU_INLINE uint32_t mu_block_index(const mu_buddy* b, uint32_t level, uint32_t index_in_level) {
 	(void)b;
 	return mu_level_first_index(level) + index_in_level;
 }
 
-static inline uint32_t mu_index_in_level(const mu_buddy* b, uint32_t level, uint32_t block_index) {
+MU_INLINE uint32_t mu_index_in_level(const mu_buddy* b, uint32_t level, uint32_t block_index) {
 	(void)b;
 	return block_index - mu_level_first_index(level);
 }
 
-static inline uint32_t mu_parent_index(uint32_t block_index) {
+MU_INLINE uint32_t mu_parent_index(uint32_t block_index) {
 	return (block_index - 1u) >> 1u;
 }
 
-static inline uint32_t mu_left_child(uint32_t block_index) {
+MU_INLINE uint32_t mu_left_child(uint32_t block_index) {
 	return (block_index << 1u) + 1u;
 }
 
-static inline uint32_t mu_right_child(uint32_t block_index) {
+MU_INLINE uint32_t mu_right_child(uint32_t block_index) {
 	return (block_index << 1u) + 2u;
 }
 
-static inline uint32_t mu_buddy_index(uint32_t block_index) {
+MU_INLINE uint32_t mu_buddy_index(uint32_t block_index) {
 	return (block_index & 1u) ? (block_index + 1u) : (block_index - 1u);
 }
 
-static inline void mu_free_list_push(mu_buddy* b, uint32_t level, uint32_t block_index) {
+MU_INLINE void mu_free_list_push(mu_buddy* b, uint32_t level, uint32_t block_index) {
 	b->free_next[block_index] = b->free_head[level];
 	b->free_head[level] = block_index;
 }
 
-static inline uint32_t mu_free_list_pop(mu_buddy* b, uint32_t level) {
+MU_INLINE uint32_t mu_free_list_pop(mu_buddy* b, uint32_t level) {
 	uint32_t head = b->free_head[level];
 	if (head == 0xFFFFFFFFu) return 0xFFFFFFFFu;
 	b->free_head[level] = b->free_next[head];
@@ -289,15 +290,15 @@ int mu_buddy_init(mu_buddy* b,
 
 	for (uint32_t i = 0u; i < levels; ++i) b->free_head[i] = 0xFFFFFFFFu;
 	for (uint32_t i = 0u; i < num_blocks; ++i) b->free_next[i] = 0xFFFFFFFFu;
-	memset(b->split_map, 0, mu_bitset_bytes(num_internal));
-	memset(b->merge_xor_map, 0, mu_bitset_bytes(num_blocks / 2u));
+	MU_MEMSET(b->split_map, 0, mu_bitset_bytes(num_internal));
+	MU_MEMSET(b->merge_xor_map, 0, mu_bitset_bytes(num_blocks / 2u));
 
 	/* Root starts free. */
 	mu_free_list_push(b, 0u, 0u);
 	return 1;
 }
 
-static uint32_t mu_buddy_split_to_level(mu_buddy* b, uint32_t level) {
+MU_INLINE uint32_t mu_buddy_split_to_level(mu_buddy* b, uint32_t level) {
 	if (level == 0u) return 0xFFFFFFFFu;
 	if (b->free_head[level - 1u] == 0xFFFFFFFFu) {
 		uint32_t parent = mu_buddy_split_to_level(b, level - 1u);
@@ -342,7 +343,7 @@ void* mu_buddy_alloc(mu_buddy* b, uint32_t size, uint32_t align) {
 	return b->base + offset;
 }
 
-static uint32_t mu_buddy_level_from_ptr(mu_buddy* b, void* ptr) {
+MU_INLINE uint32_t mu_buddy_level_from_ptr(mu_buddy* b, void* ptr) {
 	uint8_t* p = (uint8_t*)ptr;
 	uint32_t offset = (uint32_t)(p - b->base);
 	uint32_t level = 0u;
@@ -358,7 +359,7 @@ static uint32_t mu_buddy_level_from_ptr(mu_buddy* b, void* ptr) {
 	return b->num_levels - 1u;
 }
 
-static void mu_buddy_free_at_level(mu_buddy* b, uint32_t level, uint32_t index_in_level) {
+MU_INLINE void mu_buddy_free_at_level(mu_buddy* b, uint32_t level, uint32_t index_in_level) {
 	uint32_t block = mu_block_index(b, level, index_in_level);
 
 	/* Toggle buddy-pair xor bit for this level. */

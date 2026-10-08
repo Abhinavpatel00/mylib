@@ -51,21 +51,7 @@
 extern "C" {
 #endif
 
-#ifndef MU_SCHED_INLINE
-#define MU_SCHED_INLINE static inline
-#endif
-
-#ifndef MU_SCHED_ASSERT
-#define MU_SCHED_ASSERT MU_TS_ASSERT
-#endif
-
-#ifndef MU_SCHED_MALLOC
-#define MU_SCHED_MALLOC MU_TS_MALLOC
-#endif
-
-#ifndef MU_SCHED_FREE
-#define MU_SCHED_FREE MU_TS_FREE
-#endif
+#include "mu_macros.h"
 
 /* ------------------------------------------------------------------------- */
 /* Wait counter / task group                                                  */
@@ -80,7 +66,7 @@ typedef struct mu_sched_counter {
 
 typedef mu_sched_counter mu_sched_group;
 
-MU_SCHED_INLINE bool mu_sched_counter_init(mu_sched_counter* c, uint32_t initial)
+MU_INLINE bool mu_sched_counter_init(mu_sched_counter* c, uint32_t initial)
 {
     if (!c) return false;
     memset(c, 0, sizeof(*c));
@@ -96,7 +82,7 @@ MU_SCHED_INLINE bool mu_sched_counter_init(mu_sched_counter* c, uint32_t initial
     return true;
 }
 
-MU_SCHED_INLINE void mu_sched_counter_exit(mu_sched_counter* c)
+MU_INLINE void mu_sched_counter_exit(mu_sched_counter* c)
 {
     if (!c || !c->initialized) return;
     mu_ts_cond_exit(&c->condition_zero);
@@ -104,26 +90,26 @@ MU_SCHED_INLINE void mu_sched_counter_exit(mu_sched_counter* c)
     c->initialized = false;
 }
 
-MU_SCHED_INLINE uint32_t mu_sched_counter_get(mu_sched_counter* c)
+MU_INLINE uint32_t mu_sched_counter_get(mu_sched_counter* c)
 {
     if (!c || !c->initialized) return 0;
     return mu_ts_atomic32_load_relaxed(&c->value);
 }
 
-MU_SCHED_INLINE void mu_sched_counter_add(mu_sched_counter* c, uint32_t delta)
+MU_INLINE void mu_sched_counter_add(mu_sched_counter* c, uint32_t delta)
 {
     if (!c || !c->initialized || delta == 0) return;
     (void)mu_ts_atomic32_add_relaxed(&c->value, (int32_t)delta);
 }
 
-MU_SCHED_INLINE void mu_sched_counter_sub(mu_sched_counter* c, uint32_t delta)
+MU_INLINE void mu_sched_counter_sub(mu_sched_counter* c, uint32_t delta)
 {
     if (!c || !c->initialized || delta == 0) return;
 
     uint32_t old = mu_ts_atomic32_add_relaxed(&c->value, -(int32_t)delta);
     uint32_t now = old - delta;
 
-    MU_SCHED_ASSERT(old >= delta);
+    MU_ASSERT(old >= delta);
 
     if (now == 0) {
         mu_ts_mutex_lock(&c->mutex);
@@ -132,12 +118,12 @@ MU_SCHED_INLINE void mu_sched_counter_sub(mu_sched_counter* c, uint32_t delta)
     }
 }
 
-MU_SCHED_INLINE bool mu_sched_counter_is_zero(mu_sched_counter* c)
+MU_INLINE bool mu_sched_counter_is_zero(mu_sched_counter* c)
 {
     return mu_sched_counter_get(c) == 0;
 }
 
-MU_SCHED_INLINE bool mu_sched_counter_wait_timeout(mu_sched_counter* c, uint32_t timeout_ms)
+MU_INLINE bool mu_sched_counter_wait_timeout(mu_sched_counter* c, uint32_t timeout_ms)
 {
     if (!c || !c->initialized) return true;
 
@@ -175,17 +161,17 @@ MU_SCHED_INLINE bool mu_sched_counter_wait_timeout(mu_sched_counter* c, uint32_t
     return true;
 }
 
-MU_SCHED_INLINE void mu_sched_counter_wait(mu_sched_counter* c)
+MU_INLINE void mu_sched_counter_wait(mu_sched_counter* c)
 {
     (void)mu_sched_counter_wait_timeout(c, UINT32_MAX);
 }
 
 /* Group aliases */
-MU_SCHED_INLINE bool mu_sched_group_init(mu_sched_group* g, uint32_t initial) { return mu_sched_counter_init(g, initial); }
-MU_SCHED_INLINE void mu_sched_group_exit(mu_sched_group* g) { mu_sched_counter_exit(g); }
-MU_SCHED_INLINE void mu_sched_group_wait(mu_sched_group* g) { mu_sched_counter_wait(g); }
-MU_SCHED_INLINE bool mu_sched_group_wait_timeout(mu_sched_group* g, uint32_t ms) { return mu_sched_counter_wait_timeout(g, ms); }
-MU_SCHED_INLINE uint32_t mu_sched_group_count(mu_sched_group* g) { return mu_sched_counter_get(g); }
+MU_INLINE bool mu_sched_group_init(mu_sched_group* g, uint32_t initial) { return mu_sched_counter_init(g, initial); }
+MU_INLINE void mu_sched_group_exit(mu_sched_group* g) { mu_sched_counter_exit(g); }
+MU_INLINE void mu_sched_group_wait(mu_sched_group* g) { mu_sched_counter_wait(g); }
+MU_INLINE bool mu_sched_group_wait_timeout(mu_sched_group* g, uint32_t ms) { return mu_sched_counter_wait_timeout(g, ms); }
+MU_INLINE uint32_t mu_sched_group_count(mu_sched_group* g) { return mu_sched_counter_get(g); }
 
 /* ------------------------------------------------------------------------- */
 /* Task scheduler                                                             */
@@ -259,16 +245,16 @@ struct mu_task_scheduler {
     uint64_t worker_count;
 };
 
-MU_SCHED_INLINE bool mu_sched_wait_idle_timeout(mu_task_scheduler* s, uint32_t timeout_ms);
-MU_SCHED_INLINE void mu_sched_wait_idle(mu_task_scheduler* s);
+MU_INLINE bool mu_sched_wait_idle_timeout(mu_task_scheduler* s, uint32_t timeout_ms);
+MU_INLINE void mu_sched_wait_idle(mu_task_scheduler* s);
 
-MU_SCHED_INLINE mu_sched_priority mu_sched__clamp_priority(mu_sched_priority p)
+MU_INLINE mu_sched_priority mu_sched__clamp_priority(mu_sched_priority p)
 {
     if ((int)p < 0 || (int)p >= (int)MU_SCHED_PRIORITY_COUNT) return MU_SCHED_PRIORITY_NORMAL;
     return p;
 }
 
-MU_SCHED_INLINE void mu_sched__ready_push(mu_task_scheduler* s, mu_sched_task_node* node)
+MU_INLINE void mu_sched__ready_push(mu_task_scheduler* s, mu_sched_task_node* node)
 {
     mu_sched_priority p = mu_sched__clamp_priority(node->desc.priority);
     node->next = NULL;
@@ -282,7 +268,7 @@ MU_SCHED_INLINE void mu_sched__ready_push(mu_task_scheduler* s, mu_sched_task_no
     }
 }
 
-MU_SCHED_INLINE mu_sched_task_node* mu_sched__ready_pop(mu_task_scheduler* s)
+MU_INLINE mu_sched_task_node* mu_sched__ready_pop(mu_task_scheduler* s)
 {
     for (int p = 0; p < (int)MU_SCHED_PRIORITY_COUNT; ++p) {
         mu_sched_task_node* n = s->ready_head[p];
@@ -296,13 +282,13 @@ MU_SCHED_INLINE mu_sched_task_node* mu_sched__ready_pop(mu_task_scheduler* s)
     return NULL;
 }
 
-MU_SCHED_INLINE void mu_sched__pending_push(mu_task_scheduler* s, mu_sched_task_node* node)
+MU_INLINE void mu_sched__pending_push(mu_task_scheduler* s, mu_sched_task_node* node)
 {
     node->next = s->pending_head;
     s->pending_head = node;
 }
 
-MU_SCHED_INLINE void mu_sched__append_submit_list(mu_sched_task_node** head, mu_sched_task_node** tail, mu_sched_task_node* node)
+MU_INLINE void mu_sched__append_submit_list(mu_sched_task_node** head, mu_sched_task_node** tail, mu_sched_task_node* node)
 {
     node->next = NULL;
     if (!*head) {
@@ -314,7 +300,7 @@ MU_SCHED_INLINE void mu_sched__append_submit_list(mu_sched_task_node** head, mu_
     }
 }
 
-MU_SCHED_INLINE void mu_sched__promote_pending_locked(mu_task_scheduler* s)
+MU_INLINE void mu_sched__promote_pending_locked(mu_task_scheduler* s)
 {
     mu_sched_task_node* prev = NULL;
     mu_sched_task_node* it = s->pending_head;
@@ -341,7 +327,7 @@ MU_SCHED_INLINE void mu_sched__promote_pending_locked(mu_task_scheduler* s)
     }
 }
 
-MU_SCHED_INLINE void mu_sched__collect_dispatch_locked(mu_task_scheduler* s, mu_sched_task_node** submit_head, mu_sched_task_node** submit_tail)
+MU_INLINE void mu_sched__collect_dispatch_locked(mu_task_scheduler* s, mu_sched_task_node** submit_head, mu_sched_task_node** submit_tail)
 {
     while (s->active_count < s->dispatch_limit) {
         mu_sched_task_node* n = mu_sched__ready_pop(s);
@@ -352,7 +338,7 @@ MU_SCHED_INLINE void mu_sched__collect_dispatch_locked(mu_task_scheduler* s, mu_
     }
 }
 
-MU_SCHED_INLINE void mu_sched__task_thunk(void* user, uint64_t thread_id)
+MU_INLINE void mu_sched__task_thunk(void* user, uint64_t thread_id)
 {
     mu_sched_task_node* node = (mu_sched_task_node*)user;
     mu_task_scheduler* s = node->scheduler;
@@ -369,8 +355,8 @@ MU_SCHED_INLINE void mu_sched__task_thunk(void* user, uint64_t thread_id)
 
     mu_ts_mutex_lock(&s->mutex);
 
-    MU_SCHED_ASSERT(s->active_count > 0);
-    MU_SCHED_ASSERT(s->inflight_count > 0);
+    MU_ASSERT(s->active_count > 0);
+    MU_ASSERT(s->inflight_count > 0);
 
     s->active_count -= 1;
     s->inflight_count -= 1;
@@ -384,7 +370,7 @@ MU_SCHED_INLINE void mu_sched__task_thunk(void* user, uint64_t thread_id)
 
     mu_ts_mutex_unlock(&s->mutex);
 
-    MU_SCHED_FREE(node);
+    MU_FREE(node);
 
     /* Submit new ready tasks after unlock (safe even in dummy mode). */
     mu_sched_task_node* it = submit_head;
@@ -396,7 +382,7 @@ MU_SCHED_INLINE void mu_sched__task_thunk(void* user, uint64_t thread_id)
     }
 }
 
-MU_SCHED_INLINE bool mu_sched_init(mu_task_scheduler** out_sched, const mu_sched_init_desc* in_desc)
+MU_INLINE bool mu_sched_init(mu_task_scheduler** out_sched, const mu_sched_init_desc* in_desc)
 {
     if (!out_sched) return false;
     *out_sched = NULL;
@@ -404,7 +390,7 @@ MU_SCHED_INLINE bool mu_sched_init(mu_task_scheduler** out_sched, const mu_sched
     mu_sched_init_desc local_desc = MU_SCHED_INIT_DESC_DEFAULT;
     const mu_sched_init_desc* desc = in_desc ? in_desc : &local_desc;
 
-    mu_task_scheduler* s = (mu_task_scheduler*)MU_SCHED_MALLOC(sizeof(mu_task_scheduler));
+    mu_task_scheduler* s = (mu_task_scheduler*)MU_MALLOC(sizeof(mu_task_scheduler));
     if (!s) return false;
     memset(s, 0, sizeof(*s));
 
@@ -415,7 +401,7 @@ MU_SCHED_INLINE bool mu_sched_init(mu_task_scheduler** out_sched, const mu_sched
     if (!mutex_ok || !idle_ok) {
         if (idle_ok) mu_ts_cond_exit(&s->condition_idle);
         if (mutex_ok) mu_ts_mutex_exit(&s->mutex);
-        MU_SCHED_FREE(s);
+        MU_FREE(s);
         return false;
     }
 
@@ -428,7 +414,7 @@ MU_SCHED_INLINE bool mu_sched_init(mu_task_scheduler** out_sched, const mu_sched
     if (!mu_ts_init(&s->thread_system, &ts_desc)) {
         mu_ts_cond_exit(&s->condition_idle);
         mu_ts_mutex_exit(&s->mutex);
-        MU_SCHED_FREE(s);
+        MU_FREE(s);
         return false;
     }
 
@@ -449,7 +435,7 @@ MU_SCHED_INLINE bool mu_sched_init(mu_task_scheduler** out_sched, const mu_sched
     return true;
 }
 
-MU_SCHED_INLINE void mu_sched_exit(mu_task_scheduler** sched)
+MU_INLINE void mu_sched_exit(mu_task_scheduler** sched)
 {
     if (!sched || !*sched) return;
     mu_task_scheduler* s = *sched;
@@ -467,7 +453,7 @@ MU_SCHED_INLINE void mu_sched_exit(mu_task_scheduler** sched)
         while (it) {
             mu_sched_task_node* next = it->next;
             if (it->desc.completion_counter) mu_sched_counter_sub(it->desc.completion_counter, 1);
-            MU_SCHED_FREE(it);
+            MU_FREE(it);
             it = next;
         }
     }
@@ -477,21 +463,21 @@ MU_SCHED_INLINE void mu_sched_exit(mu_task_scheduler** sched)
         while (it) {
             mu_sched_task_node* next = it->next;
             if (it->desc.completion_counter) mu_sched_counter_sub(it->desc.completion_counter, 1);
-            MU_SCHED_FREE(it);
+            MU_FREE(it);
             it = next;
         }
     }
 
     mu_ts_cond_exit(&s->condition_idle);
     mu_ts_mutex_exit(&s->mutex);
-    MU_SCHED_FREE(s);
+    MU_FREE(s);
 }
 
-MU_SCHED_INLINE bool mu_sched_submit(mu_task_scheduler* s, const mu_sched_task_desc* desc)
+MU_INLINE bool mu_sched_submit(mu_task_scheduler* s, const mu_sched_task_desc* desc)
 {
     if (!s || !desc || !desc->fn) return false;
 
-    mu_sched_task_node* node = (mu_sched_task_node*)MU_SCHED_MALLOC(sizeof(mu_sched_task_node));
+    mu_sched_task_node* node = (mu_sched_task_node*)MU_MALLOC(sizeof(mu_sched_task_node));
     if (!node) return false;
 
     node->desc = *desc;
@@ -532,7 +518,7 @@ MU_SCHED_INLINE bool mu_sched_submit(mu_task_scheduler* s, const mu_sched_task_d
     return true;
 }
 
-MU_SCHED_INLINE bool mu_sched_submit_tasks(mu_task_scheduler* s,
+MU_INLINE bool mu_sched_submit_tasks(mu_task_scheduler* s,
                                            mu_sched_task_fn fn,
                                            uint64_t count,
                                            uint64_t user_size,
@@ -560,7 +546,7 @@ MU_SCHED_INLINE bool mu_sched_submit_tasks(mu_task_scheduler* s,
     return true;
 }
 
-MU_SCHED_INLINE bool mu_sched_assist(mu_task_scheduler* s)
+MU_INLINE bool mu_sched_assist(mu_task_scheduler* s)
 {
     if (!s) return false;
 
@@ -583,7 +569,7 @@ MU_SCHED_INLINE bool mu_sched_assist(mu_task_scheduler* s)
     return mu_ts_assist(s->thread_system);
 }
 
-MU_SCHED_INLINE bool mu_sched_wait_idle_timeout(mu_task_scheduler* s, uint32_t timeout_ms)
+MU_INLINE bool mu_sched_wait_idle_timeout(mu_task_scheduler* s, uint32_t timeout_ms)
 {
     if (!s) return true;
 
@@ -622,12 +608,12 @@ MU_SCHED_INLINE bool mu_sched_wait_idle_timeout(mu_task_scheduler* s, uint32_t t
     return true;
 }
 
-MU_SCHED_INLINE void mu_sched_wait_idle(mu_task_scheduler* s)
+MU_INLINE void mu_sched_wait_idle(mu_task_scheduler* s)
 {
     (void)mu_sched_wait_idle_timeout(s, UINT32_MAX);
 }
 
-MU_SCHED_INLINE uint64_t mu_sched_worker_count(mu_task_scheduler* s)
+MU_INLINE uint64_t mu_sched_worker_count(mu_task_scheduler* s)
 {
     if (!s) return 0;
     return s->worker_count;
@@ -648,7 +634,7 @@ typedef struct mu_sched_parallel_for_context {
     mu_ts_atomic32_t next;
 } mu_sched_parallel_for_context;
 
-MU_SCHED_INLINE void mu_sched__parallel_for_worker(void* user, uint32_t worker_index)
+MU_INLINE void mu_sched__parallel_for_worker(void* user, uint32_t worker_index)
 {
     mu_sched_parallel_for_context* ctx = (mu_sched_parallel_for_context*)user;
 
@@ -663,7 +649,7 @@ MU_SCHED_INLINE void mu_sched__parallel_for_worker(void* user, uint32_t worker_i
     }
 }
 
-MU_SCHED_INLINE bool mu_sched_parallel_for(mu_task_scheduler* s,
+MU_INLINE bool mu_sched_parallel_for(mu_task_scheduler* s,
                                            uint32_t begin,
                                            uint32_t end,
                                            uint32_t grain,
@@ -684,7 +670,7 @@ MU_SCHED_INLINE bool mu_sched_parallel_for(mu_task_scheduler* s,
     uint32_t launch = (uint32_t)((chunks < workers) ? chunks : workers);
     if (launch == 0) launch = 1;
 
-    mu_sched_parallel_for_context* ctx = (mu_sched_parallel_for_context*)MU_SCHED_MALLOC(sizeof(mu_sched_parallel_for_context));
+    mu_sched_parallel_for_context* ctx = (mu_sched_parallel_for_context*)MU_MALLOC(sizeof(mu_sched_parallel_for_context));
     if (!ctx) return false;
 
     ctx->fn = fn;
@@ -696,7 +682,7 @@ MU_SCHED_INLINE bool mu_sched_parallel_for(mu_task_scheduler* s,
 
     mu_sched_counter done;
     if (!mu_sched_counter_init(&done, 0)) {
-        MU_SCHED_FREE(ctx);
+        MU_FREE(ctx);
         return false;
     }
 
@@ -711,14 +697,14 @@ MU_SCHED_INLINE bool mu_sched_parallel_for(mu_task_scheduler* s,
         if (!mu_sched_submit(s, &d)) {
             mu_sched_counter_wait(&done);
             mu_sched_counter_exit(&done);
-            MU_SCHED_FREE(ctx);
+            MU_FREE(ctx);
             return false;
         }
     }
 
     mu_sched_counter_wait(&done);
     mu_sched_counter_exit(&done);
-    MU_SCHED_FREE(ctx);
+    MU_FREE(ctx);
 
     return true;
 }

@@ -7,7 +7,7 @@ static bool mu_chunked_u32_pool_grow(mu_chunked_u32_pool* pool, uint32_t min_cap
     while(new_capacity < min_capacity)
         new_capacity *= 2;
 
-    mu_chunked_u32_chunk* new_chunks = (mu_chunked_u32_chunk*)realloc(pool->chunks, sizeof(mu_chunked_u32_chunk) * new_capacity);
+    mu_chunked_u32_chunk* new_chunks = (mu_chunked_u32_chunk*)MU_REALLOC(pool->chunks, sizeof(mu_chunked_u32_chunk) * new_capacity);
     if(!new_chunks)
         return false;
 
@@ -61,7 +61,7 @@ static void mu_chunked_u32_pool_free_chunk(mu_chunked_u32_pool* pool, uint32_t c
 
 void mu_chunked_u32_pool_init(mu_chunked_u32_pool* pool, uint32_t initial_capacity)
 {
-    memset(pool, 0, sizeof(*pool));
+    MU_MEMSET(pool, 0, sizeof(*pool));
     pool->free_head = MU_CHUNKED_U32_NONE;
 
     if(initial_capacity)
@@ -70,8 +70,8 @@ void mu_chunked_u32_pool_init(mu_chunked_u32_pool* pool, uint32_t initial_capaci
 
 void mu_chunked_u32_pool_deinit(mu_chunked_u32_pool* pool)
 {
-    free(pool->chunks);
-    memset(pool, 0, sizeof(*pool));
+    MU_FREE(pool->chunks);
+    MU_MEMSET(pool, 0, sizeof(*pool));
     pool->free_head = MU_CHUNKED_U32_NONE;
 }
 

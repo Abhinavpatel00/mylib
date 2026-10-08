@@ -149,22 +149,22 @@ typedef struct mu_span
     pointer parameter.
 */
 #define MU_SPAN_IMPL(type, name)                                                                     \
-    static MU_INLINE name name##_make(type* ptr, uint32_t count)                                     \
+    MU_INLINE name name##_make(type* ptr, uint32_t count)                                     \
     {                                                                                                \
         name s;                                                                                      \
         s.data  = ptr;                                                                               \
         s.count = count;                                                                             \
         return s;                                                                                    \
     }                                                                                                \
-    static MU_INLINE uint32_t name##_count(name s)                                                   \
+    MU_INLINE uint32_t name##_count(name s)                                                   \
     {                                                                                                \
         return s.count;                                                                              \
     }                                                                                                \
-    static MU_INLINE bool name##_empty(name s)                                                       \
+    MU_INLINE bool name##_empty(name s)                                                       \
     {                                                                                                \
         return s.count == 0;                                                                         \
     }                                                                                                \
-    static MU_INLINE name name##_sub(name s, uint32_t offset, uint32_t count)                        \
+    MU_INLINE name name##_sub(name s, uint32_t offset, uint32_t count)                        \
     {                                                                                                \
         name out;                                                                                    \
         if(s.data == NULL || offset >= s.count)                                                      \
@@ -178,17 +178,17 @@ typedef struct mu_span
         out.count          = (uint32_t)MU_MIN((uint64_t)count, remaining);                           \
         return out;                                                                                  \
     }                                                                                                \
-    static MU_INLINE name name##_first(name s, uint32_t count)                                       \
+    MU_INLINE name name##_first(name s, uint32_t count)                                       \
     {                                                                                                \
         return name##_sub(s, 0, count);                                                              \
     }                                                                                                \
-    static MU_INLINE name name##_last(name s, uint32_t count)                                        \
+    MU_INLINE name name##_last(name s, uint32_t count)                                        \
     {                                                                                                \
         if(count >= s.count)                                                                         \
             return s;                                                                                \
         return name##_sub(s, s.count - count, count);                                                \
     }                                                                                                \
-    static MU_INLINE int32_t name##_find(name s, type value)                                         \
+    MU_INLINE int32_t name##_find(name s, type value)                                         \
     {                                                                                                \
         for(uint32_t i = 0; i < s.count; ++i)                                                        \
         {                                                                                            \
@@ -197,11 +197,11 @@ typedef struct mu_span
         }                                                                                            \
         return -1;                                                                                   \
     }                                                                                                \
-    static MU_INLINE bool name##_contains(name s, type value)                                        \
+    MU_INLINE bool name##_contains(name s, type value)                                        \
     {                                                                                                \
         return name##_find(s, value) >= 0;                                                           \
     }                                                                                                \
-    static MU_INLINE uint32_t name##_copy_to(name s, type* dst, uint32_t dst_count)                  \
+    MU_INLINE uint32_t name##_copy_to(name s, type* dst, uint32_t dst_count)                  \
     {                                                                                                \
         if(!s.data || !dst || dst_count == 0)                                                        \
             return 0;                                                                                \
@@ -258,7 +258,7 @@ MU_SPAN_IMPL(void*, mu_span_ptr)
    =========================================================================== */
 
 /* View over raw bytes. */
-static MU_INLINE mu_span mu_span_make(void* ptr, uint32_t byte_count)
+MU_INLINE mu_span mu_span_make(void* ptr, uint32_t byte_count)
 {
     mu_span s;
     s.data  = ptr;
@@ -273,7 +273,7 @@ static MU_INLINE mu_span mu_span_make(void* ptr, uint32_t byte_count)
 #define mu_span_from_mu_array(arr) mu_span_make((arr), (uint32_t)(array_size(arr) * sizeof(*(arr))))
 
 /* Cast a byte view onto a typed element view. Count shrinks to whole elements. */
-static MU_INLINE mu_span_u32 mu_span_as_u32(mu_span s)
+MU_INLINE mu_span_u32 mu_span_as_u32(mu_span s)
 {
     mu_span_u32 out;
     out.data  = (uint32_t*)s.data;
@@ -281,7 +281,7 @@ static MU_INLINE mu_span_u32 mu_span_as_u32(mu_span s)
     return out;
 }
 
-static MU_INLINE mu_span_f32 mu_span_as_f32(mu_span s)
+MU_INLINE mu_span_f32 mu_span_as_f32(mu_span s)
 {
     mu_span_f32 out;
     out.data  = (float*)s.data;
@@ -290,7 +290,7 @@ static MU_INLINE mu_span_f32 mu_span_as_f32(mu_span s)
 }
 
 /* Element-wise subspan of the byte view. Offset/count are in BYTES. */
-static MU_INLINE mu_span mu_span_slice(mu_span s, uint32_t offset, uint32_t byte_count)
+MU_INLINE mu_span mu_span_slice(mu_span s, uint32_t offset, uint32_t byte_count)
 {
     mu_span out;
     if(s.data == NULL || offset >= s.count)
@@ -305,12 +305,12 @@ static MU_INLINE mu_span mu_span_slice(mu_span s, uint32_t offset, uint32_t byte
     return out;
 }
 
-static MU_INLINE mu_span mu_span_first(mu_span s, uint32_t byte_count)
+MU_INLINE mu_span mu_span_first(mu_span s, uint32_t byte_count)
 {
     return mu_span_slice(s, 0, byte_count);
 }
 
-static MU_INLINE mu_span mu_span_last(mu_span s, uint32_t byte_count)
+MU_INLINE mu_span mu_span_last(mu_span s, uint32_t byte_count)
 {
     if(byte_count >= s.count)
         return s;
@@ -318,17 +318,17 @@ static MU_INLINE mu_span mu_span_last(mu_span s, uint32_t byte_count)
 }
 
 /* Byte-identical contents and equal length? */
-static MU_INLINE bool mu_span_equal(mu_span a, mu_span b)
+MU_INLINE bool mu_span_equal(mu_span a, mu_span b)
 {
     if(a.count != b.count)
         return false;
     if(a.count == 0)
         return true;
-    return memcmp(a.data, b.data, a.count) == 0;
+    return MU_MEMCMP(a.data, b.data, a.count) == 0;
 }
 
 /* Copy bytes into caller-owned dst, clamped, overlap-safe. Bytes written. */
-static MU_INLINE uint32_t mu_span_copy_to(mu_span s, void* dst, uint32_t dst_bytes)
+MU_INLINE uint32_t mu_span_copy_to(mu_span s, void* dst, uint32_t dst_bytes)
 {
     if(!s.data || !dst || dst_bytes == 0)
         return 0;

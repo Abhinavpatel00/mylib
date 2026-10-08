@@ -41,11 +41,11 @@ typedef struct MuLengthIndex {
  * selects the following nonempty element; total length selects the last element.
  * Initialize zeroed storage before use. Splice input is uint32_t records,
  * passed as a byte span, and must not alias index storage. */
-static inline void mu_length_index_init(MuLengthIndex *index) {
+MU_INLINE void mu_length_index_init(MuLengthIndex *index) {
     *index = (MuLengthIndex){.free_head = UINT32_MAX};
 }
 
-static inline void mu_length_index_destroy(MuLengthIndex *index) {
+MU_INLINE void mu_length_index_destroy(MuLengthIndex *index) {
     array_free(index->blocks);
     array_free(index->order);
     array_free(index->tree);
@@ -53,11 +53,11 @@ static inline void mu_length_index_destroy(MuLengthIndex *index) {
     mu_length_index_init(index);
 }
 
-static inline void mu_length_index_rebuild(MuLengthIndex *index) {
+MU_INLINE void mu_length_index_rebuild(MuLengthIndex *index) {
     index->tree_base = 1;
     while (index->tree_base < array_size(index->order)) index->tree_base *= 2;
     array_reserve(index->tree, index->tree_base * 2);
-    memset(index->tree, 0, index->tree_base * 2 * sizeof(*index->tree));
+    MU_MEMSET(index->tree, 0, index->tree_base * 2 * sizeof(*index->tree));
     for (uint32_t i = 0; i < array_size(index->order); ++i) {
         MuLengthBlock *block = &index->blocks[index->order[i]];
         index->tree[index->tree_base + i] = (MuLengthTotals){block->count, block->sum};
@@ -69,7 +69,7 @@ static inline void mu_length_index_rebuild(MuLengthIndex *index) {
     ++index->rebuilds;
 }
 
-static inline MuLengthPosition mu_length_index_find(const MuLengthIndex *index, uint32_t value, bool by_byte) {
+MU_INLINE MuLengthPosition mu_length_index_find(const MuLengthIndex *index, uint32_t value, bool by_byte) {
     assert(index->tree && (by_byte ? value <= index->tree[1].sum : value < index->tree[1].count));
     if (by_byte && value == index->tree[1].sum)
         return mu_length_index_find(index, index->tree[1].count - 1, false);
@@ -95,11 +95,11 @@ static inline MuLengthPosition mu_length_index_find(const MuLengthIndex *index, 
     return result;
 }
 
-static inline uint32_t mu_length_index_get(const MuLengthIndex *index, MuLengthPosition position) {
+MU_INLINE uint32_t mu_length_index_get(const MuLengthIndex *index, MuLengthPosition position) {
     return index->blocks[index->order[position.block]].lengths[position.slot];
 }
 
-static inline bool mu_length_index_next(const MuLengthIndex *index, MuLengthPosition *position) {
+MU_INLINE bool mu_length_index_next(const MuLengthIndex *index, MuLengthPosition *position) {
     if (position->ordinal + 1 == index->tree[1].count) return false;
     position->offset += mu_length_index_get(index, *position);
     ++position->ordinal;
@@ -110,7 +110,7 @@ static inline bool mu_length_index_next(const MuLengthIndex *index, MuLengthPosi
     return true;
 }
 
-static inline void mu_length_index_set(MuLengthIndex *index, MuLengthPosition position, uint32_t length) {
+MU_INLINE void mu_length_index_set(MuLengthIndex *index, MuLengthPosition position, uint32_t length) {
     MuLengthBlock *block = &index->blocks[index->order[position.block]];
     uint32_t delta = length - block->lengths[position.slot];
     block->lengths[position.slot] = length;
@@ -120,7 +120,7 @@ static inline void mu_length_index_set(MuLengthIndex *index, MuLengthPosition po
     ++index->length_writes;
 }
 
-static inline void mu_length_index_splice(MuLengthIndex *index, uint32_t first, uint32_t removed, ByteSpan lengths) {
+MU_INLINE void mu_length_index_splice(MuLengthIndex *index, uint32_t first, uint32_t removed, ByteSpan lengths) {
     assert(lengths.size % sizeof(uint32_t) == 0 && (lengths.data || !lengths.size));
     uint32_t inserted = lengths.size / sizeof(uint32_t);
     uint32_t old_count = index->tree ? index->tree[1].count : 0;
@@ -145,17 +145,17 @@ static inline void mu_length_index_splice(MuLengthIndex *index, uint32_t first, 
     for (uint32_t i = begin; out < prefix; ++i) {
         MuLengthBlock *block = &index->blocks[index->order[i]];
         uint32_t n = block->count < prefix - out ? block->count : prefix - out;
-        memcpy(index->scratch + out, block->lengths, n * sizeof(uint32_t));
+        MU_MEMCPY(index->scratch + out, block->lengths, n * sizeof(uint32_t));
         out += n;
     }
-    if (inserted) memcpy(index->scratch + out, lengths.data, lengths.size);
+    if (inserted) MU_MEMCPY(index->scratch + out, lengths.data, lengths.size);
     out += inserted;
     uint32_t tail = count;
     for (uint32_t i = end; tail > out;) {
         MuLengthBlock *block = &index->blocks[index->order[--i]];
         uint32_t n = block->count < tail - out ? block->count : tail - out;
         tail -= n;
-        memcpy(index->scratch + tail, block->lengths + block->count - n, n * sizeof(uint32_t));
+        MU_MEMCPY(index->scratch + tail, block->lengths + block->count - n, n * sizeof(uint32_t));
     }
     if (end - begin == 1 && count <= MU_LENGTH_BLOCK_CAPACITY) {
         MuLengthBlock *block = &index->blocks[index->order[begin]];
@@ -165,7 +165,7 @@ static inline void mu_length_index_splice(MuLengthIndex *index, uint32_t first, 
             index->tree[node].count += count - block->count;
             index->tree[node].sum += sum - block->sum;
         }
-        memcpy(block->lengths, index->scratch, count * sizeof(uint32_t));
+        MU_MEMCPY(block->lengths, index->scratch, count * sizeof(uint32_t));
         block->count = count;
         block->sum = sum;
     } else {
@@ -190,7 +190,7 @@ static inline void mu_length_index_splice(MuLengthIndex *index, uint32_t first, 
             MuLengthBlock *block = &index->blocks[id];
             block->count = (count - out + blocks - i - 1) / (blocks - i);
             block->sum = 0;
-            memcpy(block->lengths, index->scratch + out, block->count * sizeof(uint32_t));
+            MU_MEMCPY(block->lengths, index->scratch + out, block->count * sizeof(uint32_t));
             for (uint32_t j = 0; j < block->count; ++j) block->sum += block->lengths[j];
             out += block->count;
         }

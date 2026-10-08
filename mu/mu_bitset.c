@@ -5,7 +5,7 @@ mu_bitset* mu_bitset_create()
 {
     mu_bitset* bitset = NULL;
     /* Allocate the bitset itself. */
-    bitset                = (mu_bitset*)malloc(sizeof(mu_bitset));
+    bitset                = (mu_bitset*)MU_MALLOC(sizeof(mu_bitset));
     bitset->array         = NULL;
     bitset->word_count    = 0;
     bitset->word_capacity = 0;
@@ -21,30 +21,30 @@ So the real question is:
 */
 mu_bitset* mu_bitset_create_with_capacity(size_t size)
 {
-    mu_bitset* bitset = (mu_bitset*)malloc(sizeof(mu_bitset));
+    mu_bitset* bitset = (mu_bitset*)MU_MALLOC(sizeof(mu_bitset));
     //“bits per word = bytes per word × 8”
     bitset->word_count    = MU_CEIL(size, sizeof(uint64_t) * 8);
     bitset->word_capacity = bitset->word_count;
 
-    bitset->array = (uint64_t*)calloc(bitset->word_count, sizeof(uint64_t));
+    bitset->array = (uint64_t*)MU_CALLOC(bitset->word_count, sizeof(uint64_t));
     return bitset;
 }
 
 
 void mu_bitset_free(mu_bitset* bitset)
 {
-    free(bitset->array);
-    free(bitset);
+    MU_FREE(bitset->array);
+    MU_FREE(bitset);
 }
 
 void mu_bitset_clear(mu_bitset* bitset)
 {
-    memset(bitset->array, 0, sizeof(uint64_t) * bitset->word_count);
+    MU_MEMSET(bitset->array, 0, sizeof(uint64_t) * bitset->word_count);
 }
 
 void mu_bitset_fill(mu_bitset* bitset)
 {
-    memset(bitset->array, 0xff, sizeof(uint64_t) * bitset->word_count);
+    MU_MEMSET(bitset->array, 0xff, sizeof(uint64_t) * bitset->word_count);
 }
 
 /*
@@ -54,7 +54,7 @@ These functions intentionally stay minimal and avoid redundant checks.
 
 mu_bitset* mu_bitset_copy(const mu_bitset* src)
 {
-    mu_bitset* copy     = (mu_bitset*)malloc(sizeof *copy);
+    mu_bitset* copy     = (mu_bitset*)MU_MALLOC(sizeof *copy);
     copy->word_count    = src->word_count;
     copy->word_capacity = src->word_count;
 
@@ -64,8 +64,8 @@ mu_bitset* mu_bitset_copy(const mu_bitset* src)
         return copy;
     }
 
-    copy->array = (uint64_t*)malloc(sizeof(uint64_t) * src->word_count);
-    memcpy(copy->array, src->array, sizeof(uint64_t) * src->word_count);
+    copy->array = (uint64_t*)MU_MALLOC(sizeof(uint64_t) * src->word_count);
+    MU_MEMCPY(copy->array, src->array, sizeof(uint64_t) * src->word_count);
     return copy;
 }
 
@@ -82,7 +82,7 @@ static bool mu_bitset_resize_impl(mu_bitset* bs, size_t new_word_count, bool pad
 
         uint64_t* newarray;
         size_t    new_word_cap = (UINT64_C(0xFFFFFFFFFFFFFFFF) >> mu_leading_zeroes_u64(new_word_count)) + 1;
-        newarray               = (uint64_t*)realloc(bs->array, sizeof(uint64_t) * new_word_cap);
+        newarray               = (uint64_t*)MU_REALLOC(bs->array, sizeof(uint64_t) * new_word_cap);
         bs->word_capacity      = new_word_cap;
         bs->array              = newarray;
     }
@@ -92,7 +92,7 @@ static bool mu_bitset_resize_impl(mu_bitset* bs, size_t new_word_count, bool pad
     if(padwithzeroes && new_word_count > bs->word_count)
     {
         size_t delta = new_word_count - bs->word_count;
-        memset(bs->array + bs->word_count, 0, delta * sizeof(uint64_t));
+        MU_MEMSET(bs->array + bs->word_count, 0, delta * sizeof(uint64_t));
     }
 
 
@@ -328,14 +328,14 @@ bool mu_bitset_grow(mu_bitset* bs, size_t new_word_count)
         {
             newcapacity *= 2;
         }
-        if((newarray = (uint64_t*)realloc(bs->array, sizeof(uint64_t) * newcapacity)) == NULL)
+        if((newarray = (uint64_t*)MU_REALLOC(bs->array, sizeof(uint64_t) * newcapacity)) == NULL)
         {
             return false;
         }
         bs->word_capacity = newcapacity;
         bs->array         = newarray;
     }
-    memset(bs->array + bs->word_count, 0, sizeof(uint64_t) * (new_word_count - bs->word_count));
+    MU_MEMSET(bs->array + bs->word_count, 0, sizeof(uint64_t) * (new_word_count - bs->word_count));
     bs->word_count = new_word_count;
     return true;
 }
@@ -381,7 +381,7 @@ bool mu_bitset_inplace_union(mu_bitset* MU_RESTRICT b1, const mu_bitset* MU_REST
         size_t oldsize = b1->word_count;
         if(!mu_bitset_resize_words(b1, b2->word_count))
             return false;
-        memcpy(b1->array + oldsize, b2->array + oldsize, (b2->word_count - oldsize) * sizeof(uint64_t));
+        MU_MEMCPY(b1->array + oldsize, b2->array + oldsize, (b2->word_count - oldsize) * sizeof(uint64_t));
     }
     return true;
 }
@@ -626,7 +626,7 @@ bool mu_bitset_inplace_symmetric_difference(mu_bitset* MU_RESTRICT b1, const mu_
         size_t oldsize = b1->word_count;
         if(!mu_bitset_resize_words(b1, b2->word_count))
             return false;
-        memcpy(b1->array + oldsize, b2->array + oldsize, (b2->word_count - oldsize) * sizeof(uint64_t));
+        MU_MEMCPY(b1->array + oldsize, b2->array + oldsize, (b2->word_count - oldsize) * sizeof(uint64_t));
     }
     return true;
 }
@@ -827,7 +827,7 @@ bool mu_bitset_trim(mu_bitset* bs)
         return true;
 
     uint64_t* newarray;
-    if((newarray = (uint64_t*)realloc(bs->array, sizeof(uint64_t) * newsize)) == NULL)
+    if((newarray = (uint64_t*)MU_REALLOC(bs->array, sizeof(uint64_t) * newsize)) == NULL)
     {
         return false;
     }

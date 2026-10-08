@@ -10,15 +10,16 @@
  *
  * Typical flow:
  *   initMemAlloc("my_app");
- *   void* p = MMGR_MALLOC(256);
- *   p = MMGR_REALLOC(p, 512);
- *   MMGR_FREE(p);
+ *   void* p = MU_MMGR_MALLOC(256);
+ *   p = MU_MMGR_REALLOC(p, 512);
+ *   MU_MMGR_FREE(p);
  *   exitMemAlloc(); // emits leak report and asserts on leaks by default
  */
 
 #ifndef MU_MMGR_H
 #define MU_MMGR_H
 
+#include "mu_macros.h"
 #include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -29,28 +30,24 @@
 #endif
 
 /* Linux/glibc gets execinfo by default. */
-#ifndef MMGR_BACKTRACE
+#ifndef MU_MMGR_BACKTRACE
 #if defined(__linux__) && defined(__GLIBC__)
-#define MMGR_BACKTRACE 1
+#define MU_MMGR_BACKTRACE 1
 #else
-#define MMGR_BACKTRACE 0
+#define MU_MMGR_BACKTRACE 0
 #endif
 #endif
 
-#ifndef MMGR_BACKTRACE_SIZE
-#define MMGR_BACKTRACE_SIZE 128
+#ifndef MU_MMGR_BACKTRACE_SIZE
+#define MU_MMGR_BACKTRACE_SIZE 128
 #endif
 
-#ifndef MMGR_ASSERT
-#define MMGR_ASSERT(expr) assert(expr)
+#ifndef MU_MU_ASSERT_ON_LEAK
+#define MU_MU_ASSERT_ON_LEAK 1
 #endif
 
-#ifndef MMGR_ASSERT_ON_LEAK
-#define MMGR_ASSERT_ON_LEAK 1
-#endif
-
-#ifndef MMGR_HASH_BITS
-#define MMGR_HASH_BITS 12u
+#ifndef MU_MMGR_HASH_BITS
+#define MU_MMGR_HASH_BITS 12u
 #endif
 
 /* Optional: mirror legacy controls from original source. */
@@ -73,8 +70,8 @@ typedef struct tag_au
     void*  reportedAddress;
     char   sourceFile[140];
     char   sourceFunc[140];
-#if MMGR_BACKTRACE
-    void* backtrace_buffer[MMGR_BACKTRACE_SIZE];
+#if MU_MMGR_BACKTRACE
+    void* backtrace_buffer[MU_MMGR_BACKTRACE_SIZE];
     int   backtrace_nptrs;
     int   backtrace_skip;
 #endif
@@ -163,12 +160,12 @@ void  m_breakOnAllocation(unsigned int count);
 void  memSetStackSkipCount(int stackDepth);
 
 /* Convenience macros for C-only call sites. */
-#define MMGR_MALLOC(sz) mmgrAllocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_malloc, sizeof(void*), (sz))
-#define MMGR_MEMALIGN(al, sz) mmgrAllocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_malloc, (al), (sz))
-#define MMGR_CALLOC(cnt, sz)                                                                                           \
+#define MU_MMGR_MALLOC(sz) mmgrAllocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_malloc, sizeof(void*), (sz))
+#define MU_MMGR_MEMALIGN(al, sz) mmgrAllocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_malloc, (al), (sz))
+#define MU_MMGR_CALLOC(cnt, sz)                                                                                           \
     mmgrAllocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_calloc, sizeof(void*), (cnt) * (sz))
-#define MMGR_REALLOC(ptr, sz) mmgrReallocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_realloc, (sz), (ptr))
-#define MMGR_FREE(ptr) mmgrDeallocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_free, (ptr))
+#define MU_MMGR_REALLOC(ptr, sz) mmgrReallocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_realloc, (sz), (ptr))
+#define MU_MMGR_FREE(ptr) mmgrDeallocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_free, (ptr))
 
 #ifdef __cplusplus
 }
@@ -184,7 +181,7 @@ void  memSetStackSkipCount(int stackDepth);
 #include <string.h>
 #include <time.h>
 
-#if MMGR_BACKTRACE
+#if MU_MMGR_BACKTRACE
 #if defined(_WIN32)
 #include <windows.h>
 #include <dbghelp.h>
@@ -270,7 +267,7 @@ static unsigned int mu_mmgr_releasedPattern = 0xdeadbeef;
 
 enum
 {
-    mu_mmgr_hashSize = (1u << MMGR_HASH_BITS)
+    mu_mmgr_hashSize = (1u << MU_MMGR_HASH_BITS)
 };
 
 static const char* mu_mmgr_allocationTypes[] = {"Unknown", "new",    "new[]",    "malloc", "calloc",
@@ -297,7 +294,7 @@ static mu_mmgr_mutex_t mu_mmgr_logMutex;
 static bool            mu_mmgr_allocMutexInit = false;
 static bool            mu_mmgr_logMutexInit   = false;
 
-#if MMGR_BACKTRACE
+#if MU_MMGR_BACKTRACE
 static int mu_mmgr_stackSkipCount = 0;
 #if defined(_WIN32)
 static HANDLE mu_mmgr_processHandle = NULL;
@@ -442,14 +439,14 @@ static void mu_mmgr_resetGlobals(void)
     mu_mmgr_sourceFile = "??";
     mu_mmgr_sourceLine = 0;
     mu_mmgr_sourceFunc = "??";
-#if MMGR_BACKTRACE
+#if MU_MMGR_BACKTRACE
     mu_mmgr_stackSkipCount = 0;
 #endif
 }
 
 static sAllocUnit* mu_mmgr_findAllocUnit(const void* reportedAddress)
 {
-    MMGR_ASSERT(reportedAddress != NULL);
+    MU_ASSERT(reportedAddress != NULL);
 
     size_t      hashIndex = (((size_t)reportedAddress) >> 4u) & (mu_mmgr_hashSize - 1u);
     sAllocUnit* ptr       = mu_mmgr_hashTable[hashIndex];
@@ -603,7 +600,7 @@ static void mu_mmgr_dumpLine(FILE* fileToWrite, const char* format, ...)
     }
 }
 
-#if MMGR_BACKTRACE
+#if MU_MMGR_BACKTRACE
 static void mu_mmgr_dumpBacktrace(FILE* fh, const sAllocUnit* ptr)
 {
     if(!ptr->backtrace_nptrs)
@@ -652,7 +649,7 @@ static void mu_mmgr_dumpAllocations(FILE* fh)
                              ptr->actualSize, mmgrCalcUnused(ptr), mu_mmgr_allocationTypes[ptr->allocationType],
                              ptr->breakOnDealloc ? 'Y' : 'N', ptr->breakOnRealloc ? 'Y' : 'N',
                              mu_mmgr_ownerString(ptr->sourceFile, ptr->sourceLine, ptr->sourceFunc));
-#if MMGR_BACKTRACE
+#if MU_MMGR_BACKTRACE
             mu_mmgr_dumpBacktrace(fh, ptr);
 #endif
             ptr = ptr->next;
@@ -745,8 +742,8 @@ static void mu_mmgr_dumpLeakReport(void)
         fclose(fh);
     }
 
-#if MMGR_ASSERT_ON_LEAK
-    MMGR_ASSERT(mu_mmgr_stats.totalAllocUnitCount == 0 && "Memory leaks found");
+#if MU_MU_ASSERT_ON_LEAK
+    MU_ASSERT(mu_mmgr_stats.totalAllocUnitCount == 0 && "Memory leaks found");
 #endif
 }
 
@@ -755,7 +752,7 @@ bool initMemAlloc(const char* appName)
     mu_mmgr_appName = appName;
     mu_mmgr_doCleanupLogOnFirstRun();
 
-#if MMGR_BACKTRACE && defined(_WIN32)
+#if MU_MMGR_BACKTRACE && defined(_WIN32)
     HANDLE currentProcess = GetCurrentProcess();
     DuplicateHandle(currentProcess, currentProcess, currentProcess, &mu_mmgr_processHandle, 0, TRUE, DUPLICATE_SAME_ACCESS);
 #endif
@@ -767,7 +764,7 @@ void exitMemAlloc(void)
 {
     mu_mmgr_dumpLeakReport();
 
-#if MMGR_BACKTRACE && defined(_WIN32)
+#if MU_MMGR_BACKTRACE && defined(_WIN32)
     if(mu_mmgr_processHandle)
     {
         CloseHandle(mu_mmgr_processHandle);
@@ -824,7 +821,7 @@ void mmgrSetOwner(const char* file, const unsigned int line, const char* func)
 
 void memSetStackSkipCount(int stackDepth)
 {
-#if MMGR_BACKTRACE
+#if MU_MMGR_BACKTRACE
     if(!mu_mmgr_stackSkipCount)
     {
         mu_mmgr_stackSkipCount = stackDepth;
@@ -843,7 +840,7 @@ void* mmgrAllocator(const char*        sourceFile,
 {
     if(mu_mmgr_cleanupLogOnFirstRun)
     {
-        MMGR_ASSERT(false && "Memory tracker not initialized");
+        MU_ASSERT(false && "Memory tracker not initialized");
         return NULL;
     }
 
@@ -864,17 +861,17 @@ void* mmgrAllocator(const char*        sourceFile,
                     mu_mmgr_ownerString(sourceFile, sourceLine, sourceFunc));
     }
 
-    MMGR_ASSERT(mu_mmgr_currentAllocationCount != mu_mmgr_breakOnAllocationCount);
+    MU_ASSERT(mu_mmgr_currentAllocationCount != mu_mmgr_breakOnAllocationCount);
 
     if(!mu_mmgr_reservoir)
     {
         mu_mmgr_reservoir = (sAllocUnit*)malloc(sizeof(sAllocUnit) * 256u);
-        MMGR_ASSERT(mu_mmgr_reservoir != NULL);
+        MU_ASSERT(mu_mmgr_reservoir != NULL);
 
         if(!mu_mmgr_reservoir)
         {
             mu_mmgr_unlock_alloc();
-            MMGR_ASSERT(false && "Unable to allocate RAM for internal memory tracking data");
+            MU_ASSERT(false && "Unable to allocate RAM for internal memory tracking data");
             return NULL;
         }
 
@@ -886,7 +883,7 @@ void* mmgrAllocator(const char*        sourceFile,
 
         sAllocUnit** temp =
             (sAllocUnit**)realloc(mu_mmgr_reservoirBuffer, (mu_mmgr_reservoirBufferSize + 1u) * sizeof(sAllocUnit*));
-        MMGR_ASSERT(temp != NULL);
+        MU_ASSERT(temp != NULL);
         if(temp)
         {
             mu_mmgr_reservoirBuffer                                = temp;
@@ -894,7 +891,7 @@ void* mmgrAllocator(const char*        sourceFile,
         }
     }
 
-    MMGR_ASSERT(mu_mmgr_reservoir != NULL);
+    MU_ASSERT(mu_mmgr_reservoir != NULL);
 
     sAllocUnit* au    = mu_mmgr_reservoir;
     mu_mmgr_reservoir = au->next;
@@ -964,28 +961,28 @@ void* mmgrAllocator(const char*        sourceFile,
         mu_mmgr_strcpy(au->sourceFunc, sizeof(au->sourceFunc), "??");
     }
 
-#if MMGR_BACKTRACE
+#if MU_MMGR_BACKTRACE
 #if defined(_WIN32)
-    au->backtrace_nptrs = CaptureStackBackTrace(mu_mmgr_stackSkipCount + 1, MMGR_BACKTRACE_SIZE, au->backtrace_buffer, NULL);
+    au->backtrace_nptrs = CaptureStackBackTrace(mu_mmgr_stackSkipCount + 1, MU_MMGR_BACKTRACE_SIZE, au->backtrace_buffer, NULL);
     au->backtrace_skip = 0;
 #else
-    au->backtrace_nptrs = backtrace(au->backtrace_buffer, MMGR_BACKTRACE_SIZE);
+    au->backtrace_nptrs = backtrace(au->backtrace_buffer, MU_MMGR_BACKTRACE_SIZE);
     au->backtrace_skip  = mu_mmgr_stackSkipCount + 1;
 #endif
 #endif
 
 #ifndef RANDOM_FAILURE
-    MMGR_ASSERT(au->actualAddress != NULL);
+    MU_ASSERT(au->actualAddress != NULL);
 #endif
 
     if(!au->actualAddress)
     {
         mu_mmgr_unlock_alloc();
-        MMGR_ASSERT(false && "Request for allocation failed. Out of memory.");
+        MU_ASSERT(false && "Request for allocation failed. Out of memory.");
         return NULL;
     }
 
-    MMGR_ASSERT(allocationType != m_alloc_unknown);
+    MU_ASSERT(allocationType != m_alloc_unknown);
 
     size_t hashIndex = (((size_t)au->reportedAddress) >> 4u) & (mu_mmgr_hashSize - 1u);
     if(mu_mmgr_hashTable[hashIndex])
@@ -1065,7 +1062,7 @@ void* mmgrReallocator(const char*        sourceFile,
     }
 
     mu_mmgr_currentAllocationCount++;
-    MMGR_ASSERT(mu_mmgr_currentAllocationCount != mu_mmgr_breakOnAllocationCount);
+    MU_ASSERT(mu_mmgr_currentAllocationCount != mu_mmgr_breakOnAllocationCount);
 
     if(mu_mmgr_alwaysLogAll)
     {
@@ -1075,21 +1072,21 @@ void* mmgrReallocator(const char*        sourceFile,
     }
 
     sAllocUnit* au = mu_mmgr_findAllocUnit(reportedAddress);
-    MMGR_ASSERT(au != NULL);
+    MU_ASSERT(au != NULL);
     if(!au)
     {
         mu_mmgr_unlock_alloc();
-        MMGR_ASSERT(false && "Request to reallocate RAM that was never allocated");
+        MU_ASSERT(false && "Request to reallocate RAM that was never allocated");
         return NULL;
     }
 
     size_t alignment       = au->alignment;
     size_t oldReportedSize = au->reportedSize;
 
-    MMGR_ASSERT(mmgrValidateAllocUnit(au));
-    MMGR_ASSERT(reallocationType != m_alloc_unknown);
-    MMGR_ASSERT(au->allocationType == m_alloc_malloc || au->allocationType == m_alloc_calloc || au->allocationType == m_alloc_realloc);
-    MMGR_ASSERT(au->breakOnRealloc == false);
+    MU_ASSERT(mmgrValidateAllocUnit(au));
+    MU_ASSERT(reallocationType != m_alloc_unknown);
+    MU_ASSERT(au->allocationType == m_alloc_malloc || au->allocationType == m_alloc_calloc || au->allocationType == m_alloc_realloc);
+    MU_ASSERT(au->breakOnRealloc == false);
 
     unsigned int originalReportedSize = (unsigned int)au->reportedSize;
 
@@ -1130,7 +1127,7 @@ void* mmgrReallocator(const char*        sourceFile,
 #endif
 
 #ifndef RANDOM_FAILURE
-    MMGR_ASSERT(newActualAddress != NULL);
+    MU_ASSERT(newActualAddress != NULL);
 #endif
 
     if(!newActualAddress)
@@ -1140,7 +1137,7 @@ void* mmgrReallocator(const char*        sourceFile,
             free(oldData);
         }
         mu_mmgr_unlock_alloc();
-        MMGR_ASSERT(false && "Request for reallocation failed. Out of memory.");
+        MU_ASSERT(false && "Request for reallocation failed. Out of memory.");
         return NULL;
     }
 
@@ -1202,12 +1199,12 @@ void* mmgrReallocator(const char*        sourceFile,
         mu_mmgr_strcpy(au->sourceFunc, sizeof(au->sourceFunc), "??");
     }
 
-#if MMGR_BACKTRACE
+#if MU_MMGR_BACKTRACE
 #if defined(_WIN32)
-    au->backtrace_nptrs = CaptureStackBackTrace(mu_mmgr_stackSkipCount + 1, MMGR_BACKTRACE_SIZE, au->backtrace_buffer, NULL);
+    au->backtrace_nptrs = CaptureStackBackTrace(mu_mmgr_stackSkipCount + 1, MU_MMGR_BACKTRACE_SIZE, au->backtrace_buffer, NULL);
     au->backtrace_skip = 0;
 #else
-    au->backtrace_nptrs = backtrace(au->backtrace_buffer, MMGR_BACKTRACE_SIZE);
+    au->backtrace_nptrs = backtrace(au->backtrace_buffer, MU_MMGR_BACKTRACE_SIZE);
     au->backtrace_skip  = mu_mmgr_stackSkipCount + 1;
 #endif
 #endif
@@ -1262,7 +1259,7 @@ void* mmgrReallocator(const char*        sourceFile,
 
     mu_mmgr_wipeWithPattern(au, mu_mmgr_unusedPattern, originalReportedSize);
 
-    MMGR_ASSERT(mmgrValidateAllocUnit(au));
+    MU_ASSERT(mmgrValidateAllocUnit(au));
 
     if(mu_mmgr_alwaysValidateAll)
     {
@@ -1306,23 +1303,23 @@ void mmgrDeallocator(const char*        sourceFile,
     {
         sAllocUnit* au = mu_mmgr_findAllocUnit(reportedAddress);
 
-        MMGR_ASSERT(au != NULL);
+        MU_ASSERT(au != NULL);
         if(!au)
         {
             mu_mmgr_unlock_alloc();
-            MMGR_ASSERT(false && "Request to deallocate RAM that was never allocated");
+            MU_ASSERT(false && "Request to deallocate RAM that was never allocated");
             return;
         }
 
-        MMGR_ASSERT(mmgrValidateAllocUnit(au));
-        MMGR_ASSERT(deallocationType != m_alloc_unknown);
-        MMGR_ASSERT((deallocationType == m_alloc_delete && au->allocationType == m_alloc_new)
+        MU_ASSERT(mmgrValidateAllocUnit(au));
+        MU_ASSERT(deallocationType != m_alloc_unknown);
+        MU_ASSERT((deallocationType == m_alloc_delete && au->allocationType == m_alloc_new)
                     || (deallocationType == m_alloc_delete_array && au->allocationType == m_alloc_new_array)
                     || (deallocationType == m_alloc_free && au->allocationType == m_alloc_malloc)
                     || (deallocationType == m_alloc_free && au->allocationType == m_alloc_calloc)
                     || (deallocationType == m_alloc_free && au->allocationType == m_alloc_realloc)
                     || (deallocationType == m_alloc_unknown));
-        MMGR_ASSERT(au->breakOnDealloc == false);
+        MU_ASSERT(au->breakOnDealloc == false);
 
         mu_mmgr_wipeWithPattern(au, mu_mmgr_releasedPattern, 0);
 
@@ -1371,15 +1368,15 @@ void mmgrDeallocator(const char*        sourceFile,
 bool* mmgrBreakOnRealloc(void* reportedAddress)
 {
     sAllocUnit* au = mu_mmgr_findAllocUnit(reportedAddress);
-    MMGR_ASSERT(au != NULL);
-    MMGR_ASSERT(au->allocationType == m_alloc_malloc || au->allocationType == m_alloc_calloc || au->allocationType == m_alloc_realloc);
+    MU_ASSERT(au != NULL);
+    MU_ASSERT(au->allocationType == m_alloc_malloc || au->allocationType == m_alloc_calloc || au->allocationType == m_alloc_realloc);
     return &au->breakOnRealloc;
 }
 
 bool* mmgrBreakOnDealloc(void* reportedAddress)
 {
     sAllocUnit* au = mu_mmgr_findAllocUnit(reportedAddress);
-    MMGR_ASSERT(au != NULL);
+    MU_ASSERT(au != NULL);
     return &au->breakOnDealloc;
 }
 
@@ -1404,7 +1401,7 @@ bool mmgrValidateAllocUnit(const sAllocUnit* allocUnit)
             mmgrDumpAllocUnit(allocUnit, "  ");
             errorFlag = true;
         }
-        MMGR_ASSERT(*pre == expectedPrefixByte);
+        MU_ASSERT(*pre == expectedPrefixByte);
 
         uint8_t expectedPostfixByte = (uint8_t)((mu_mmgr_postfixPattern >> ((i % sizeof(uint32_t)) * 8)) & 0xFFu);
         if(*post != expectedPostfixByte)
@@ -1413,7 +1410,7 @@ bool mmgrValidateAllocUnit(const sAllocUnit* allocUnit)
             mmgrDumpAllocUnit(allocUnit, "  ");
             errorFlag = true;
         }
-        MMGR_ASSERT(*post == expectedPostfixByte);
+        MU_ASSERT(*post == expectedPostfixByte);
     }
 
     return !errorFlag;
@@ -1444,8 +1441,8 @@ bool mmgrValidateAllAllocUnits(void)
         errors++;
     }
 
-    MMGR_ASSERT(allocCount == mu_mmgr_stats.totalAllocUnitCount);
-    MMGR_ASSERT(errors == 0);
+    MU_ASSERT(allocCount == mu_mmgr_stats.totalAllocUnitCount);
+    MU_ASSERT(errors == 0);
 
     if(errors)
     {
@@ -1528,7 +1525,7 @@ void mmgrDumpAllocUnit(const sAllocUnit* allocUnit, const char* prefix)
     mu_mmgr_log("[I] %sSize (actual)     : 0x%08X (%s)", p, (unsigned int)allocUnit->actualSize,
                 mu_mmgr_memorySizeString((unsigned int)allocUnit->actualSize));
     mu_mmgr_log("[I] %sOwner             : %s(%u)::%s", p, allocUnit->sourceFile, allocUnit->sourceLine, allocUnit->sourceFunc);
-#if MMGR_BACKTRACE
+#if MU_MMGR_BACKTRACE
     mu_mmgr_log("[I] %sBacktrace         :", p);
     mu_mmgr_dumpBacktrace(NULL, allocUnit);
 #endif

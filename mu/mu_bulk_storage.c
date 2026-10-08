@@ -1,10 +1,10 @@
 #include "mu_bulk_storage.h"
-static MU_INLINE uint32_t* mu_bulk_storage_free_header(mu_bulk_storage* storage)
+MU_INLINE uint32_t* mu_bulk_storage_free_header(mu_bulk_storage* storage)
 {
     return (uint32_t*)(storage->slots + storage->slot_size * 0u);
 }
 
-static MU_INLINE uint32_t* mu_bulk_storage_slot_next_ptr(mu_bulk_storage* storage, uint32_t id)
+MU_INLINE uint32_t* mu_bulk_storage_slot_next_ptr(mu_bulk_storage* storage, uint32_t id)
 {
     return (uint32_t*)(storage->slots + storage->slot_size * id);
 }
@@ -15,9 +15,9 @@ static bool mu_bulk_storage_grow(mu_bulk_storage* storage, uint32_t min_capacity
     while(new_capacity < min_capacity)
         new_capacity *= 2u;
 
-    uint8_t*  new_slots       = (uint8_t*)realloc(storage->slots, storage->slot_size * (size_t)new_capacity);
-    uint32_t* new_generations = (uint32_t*)realloc(storage->generations, sizeof(uint32_t) * (size_t)new_capacity);
-    uint8_t*  new_live        = (uint8_t*)realloc(storage->live, sizeof(uint8_t) * (size_t)new_capacity);
+    uint8_t*  new_slots       = (uint8_t*)MU_REALLOC(storage->slots, storage->slot_size * (size_t)new_capacity);
+    uint32_t* new_generations = (uint32_t*)MU_REALLOC(storage->generations, sizeof(uint32_t) * (size_t)new_capacity);
+    uint8_t*  new_live        = (uint8_t*)MU_REALLOC(storage->live, sizeof(uint8_t) * (size_t)new_capacity);
 
     if(!new_slots || !new_generations || !new_live)
     {
@@ -30,16 +30,16 @@ static bool mu_bulk_storage_grow(mu_bulk_storage* storage, uint32_t min_capacity
     storage->live          = new_live;
     storage->slot_capacity = new_capacity;
 
-    memset(storage->slots + storage->slot_size * (size_t)old_capacity, 0, storage->slot_size * (size_t)(new_capacity - old_capacity));
-    memset(storage->generations + old_capacity, 0, sizeof(uint32_t) * (size_t)(new_capacity - old_capacity));
-    memset(storage->live + old_capacity, 0, sizeof(uint8_t) * (size_t)(new_capacity - old_capacity));
+    MU_MEMSET(storage->slots + storage->slot_size * (size_t)old_capacity, 0, storage->slot_size * (size_t)(new_capacity - old_capacity));
+    MU_MEMSET(storage->generations + old_capacity, 0, sizeof(uint32_t) * (size_t)(new_capacity - old_capacity));
+    MU_MEMSET(storage->live + old_capacity, 0, sizeof(uint8_t) * (size_t)(new_capacity - old_capacity));
 
     return true;
 }
 
 bool mu_bulk_storage_init(mu_bulk_storage* storage, size_t slot_size, uint32_t initial_slot_capacity)
 {
-    memset(storage, 0, sizeof(*storage));
+    MU_MEMSET(storage, 0, sizeof(*storage));
     if(slot_size < sizeof(uint32_t))
         return false;
 
@@ -56,10 +56,10 @@ bool mu_bulk_storage_init(mu_bulk_storage* storage, size_t slot_size, uint32_t i
 
 void mu_bulk_storage_deinit(mu_bulk_storage* storage)
 {
-    free(storage->slots);
-    free(storage->generations);
-    free(storage->live);
-    memset(storage, 0, sizeof(*storage));
+    MU_FREE(storage->slots);
+    MU_FREE(storage->generations);
+    MU_FREE(storage->live);
+    MU_MEMSET(storage, 0, sizeof(*storage));
 }
 
 uint32_t mu_bulk_storage_alloc(mu_bulk_storage* storage)
