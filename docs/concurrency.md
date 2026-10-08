@@ -29,27 +29,29 @@ void mu_ts_thread_detach(mu_ts_thread_handle h);
 uint64_t mu_ts_cpu_count(void);
 ```
 
-### Atomics
+### Atomics (`mu/mu_atomic.h` — the single implementation)
 
-Relaxed loads/stores/CAS/add for 32 and 64 bit values, with acquire/release
-fences composed on top for platforms that need explicit barriers:
+All atomics live in `mu/mu_atomic.h`. `mu_sync.h`, `mu_thread_system.h`,
+and `mu_task_scheduler.h` add no primitives of their own — they only
+compose these. Canonical types are small structs, acquire/release ordering
+is explicit (correct on ARM, nearly free on x86):
 
 ```c
-mu_ts_atomic32_t v = 0;                    /* volatile-wrapped ints      */
+mu_atomic32_t v;  mu_atomic32_init(&v, 0);   /* struct wrapping one word */
 
-mu_ts_atomic32_load_relaxed(&v);
-mu_ts_atomic32_store_relaxed(&v, x);
-mu_ts_atomic32_add_relaxed(&v, delta);     /* returns previous           */
-mu_ts_atomic32_cas_relaxed(&v, cmp, x);
-mu_ts_atomic32_max_relaxed(&v, x);         /* CAS loop                   */
+mu_atomic32_load_relaxed(&v);  mu_atomic32_load_acquire(&v);
+mu_atomic32_store_relaxed(&v, x); mu_atomic32_store_release(&v, x);
+mu_atomic32_fetch_add(&v, delta);            /* returns previous           */
+mu_atomic32_exchange(&v, x);                 /* returns previous           */
+mu_atomic32_compare_exchange(&v, &expected, x); /* bool form; refreshes expected */
+mu_atomic32_fetch_max(&v, x);                /* CAS loop, returns previous */
 
-mu_ts_atomic32_load_acquire(&v);           /* + explicit fence           */
-mu_ts_atomic32_store_release(&v, x);
-mu_ts_memorybarrier_acquire(); mu_ts_memorybarrier_release();
+mu_cpu_relax(); /* pause/yield inside spin loops */
 ```
 
-Same `64` family. On MSVC these map to `_Interlocked*` intrinsics; on
-GCC/Clang to `__atomic_*` builtins (or GCC legacy builtins + cpu fences).
+Same `mu_atomic64_*` and `mu_atomicptr_*` families. `mu_ts_atomic32_t` and
+the `mu_ts_atomic32_*` names remain as thin aliases over this backend, so
+existing thread-system / scheduler code keeps compiling.
 
 ### Mutex / condvar
 

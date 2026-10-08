@@ -1,14 +1,18 @@
 #pragma once
 
 #include "mu_common.h"
+#include "mu_atomic.h"
 
 /* ---------------------------------------------------------------------------
- * mu_sync — atomics, spinlock, rwlock, seqlock.
+ * mu_sync -- spinlock, rwlock, seqlock.
  *
  * WHY: mu_thread_system / mu_task_scheduler own threads, but there was no
- * home for the primitives those threads synchronise with (the scattered
- * mu_ts_atomic* types). One header, one naming scheme, one set of memory
- * orderings.
+ * home for the primitives those threads synchronise with. One header, one
+ * naming scheme, one set of memory orderings.
+ *
+ * ATOMICS LIVE IN mu_atomic.h -- this file defines NO atomic primitives of
+ * its own. It only composes them into locks (this is the "few possibilities
+ * of bugs" rule: exactly one backend to audit).
  *
  * MEMORY ORDERING RULE (this is the whole game):
  *   ACQUIRE on load  => no memory access inside the critical section may be
@@ -21,13 +25,13 @@
  *   orders rather than relaxed.
  *
  * CHOICES:
- *   spinlock   — uncontended lock/unlock is one atomic RMW; correct for
+ *   spinlock   -- uncontended lock/unlock is one atomic RMW; correct for
  *                short critical sections. Always pairs its wait with a CPU
  *                pause so a spinning thread does not stall the pipeline or
  *                starve the core it shares with the holder.
- *   rwlock     — many readers, exclusive writer. Optimistic reader count, so
+ *   rwlock     -- many readers, exclusive writer. Optimistic reader count, so
  *                an uncontended read is one atomic add + one sub.
- *   seqlock    — for lock-free READ of plain (non-atomic) data: the writer
+ *   seqlock    -- for lock-free READ of plain (non-atomic) data: the writer
  *                bumps an odd counter around the update, readers retry if
  *                they saw an odd or changed counter. Reads scale to any
  *                number of cores and cost zero writes.
@@ -35,136 +39,55 @@
  * CONTRACT: not recursive (a lock you already hold will deadlock you).
  * --------------------------------------------------------------------------- */
 
-/* -------------------------------------------------------------------------- *
- * Portability shims
- * -------------------------------------------------------------------------- */
-
-#if defined(__GNUC__) || defined(__clang__)
-#  define MU_SYNC_GNU_ATOMICS 1
-#elif defined(_MSC_VER)
-#  define MU_SYNC_MSVC_ATOMICS 1
-#  include <intrin.h>
-#else
-#  define MU_SYNC_NO_ATOMICS 1
+/* mu_atomic.h owns cpu-relax; keep the old name working. */
+#ifndef MU_CPU_RELAX
+#  define MU_CPU_RELAX() mu_cpu_relax()
 #endif
 
-#if defined(__GNUC__) || defined(__clang__)
-#  if defined(__i386__) || defined(__x86_64__)
-#    define MU_CPU_RELAX() __builtin_ia32_pause()
-#  elif defined(__aarch64__) || defined(__arm__)
-#    define MU_CPU_RELAX() __asm__ __volatile__("yield" ::: "memory")
-#  else
-#    define MU_CPU_RELAX() ((void)0)
-#  endif
-#elif defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))
-#  define MU_CPU_RELAX() _mm_pause()
-#else
-#  define MU_CPU_RELAX() ((void)0)
-#endif
-
-/* Plain 32-bit value that participates in the memory model. */
-typedef struct mu_atomic_u32
-{
-    volatile uint32_t v;
-} mu_atomic_u32;
-
-typedef struct mu_atomic_ptr
-{
-    void* volatile v; /* the POINTER is atomic, not the pointee */
-} mu_atomic_ptr;
+/* Thin aliases so existing mu_sync users keep compiling. */
+typedef mu_atomic32_t  mu_atomic_u32;
+typedef mu_atomicptr_t mu_atomic_ptr;
 
 MU_INLINE void mu_atomic_store_u32(mu_atomic_u32* a, uint32_t value)
 {
-#if defined(MU_SYNC_GNU_ATOMICS)
-    __atomic_store_n(&a->v, value, __ATOMIC_RELEASE);
-#elif defined(MU_SYNC_MSVC_ATOMICS)
-    _InterlockedExchange((volatile long*)&a->v, (long)value);
-#else
-    a->v = value;
-#endif
+    mu_atomic32_store_release(a, value);
 }
 
 MU_INLINE uint32_t mu_atomic_load_u32(const mu_atomic_u32* a)
 {
-#if defined(MU_SYNC_GNU_ATOMICS)
-    return __atomic_load_n(&a->v, __ATOMIC_ACQUIRE);
-#elif defined(MU_SYNC_MSVC_ATOMICS)
-    return (uint32_t)_ReadWriteBarrier(), (uint32_t)a->v;
-#else
-    return a->v;
-#endif
+    return mu_atomic32_load_acquire(a);
 }
 
 /* Compare-and-swap. Returns true if the stored value was `expected`. */
 MU_INLINE bool mu_atomic_cas_u32(mu_atomic_u32* a, uint32_t* expected, uint32_t desired)
 {
-#if defined(MU_SYNC_GNU_ATOMICS)
-    return __atomic_compare_exchange_n(&a->v, expected, desired, false, __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE);
-#elif defined(MU_SYNC_MSVC_ATOMICS)
-    long prev = _InterlockedCompareExchange((volatile long*)&a->v, (long)desired, (long)*expected);
-    if ((uint32_t)prev == *expected)
-        return true;
-    *expected = (uint32_t)prev;
-    return false;
-#else
-    if (a->v == *expected)
-    {
-        a->v = desired;
-        return true;
-    }
-    *expected = a->v;
-    return false;
-#endif
+    return mu_atomic32_compare_exchange(a, expected, desired);
 }
 
 /* Atomic read-modify-write: returns the PREVIOUS value. */
 MU_INLINE uint32_t mu_atomic_fetch_add_u32(mu_atomic_u32* a, uint32_t value)
 {
-#if defined(MU_SYNC_GNU_ATOMICS)
-    return __atomic_fetch_add(&a->v, value, __ATOMIC_ACQ_REL);
-#elif defined(MU_SYNC_MSVC_ATOMICS)
-    return (uint32_t)_InterlockedExchangeAdd((volatile long*)&a->v, (long)value);
-#else
-    uint32_t old = a->v;
-    a->v = old + value;
-    return old;
-#endif
+    return mu_atomic32_fetch_add(a, value);
 }
 
 MU_INLINE uint32_t mu_atomic_exchange_u32(mu_atomic_u32* a, uint32_t value)
 {
-#if defined(MU_SYNC_GNU_ATOMICS)
-    return __atomic_exchange_n(&a->v, value, __ATOMIC_ACQ_REL);
-#elif defined(MU_SYNC_MSVC_ATOMICS)
-    return (uint32_t)_InterlockedExchange((volatile long*)&a->v, (long)value);
-#else
-    uint32_t old = a->v;
-    a->v = value;
-    return old;
-#endif
+    return mu_atomic32_exchange(a, value);
 }
 
 MU_INLINE void mu_atomic_store_ptr(mu_atomic_ptr* a, void* value)
 {
-#if defined(MU_SYNC_GNU_ATOMICS)
-    __atomic_store_n(&a->v, value, __ATOMIC_RELEASE);
-#else
-    a->v = value;
-#endif
+    mu_atomicptr_store_release(a, value);
 }
 
 MU_INLINE void* mu_atomic_load_ptr(const mu_atomic_ptr* a)
 {
-#if defined(MU_SYNC_GNU_ATOMICS)
-    return __atomic_load_n(&a->v, __ATOMIC_ACQUIRE);
-#else
-    return a->v;
-#endif
+    return mu_atomicptr_load_acquire(a);
 }
 
 MU_INLINE void mu_atomic_init_u32(mu_atomic_u32* a, uint32_t value)
 {
-    a->v = value;
+    mu_atomic32_init(a, value);
 }
 
 /* -------------------------------------------------------------------------- *

@@ -72,149 +72,102 @@ extern "C" {
 #include "mu_macros.h"
 
 /* ------------------------------------------------------------------------- */
-/* Atomics (relaxed primitives + acquire/release wrappers)                    */
+/* Atomics -- owned by mu/mu_atomic.h (single implementation, see that file).  */
+/* This header keeps source-compatible mu_ts_* aliases only. No new primitives. */
 /* ------------------------------------------------------------------------- */
 
-typedef volatile uint32_t  mu_ts_atomic32_t;
-typedef volatile uint64_t  mu_ts_atomic64_t;
-typedef volatile uintptr_t mu_ts_atomicptr_t;
+#include "mu/mu_atomic.h"
 
-#if defined(_WIN32)
+typedef mu_atomic32_t  mu_ts_atomic32_t;
+typedef mu_atomic64_t  mu_ts_atomic64_t;
+typedef mu_atomicptr_t mu_ts_atomicptr_t;
 
-MU_INLINE void mu_ts_memorybarrier_acquire(void)
-{
-    _ReadWriteBarrier();
-}
-MU_INLINE void mu_ts_memorybarrier_release(void)
-{
-    _ReadWriteBarrier();
-}
-
-MU_INLINE uint32_t mu_ts_atomic32_load_relaxed(mu_ts_atomic32_t* p)
-{
-    return *p;
-}
-MU_INLINE uint32_t mu_ts_atomic32_store_relaxed(mu_ts_atomic32_t* p, uint32_t v)
-{
-    return (uint32_t)InterlockedExchange((volatile LONG*)p, (LONG)v);
-}
-MU_INLINE uint32_t mu_ts_atomic32_add_relaxed(mu_ts_atomic32_t* p, int32_t v)
-{
-    return (uint32_t)InterlockedExchangeAdd((volatile LONG*)p, (LONG)v);
-}
-MU_INLINE uint32_t mu_ts_atomic32_cas_relaxed(mu_ts_atomic32_t* p, uint32_t cmp, uint32_t v)
-{
-    return (uint32_t)InterlockedCompareExchange((volatile LONG*)p, (LONG)v, (LONG)cmp);
-}
-
-MU_INLINE uint64_t mu_ts_atomic64_load_relaxed(mu_ts_atomic64_t* p)
-{
-    return *p;
-}
-MU_INLINE uint64_t mu_ts_atomic64_store_relaxed(mu_ts_atomic64_t* p, uint64_t v)
-{
-    return (uint64_t)InterlockedExchange64((volatile LONG64*)p, (LONG64)v);
-}
-MU_INLINE uint64_t mu_ts_atomic64_add_relaxed(mu_ts_atomic64_t* p, int64_t v)
-{
-    return (uint64_t)InterlockedExchangeAdd64((volatile LONG64*)p, (LONG64)v);
-}
-MU_INLINE uint64_t mu_ts_atomic64_cas_relaxed(mu_ts_atomic64_t* p, uint64_t cmp, uint64_t v)
-{
-    return (uint64_t)InterlockedCompareExchange64((volatile LONG64*)p, (LONG64)v, (LONG64)cmp);
-}
-
-#else
+/* ----- compat shims: same names/signatures, canonical backend ----- */
 
 MU_INLINE void mu_ts_memorybarrier_acquire(void)
 {
+#if defined(__GNUC__) || defined(__clang__)
     __asm__ __volatile__("" : : : "memory");
-}
-MU_INLINE void mu_ts_memorybarrier_release(void)
-{
-    __asm__ __volatile__("" : : : "memory");
-}
-
-MU_INLINE uint32_t mu_ts_atomic32_load_relaxed(mu_ts_atomic32_t* p)
-{
-    return *p;
-}
-MU_INLINE uint32_t mu_ts_atomic32_store_relaxed(mu_ts_atomic32_t* p, uint32_t v)
-{
-    return (uint32_t)__sync_lock_test_and_set((volatile int32_t*)p, (int32_t)v);
-}
-MU_INLINE uint32_t mu_ts_atomic32_add_relaxed(mu_ts_atomic32_t* p, int32_t v)
-{
-    return (uint32_t)__sync_fetch_and_add((volatile int32_t*)p, v);
-}
-MU_INLINE uint32_t mu_ts_atomic32_cas_relaxed(mu_ts_atomic32_t* p, uint32_t cmp, uint32_t v)
-{
-    return (uint32_t)__sync_val_compare_and_swap((volatile int32_t*)p, (int32_t)cmp, (int32_t)v);
-}
-
-MU_INLINE uint64_t mu_ts_atomic64_load_relaxed(mu_ts_atomic64_t* p)
-{
-    return *p;
-}
-MU_INLINE uint64_t mu_ts_atomic64_store_relaxed(mu_ts_atomic64_t* p, uint64_t v)
-{
-    return (uint64_t)__sync_lock_test_and_set((volatile int64_t*)p, (int64_t)v);
-}
-MU_INLINE uint64_t mu_ts_atomic64_add_relaxed(mu_ts_atomic64_t* p, int64_t v)
-{
-    return (uint64_t)__sync_fetch_and_add((volatile int64_t*)p, v);
-}
-MU_INLINE uint64_t mu_ts_atomic64_cas_relaxed(mu_ts_atomic64_t* p, uint64_t cmp, uint64_t v)
-{
-    return (uint64_t)__sync_val_compare_and_swap((volatile int64_t*)p, (int64_t)cmp, (int64_t)v);
-}
-
+#elif defined(_MSC_VER)
+    _ReadWriteBarrier();
 #endif
+}
+MU_INLINE void mu_ts_memorybarrier_release(void)
+{
+#if defined(__GNUC__) || defined(__clang__)
+    __asm__ __volatile__("" : : : "memory");
+#elif defined(_MSC_VER)
+    _ReadWriteBarrier();
+#endif
+}
+
+MU_INLINE uint32_t mu_ts_atomic32_load_relaxed(mu_ts_atomic32_t* p)
+{
+    return mu_atomic32_load_relaxed(p);
+}
+MU_INLINE uint32_t mu_ts_atomic32_store_relaxed(mu_ts_atomic32_t* p, uint32_t v)
+{
+    return mu_atomic32_exchange(p, v);
+}
+MU_INLINE uint32_t mu_ts_atomic32_add_relaxed(mu_ts_atomic32_t* p, int32_t v)
+{
+    return mu_atomic32_fetch_add(p, (uint32_t)v);
+}
+MU_INLINE uint32_t mu_ts_atomic32_cas_relaxed(mu_ts_atomic32_t* p, uint32_t cmp, uint32_t v)
+{
+    uint32_t expected = cmp;
+    (void)mu_atomic32_compare_exchange(p, &expected, v);
+    return expected;
+}
+
+MU_INLINE uint64_t mu_ts_atomic64_load_relaxed(mu_ts_atomic64_t* p)
+{
+    return mu_atomic64_load_relaxed(p);
+}
+MU_INLINE uint64_t mu_ts_atomic64_store_relaxed(mu_ts_atomic64_t* p, uint64_t v)
+{
+    return mu_atomic64_exchange(p, v);
+}
+MU_INLINE uint64_t mu_ts_atomic64_add_relaxed(mu_ts_atomic64_t* p, int64_t v)
+{
+    return mu_atomic64_fetch_add(p, (uint64_t)v);
+}
+MU_INLINE uint64_t mu_ts_atomic64_cas_relaxed(mu_ts_atomic64_t* p, uint64_t cmp, uint64_t v)
+{
+    uint64_t expected = cmp;
+    (void)mu_atomic64_compare_exchange(p, &expected, v);
+    return expected;
+}
 
 MU_INLINE uint32_t mu_ts_atomic32_load_acquire(mu_ts_atomic32_t* p)
 {
-    uint32_t v = mu_ts_atomic32_load_relaxed(p);
-    mu_ts_memorybarrier_acquire();
-    return v;
+    return mu_atomic32_load_acquire(p);
 }
-
 MU_INLINE uint32_t mu_ts_atomic32_store_release(mu_ts_atomic32_t* p, uint32_t v)
 {
-    mu_ts_memorybarrier_release();
-    return mu_ts_atomic32_store_relaxed(p, v);
+    uint32_t prev = mu_atomic32_exchange(p, v);
+   (void)prev;
+    /* exchange is already ACQ_REL; keep old void-ish call shape working */
+    return prev;
 }
-
 MU_INLINE uint64_t mu_ts_atomic64_load_acquire(mu_ts_atomic64_t* p)
 {
-    uint64_t v = mu_ts_atomic64_load_relaxed(p);
-    mu_ts_memorybarrier_acquire();
-    return v;
+    return mu_atomic64_load_acquire(p);
 }
-
 MU_INLINE uint64_t mu_ts_atomic64_store_release(mu_ts_atomic64_t* p, uint64_t v)
 {
-    mu_ts_memorybarrier_release();
-    return mu_ts_atomic64_store_relaxed(p, v);
+    uint64_t prev = mu_atomic64_exchange(p, v);
+    (void)prev;
+    return prev;
 }
 
 MU_INLINE uint32_t mu_ts_atomic32_max_relaxed(mu_ts_atomic32_t* dst, uint32_t val)
 {
-    uint32_t prev = val;
-    do
-    {
-        prev = mu_ts_atomic32_cas_relaxed(dst, prev, val);
-    } while(prev < val);
-    return prev;
+    return mu_atomic32_fetch_max(dst, val);
 }
-
 MU_INLINE uint64_t mu_ts_atomic64_max_relaxed(mu_ts_atomic64_t* dst, uint64_t val)
 {
-    uint64_t prev = val;
-    do
-    {
-        prev = mu_ts_atomic64_cas_relaxed(dst, prev, val);
-    } while(prev < val);
-    return prev;
+    return mu_atomic64_fetch_max(dst, val);
 }
 
 /* ------------------------------------------------------------------------- */
